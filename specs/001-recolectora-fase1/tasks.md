@@ -42,7 +42,7 @@ transversal de eliminación y baja de cuentas (FR-046–FR-050).
 **Purpose**: inicializar el proyecto, herramientas de calidad y CI.
 
 - [X] T001 Crear la app Next.js (App Router, TypeScript, Tailwind, ESLint, carpeta `src/`, alias `@/*`) con pnpm en la raíz del repositorio y definir en `package.json` los scripts `dev`, `build`, `start`, `lint`, `typecheck` (`tsc --noEmit`), `format`, `test:unit`, `test:integration`, `test:e2e` y `db:types` (`supabase gen types typescript --local > src/lib/supabase/database.types.ts`)
-- [ ] T002 Inicializar git en la raíz (`.gitignore` con `node_modules`, `.next`, `.env*` salvo `.env.example`, `supabase/.temp`, `test-results`, `playwright-report`), crear el repositorio **público** en GitHub bajo la cuenta del desarrollador (se transfiere a la clienta en T156), sin licencia abierta (todos los derechos reservados), y subir `main`; activar *secret scanning* y *push protection* de GitHub; verificar que ni `seed.sql`, ni los fixtures, ni ningún archivo contengan datos reales de clientas o bazares; cuando T011 exista y haya corrido una vez, proteger `main` (cambios solo por pull request, check obligatorio de la CI en verde, sin excepción para administradores) para cumplir el principio V ("un cambio con pruebas fallidas NO DEBE integrarse")
+- [X] T002 Inicializar git en la raíz (`.gitignore` con `node_modules`, `.next`, `.env*` salvo `.env.example`, `supabase/.temp`, `test-results`, `playwright-report`), crear el repositorio **público** en GitHub bajo la cuenta del desarrollador (se transfiere a la clienta en T156), sin licencia abierta (todos los derechos reservados), y subir `main`; activar *secret scanning* y *push protection* de GitHub; verificar que ni `seed.sql`, ni los fixtures, ni ningún archivo contengan datos reales de clientas o bazares; cuando T011 exista y haya corrido una vez, proteger `main` (cambios solo por pull request, check obligatorio de la CI en verde, sin excepción para administradores) para cumplir el principio V ("un cambio con pruebas fallidas NO DEBE integrarse")
 - [X] T003 Configurar `tsconfig.json` con `"strict": true`, `"noUncheckedIndexedAccess": true` y `"noImplicitOverride": true`
 - [X] T004 [P] Instalar dependencias de ejecución: `@supabase/supabase-js`, `@supabase/ssr`, `react-hook-form`, `zod`, `@hookform/resolvers`, `browser-image-compression`, `server-only`, `@sentry/nextjs`; y de desarrollo: `supabase`, `vitest`, `@playwright/test`, `prettier`, `prettier-plugin-tailwindcss` en `package.json`
 - [X] T005 [P] Configurar Prettier (`.prettierrc`, `.prettierignore`) y reglas de ESLint (`eslint.config.mjs`) incluyendo `no-restricted-imports` que prohíba importar `@/lib/supabase/admin` fuera de `src/features/account-deletion/`
@@ -483,10 +483,13 @@ Task: "T090 src/features/packages/components/package-gallery.tsx"
 Validación automática completa en local: 126 pruebas unitarias, 103 de integración y 44 E2E
 (celular y escritorio) en verde; lint, typecheck, formato y tipos de base de datos al día.
 
+**T002** cerrada: el código está en <https://github.com/Flaky7/sistema-recolectora> (público, sin
+licencia abierta), con *secret scanning* y *push protection* activos y `main` protegida (solo por
+pull request, check `ci` obligatorio, sin excepción para administradores). Los commits usan el
+correo `noreply` de GitHub del desarrollador.
+
 Tareas abiertas que requieren acciones fuera del código:
 
-- **T002**: crear el repositorio público en GitHub, activar *secret scanning*/*push protection* y
-  proteger `main` (publica el código; pendiente de confirmación del desarrollador).
 - **T150**: texto final del aviso de privacidad con los datos reales de la responsable (pendiente
   de la clienta).
 - **T151**: íconos definitivos de la PWA (hoy son provisionales) y prueba de instalación en
