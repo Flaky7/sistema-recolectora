@@ -208,9 +208,14 @@ begin
 
     new.submitted_at := now();
     new.status_reason := null;
+    -- Tells guard_proposal_change() that this draft -> pending is part of the registration
+    -- being submitted (it only lets approved bazaars submit changes on their own). Transaction
+    -- local; clients cannot set it through the API.
+    perform set_config('app.submitting_bazaar', new.id::text, true);
     update public.bazaar_profile_proposals
       set status = 'pending', submitted_at = now()
       where bazaar_id = new.id and status = 'draft';
+    perform set_config('app.submitting_bazaar', '', true);
     return new;
   end if;
 
@@ -295,7 +300,8 @@ begin
         raise exception 'Cambio de estado de propuesta no permitido.' using errcode = 'P0001';
       end if;
       if new.status = 'pending' then
-        if (select status from public.bazaars where id = new.bazaar_id) <> 'approved' then
+        if (select status from public.bazaars where id = new.bazaar_id) <> 'approved'
+          and current_setting('app.submitting_bazaar', true) is distinct from new.bazaar_id::text then
           raise exception 'Para enviar tu primer registro usa "Enviar a revisión".'
             using errcode = 'P0001';
         end if;

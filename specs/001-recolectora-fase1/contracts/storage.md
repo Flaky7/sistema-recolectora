@@ -4,7 +4,7 @@
 |--------|---------|------|------|-----|----------------|
 | `bazaar-photo-submissions` | no | `{bazaar_id}/{uuid}.jpg` | bazar (su carpeta) | bazar (su carpeta) y recolectora (enlace firmado, 60 min) | JPEG/PNG/WebP, ≤ 1 MB (comprimidas a ~200 KB) |
 | `bazaar-photos` | sí | `{bazaar_id}/{uuid}.jpg` | solo recolectora, al autorizar una propuesta | todos (URL pública) | JPEG/PNG/WebP, ≤ 1 MB |
-| `bazaar-documents` | no | `{bazaar_id}/{type}-{uuid}.{ext}` | bazar (su carpeta) | solo recolectora (enlace firmado, 10 min) | JPEG/PNG/WebP/PDF, ≤ 5 MB; el bazar puede borrar solo archivos de filas propias en `pending`; la recolectora borra los reemplazados y rechazados (FR-033) |
+| `bazaar-documents` | no | `{bazaar_id}/{type}-{uuid}.{ext}` | bazar (su carpeta) | solo recolectora (enlace firmado, 10 min) | JPEG/PNG/WebP/PDF, ≤ 5 MB; solo la recolectora borra: los reemplazados y rechazados (FR-033) y los que el bazar reemplazó estando en revisión, que el bazar anota en `storage_trash` (research R23) |
 | `payment-proofs` | no | `{customer_id}/{uuid}.{ext}` | clienta (su carpeta) | solo recolectora (enlace firmado, 10 min) | JPEG/PNG/WebP/PDF, ≤ 5 MB |
 | `package-photos` | no | `{customer_id or 'unidentified'}/{uuid}.jpg` | solo recolectora | recolectora; clienta si existe un `packages` suyo con ese `photo_path` (enlace firmado, 60 min) | JPEG, ≤ 1 MB (comprimidas a ~200 KB) |
 

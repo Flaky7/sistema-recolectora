@@ -78,27 +78,12 @@ create policy "bazaar-documents: collector reads"
   on storage.objects for select to authenticated
   using (bucket_id = 'bazaar-documents' and (select public.is_collector()));
 
-create policy "bazaar-documents: bazaar deletes own pending, or collector"
+-- Deleting an object also needs SELECT on it, and the bazaar must never read its documents
+-- (FR-026, FR-034). So only the collector deletes; files a bazaar replaces are listed in
+-- public.storage_trash and removed with her session when she reviews that bazaar (research R23).
+create policy "bazaar-documents: collector deletes"
   on storage.objects for delete to authenticated
-  using (
-    bucket_id = 'bazaar-documents'
-    and (
-      (select public.is_collector())
-      or exists (
-        select 1 from public.bazaar_documents d
-        where d.bazaar_id = (select public.current_bazaar_id())
-          and d.status = 'pending'
-          and d.storage_path = storage.objects.name
-      )
-      -- A file uploaded but never registered (failed action) can be cleaned up by its owner.
-      or (
-        (storage.foldername(name))[1] = (select public.current_bazaar_id())::text
-        and not exists (
-          select 1 from public.bazaar_documents d where d.storage_path = storage.objects.name
-        )
-      )
-    )
-  );
+  using (bucket_id = 'bazaar-documents' and (select public.is_collector()));
 
 -- payment-proofs (private): the customer uploads, only the collector reads (constitution II).
 create policy "payment-proofs: customer uploads to own folder, or collector"

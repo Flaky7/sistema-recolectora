@@ -304,6 +304,27 @@ shadcn/ui con estilo `radix-nova`.
 - **Nota (Next.js 16)**: T027 se implementó como `src/proxy.ts` y `src/lib/supabase/proxy.ts`
   (ver R21) en lugar de `middleware.ts`.
 
+## R23. Borrado de documentos reemplazados por el bazar (implementación, 2026-10-04)
+
+- **Decision**: para borrar un archivo de Storage se necesita también permiso de lectura sobre él,
+  y el bazar nunca debe poder leer sus documentos (FR-026, FR-034). Por eso, cuando el bazar
+  reemplaza un documento que estaba en revisión, la acción borra la fila y anota la ruta del
+  archivo en `storage_trash`; el archivo se borra con la sesión de la recolectora la siguiente vez
+  que revisa ese bazar (documento, registro, suspensión o reactivación). Solo la recolectora borra
+  archivos de `bazaar-documents`.
+- **Rationale**: conserva la regla de privacidad sin usar la service role key fuera de la
+  eliminación de cuentas; el archivo reemplazado solo lo puede ver la recolectora mientras tanto.
+- **Alternatives considered**: permitir al bazar leer sus documentos en revisión (rompe FR-034);
+  borrar con la service role key (amplía el código privilegiado, contra R16); dejarlos huérfanos
+  hasta el script de limpieza (incumple FR-034).
+
+## R24. Transiciones de pedido evaluadas por el trigger (implementación, 2026-10-04)
+
+- **Decision**: `validate_order_update()` consulta `order_status_transitions` mediante
+  `order_transition_allowed()` (`SECURITY DEFINER`). El trigger corre con el rol de quien hace el
+  cambio y la tabla tiene RLS sin políticas, así que una consulta directa no veía ninguna fila y
+  rechazaba todo cambio hecho por la clienta o la recolectora.
+
 ## R15. Monitoreo, entornos y costos
 
 - **Decision**: Sentry (`@sentry/nextjs`) plan gratuito, sin envío de datos personales

@@ -435,6 +435,25 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"storage_trash": {
+                  Row: {
+                    "bazaar_id": string,"bucket_id": string,"created_at": string,"id": string,"path": string
+                  }
+                  Insert: {
+                    "bazaar_id": string,"bucket_id": string,"created_at"?: string,"id"?: string,"path": string
+                  }
+                  Update: {
+                    "bazaar_id"?: string,"bucket_id"?: string,"created_at"?: string,"id"?: string,"path"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "storage_trash_bazaar_id_fkey"
+      columns: ["bazaar_id"]
+isOneToOne: false
+      referencedRelation: "bazaars"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
@@ -454,7 +473,13 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "can_edit_order":
+            "apply_bazaar_proposal":
+{ Args: { "proposal_id": string,"public_paths": (string)[] }; Returns: (string)[]
+                           },
+"approve_bazaar_document":
+{ Args: { "document_id": string }; Returns: string
+                           },
+"can_edit_order":
 { Args: { "target": string }; Returns: boolean
                            },
 "check_customer_claim":
@@ -527,6 +552,9 @@ isOneToOne: false
                            },
 "promote_to_collector":
 { Args: { "email": string }; Returns: undefined
+                           },
+"reject_bazaar_document":
+{ Args: { "document_id": string,"reason": string }; Returns: string
                            },
 "search_directory":
 { Args: { "q"?: string }; Returns: {
