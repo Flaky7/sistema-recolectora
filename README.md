@@ -31,10 +31,28 @@ pnpm dev                            # http://localhost:3000
 
 `pnpm supabase status` vuelve a mostrar las llaves locales (`ANON_KEY` y `SERVICE_ROLE_KEY`).
 
-**Usuarios de prueba** (contraseña `Prueba123!`, todos ficticios): `recolectora@test.local`,
-`clienta.local@test.local`, `clienta.foranea@test.local` y bazares en cada estado
-(`bazar.borrador@`, `bazar.pendiente@`, `bazar.aprobado@`, `bazar.sinfotos@`, `bazar.rechazado@`,
-`bazar.suspendido@`, `bazar.cambio@`, todos con `@test.local`).
+### Usuarios de prueba
+
+Los crea `supabase/seed.sql`; todos son ficticios y usan la contraseña **`Prueba123!`**. Se entra
+en <http://localhost:3000/entrar>.
+
+| Rol                    | Correo                        | Qué se prueba con él                                      |
+| ---------------------- | ----------------------------- | --------------------------------------------------------- |
+| Recolectora (admin)    | `recolectora@test.local`      | Panel `/admin`: pagos, paquetes, envíos, bazares, ajustes |
+| Clienta local          | `clienta.local@test.local`    | Laura Local Ficticia, WhatsApp `6641111111`               |
+| Clienta foránea        | `clienta.foranea@test.local`  | Fernanda Foránea Ficticia, WhatsApp `5512345678`          |
+| Bazar en borrador      | `bazar.borrador@test.local`   | Ficha sin enviar a revisión                               |
+| Bazar pendiente        | `bazar.pendiente@test.local`  | Espera la revisión de la recolectora                      |
+| Bazar aprobado         | `bazar.aprobado@test.local`   | Aparece en el directorio (Bazar Ñandú)                    |
+| Bazar sin fotos        | `bazar.sinfotos@test.local`   | Aprobado, se ve como recuadro sin imágenes                |
+| Bazar rechazado        | `bazar.rechazado@test.local`  | Ve el motivo del rechazo                                  |
+| Bazar suspendido       | `bazar.suspendido@test.local` | No aparece en el directorio                               |
+| Bazar con cambio       | `bazar.cambio@test.local`     | Tiene una propuesta de cambio pendiente                   |
+| Clienta **sin cuenta** | —                             | Rosa Sin Cuenta Ficticia, código fijo **`SN2KQ`**         |
+
+El código de 5 caracteres de Laura y Fernanda se genera al azar en cada `pnpm supabase db reset`:
+se ve en `/mi-cuenta` o en el panel. Para registrar un paquete basta con buscarlas por nombre o
+teléfono.
 
 Los correos de confirmación y recuperación se ven en Mailpit: <http://localhost:54324>.
 
