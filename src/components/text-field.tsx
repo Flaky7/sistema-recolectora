@@ -34,8 +34,8 @@ export function TextField<T extends FieldValues>({
   registerOptions,
   ...inputProps
 }: CommonProps<T> & Omit<ComponentProps<typeof Input>, "name" | "form">) {
-  const error = form.formState.errors[name];
-  const id = `field-${name}`;
+  const error = form.getFieldState(name, form.formState).error;
+  const id = `field-${name.replaceAll(".", "-")}`;
   return (
     <Field data-invalid={Boolean(error)}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
@@ -46,7 +46,7 @@ export function TextField<T extends FieldValues>({
         {...form.register(name, registerOptions)}
       />
       {description ? <FieldDescription>{description}</FieldDescription> : null}
-      <FieldError errors={[error as { message?: string } | undefined]} />
+      <FieldError errors={[error]} />
     </Field>
   );
 }
@@ -59,8 +59,8 @@ export function TextAreaField<T extends FieldValues>({
   registerOptions,
   ...inputProps
 }: CommonProps<T> & Omit<ComponentProps<typeof Textarea>, "name" | "form">) {
-  const error = form.formState.errors[name];
-  const id = `field-${name}`;
+  const error = form.getFieldState(name, form.formState).error;
+  const id = `field-${name.replaceAll(".", "-")}`;
   return (
     <Field data-invalid={Boolean(error)}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
@@ -71,7 +71,7 @@ export function TextAreaField<T extends FieldValues>({
         {...form.register(name, registerOptions)}
       />
       {description ? <FieldDescription>{description}</FieldDescription> : null}
-      <FieldError errors={[error as { message?: string } | undefined]} />
+      <FieldError errors={[error]} />
     </Field>
   );
 }
