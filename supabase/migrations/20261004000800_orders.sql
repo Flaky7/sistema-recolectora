@@ -80,7 +80,32 @@ insert into public.order_status_transitions (from_status, to_status, actor) valu
   ('complete', 'cancelled', 'system');
 
 alter table public.order_status_transitions enable row level security;
--- No policies: only the trigger below reads it.
+-- No policies: nobody reads it through the API. The trigger reads it through this definer
+-- function, because the trigger itself runs with the caller's role and RLS would hide the rows.
+create function public.order_transition_allowed(
+  from_status public.order_status,
+  to_status public.order_status,
+  actor text
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.order_status_transitions t
+    where t.from_status = order_transition_allowed.from_status
+      and t.to_status = order_transition_allowed.to_status
+      and (t.actor = order_transition_allowed.actor or order_transition_allowed.actor = 'system')
+  );
+$$;
+
+-- Callers of the trigger need EXECUTE; the answer only reveals the public status table.
+revoke all on function public.order_transition_allowed(public.order_status, public.order_status, text)
+  from public, anon;
+grant execute on function public.order_transition_allowed(public.order_status, public.order_status, text)
+  to authenticated;
 
 create function public.validate_order_update()
 returns trigger
@@ -111,12 +136,7 @@ begin
   end if;
 
   -- Trusted roles (sync triggers, anonymization, service role) may perform any listed change.
-  if not exists (
-    select 1 from public.order_status_transitions t
-    where t.from_status = old.status
-      and t.to_status = new.status
-      and (t.actor = v_actor or v_actor = 'system')
-  ) then
+  if not public.order_transition_allowed(old.status, new.status, v_actor) then
     raise exception 'Cambio de estado no permitido: % -> %', old.status, new.status
       using errcode = 'P0001';
   end if;

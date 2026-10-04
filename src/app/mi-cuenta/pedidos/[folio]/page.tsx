@@ -14,6 +14,7 @@ import { getOrderByFolio } from "@/features/orders/queries";
 import { PackageGallery } from "@/features/packages/components/package-gallery";
 import { isEditableOrder } from "@/features/orders/status";
 import { PAYMENT_STATUS_LABELS } from "@/features/payments/labels";
+import { ShipmentSummary } from "@/features/shipments/components/shipment-summary";
 import { formatDateTime, formatMoney } from "@/lib/format";
 
 export async function generateMetadata({
@@ -76,6 +77,13 @@ export default async function CustomerOrderPage({
         <section className="space-y-3 rounded-xl border p-4">
           <h2 className="font-semibold">Comprobante del pago inicial</h2>
           <SubmitProofForm folio={order.folio} customerId={customer.id} />
+        </section>
+      ) : null}
+
+      {order.shipment ? (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">Envío</h2>
+          <ShipmentSummary shipment={order.shipment} />
         </section>
       ) : null}
 

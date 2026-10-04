@@ -519,6 +519,9 @@ isOneToOne: false
 "order_has_bazaar":
 { Args: { "target": string }; Returns: boolean
                            },
+"order_transition_allowed":
+{ Args: { "actor": string,"from_status": Database["public"]['Enums']["order_status"],"to_status": Database["public"]['Enums']["order_status"] }; Returns: boolean
+                           },
 "paths_have_prefix":
 { Args: { "paths": (string)[],"prefix": string }; Returns: boolean
                            },

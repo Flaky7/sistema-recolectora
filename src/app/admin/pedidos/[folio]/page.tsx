@@ -14,6 +14,8 @@ import { listOrderNotifications } from "@/features/packages/queries";
 import { isEditableOrder } from "@/features/orders/status";
 import { PaymentReviewCard } from "@/features/payments/components/payment-review-card";
 import { ViewProofButton } from "@/features/payments/components/view-proof-button";
+import { OrderShippingActions } from "@/features/shipments/components/order-shipping-actions";
+import { ShipmentSummary } from "@/features/shipments/components/shipment-summary";
 import { PAYMENT_STATUS_LABELS } from "@/features/payments/labels";
 import { formatDateTime, formatMoney } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -94,6 +96,19 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
           ) : null}
         </dl>
       </section>
+
+      <OrderShippingActions
+        folio={order.folio}
+        status={status}
+        customerType={order.customer_type!}
+      />
+
+      {order.shipment ? (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">Envío</h2>
+          <ShipmentSummary shipment={order.shipment} />
+        </section>
+      ) : null}
 
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">

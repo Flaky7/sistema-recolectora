@@ -204,20 +204,20 @@ paquetes), registrar envío con guía, verificar URL `wa.me` y estado "Enviado",
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T093 [P] [US3] Prueba unitaria `tests/unit/shipment-schemas.test.ts` (`carrier` 2–60 y `tracking_number` 3–60 obligatorios si `type = 'carrier'`, `cost_cents` ≥ 0, tipos `local_*` rechazados para clienta foránea)
-- [ ] T094 [P] [US3] Prueba de integración `tests/integration/rls-shipments.test.ts`: solo la recolectora crea envíos; la clienta lee solo el suyo; envío `local_delivery` para clienta `out_of_town` falla; insertar envío pasa el pedido a `shipped`; un segundo envío para el mismo pedido falla
-- [ ] T095 [P] [US3] Prueba E2E (flujo crítico "envío") `tests/e2e/ship-order.spec.ts`: marcar completo con menos paquetes pide confirmación → registrar envío por paquetería → URL `wa.me` con paquetería y guía → clienta ve guía y costo → marcar entregado; variante clienta local con "Entrega en persona"
+- [X] T093 [P] [US3] Prueba unitaria `tests/unit/shipment-schemas.test.ts` (`carrier` 2–60 y `tracking_number` 3–60 obligatorios si `type = 'carrier'`, `cost_cents` ≥ 0, tipos `local_*` rechazados para clienta foránea)
+- [X] T094 [P] [US3] Prueba de integración `tests/integration/rls-shipments.test.ts`: solo la recolectora crea envíos; la clienta lee solo el suyo; envío `local_delivery` para clienta `out_of_town` falla; insertar envío pasa el pedido a `shipped`; un segundo envío para el mismo pedido falla
+- [X] T095 [P] [US3] Prueba E2E (flujo crítico "envío") `tests/e2e/ship-order.spec.ts`: marcar completo con menos paquetes pide confirmación → registrar envío por paquetería → URL `wa.me` con paquetería y guía → clienta ve guía y costo → marcar entregado; variante clienta local con "Entrega en persona"
 
 ### Implementation for User Story 3
 
-- [ ] T096 [P] [US3] Crear `src/features/shipments/schemas.ts` (`registerShipmentSchema` con unión discriminada por `type`: `carrier` requiere `carrier` 2–60 y `trackingNumber` 3–60; `costCents` ≥ 0; `markOrderCompleteSchema` con `confirmIncomplete`) y `src/features/shipments/labels.ts` (`carrier` → "Paquetería", `local_delivery` → "Entrega en persona", `local_pickup` → "Recolección en persona")
-- [ ] T097 [US3] Implementar en `src/features/shipments/actions.ts`: `markOrderComplete` (error `INCOMPLETE_PACKAGES` con el conteo si recibidos < esperados y `confirmIncomplete` es falso), `registerShipment` (inserta y llama `notify('order_shipped', …)`), `markOrderDelivered`
-- [ ] T098 [US3] Implementar `src/features/shipments/queries.ts`: `listShipments({ q, type, status })`
-- [ ] T099 [P] [US3] Crear `src/features/shipments/components/shipment-form.tsx` (tipo: solo "Paquetería" para foráneas; los tres para locales; campos condicionales; costo en pesos convertido a centavos; al guardar usa `OpenWhatsApp`)
-- [ ] T100 [P] [US3] Crear `src/features/shipments/components/complete-order-button.tsx` (diálogo de confirmación cuando faltan paquetes) y `src/features/shipments/components/shipment-summary.tsx`
-- [ ] T101 [US3] Agregar a `src/app/admin/pedidos/[folio]/page.tsx` las acciones Marcar completo, Registrar envío y Marcar entregado según el estado
-- [ ] T102 [US3] Agregar `ShipmentSummary` (tipo, paquetería, guía y costo) a `src/app/mi-cuenta/pedidos/[folio]/page.tsx`
-- [ ] T103 [US3] Crear `src/app/admin/envios/page.tsx` con la lista de envíos y búsqueda por clienta o guía
+- [X] T096 [P] [US3] Crear `src/features/shipments/schemas.ts` (`registerShipmentSchema` con unión discriminada por `type`: `carrier` requiere `carrier` 2–60 y `trackingNumber` 3–60; `costCents` ≥ 0; `markOrderCompleteSchema` con `confirmIncomplete`) y `src/features/shipments/labels.ts` (`carrier` → "Paquetería", `local_delivery` → "Entrega en persona", `local_pickup` → "Recolección en persona")
+- [X] T097 [US3] Implementar en `src/features/shipments/actions.ts`: `markOrderComplete` (error `INCOMPLETE_PACKAGES` con el conteo si recibidos < esperados y `confirmIncomplete` es falso), `registerShipment` (inserta y llama `notify('order_shipped', …)`), `markOrderDelivered`
+- [X] T098 [US3] Implementar `src/features/shipments/queries.ts`: `listShipments({ q, type, status })`
+- [X] T099 [P] [US3] Crear `src/features/shipments/components/shipment-form.tsx` (tipo: solo "Paquetería" para foráneas; los tres para locales; campos condicionales; costo en pesos convertido a centavos; al guardar usa `OpenWhatsApp`)
+- [X] T100 [P] [US3] Crear `src/features/shipments/components/complete-order-button.tsx` (diálogo de confirmación cuando faltan paquetes) y `src/features/shipments/components/shipment-summary.tsx`
+- [X] T101 [US3] Agregar a `src/app/admin/pedidos/[folio]/page.tsx` las acciones Marcar completo, Registrar envío y Marcar entregado según el estado
+- [X] T102 [US3] Agregar `ShipmentSummary` (tipo, paquetería, guía y costo) a `src/app/mi-cuenta/pedidos/[folio]/page.tsx`
+- [X] T103 [US3] Crear `src/app/admin/envios/page.tsx` con la lista de envíos y búsqueda por clienta o guía
 
 **Checkpoint**: ciclo completo de un pedido, de registro a entregado.
 

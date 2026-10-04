@@ -5,7 +5,7 @@ import { fixture, getEmailLink, PASSWORD, uniqueEmail, uniquePhone } from "./aut
 /** Signs up through /registro/clienta and confirms the email via Mailpit. Returns the code. */
 export async function registerCustomer(
   page: Page,
-  options: { phone?: string; code?: string; name?: string } = {},
+  options: { phone?: string; code?: string; name?: string; type?: "local" | "out_of_town" } = {},
 ) {
   const email = uniqueEmail("clienta");
   const phone = options.phone ?? uniquePhone();
@@ -13,7 +13,9 @@ export async function registerCustomer(
   await page.getByLabel("Nombre completo").fill(options.name ?? "Clienta E2E");
   await page.getByLabel("WhatsApp").fill(phone);
   await page.getByLabel("Dirección de envío").fill("Calle de Prueba 123, Tijuana, B.C.");
-  await page.getByText("Local", { exact: true }).click();
+  await page
+    .getByText(options.type === "out_of_town" ? "Foránea" : "Local", { exact: true })
+    .click();
   await page.getByLabel("Correo").fill(email);
   await page.getByLabel("Contraseña").fill(PASSWORD);
   await page.getByLabel(/Leí y acepto/).check();

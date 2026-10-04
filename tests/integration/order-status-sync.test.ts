@@ -2,7 +2,7 @@ import { afterAll, describe, expect, it } from "vitest";
 
 import { ORDER_TRANSITIONS } from "@/features/orders/status";
 
-import { createCustomer, createOrder } from "../helpers/fixtures";
+import { createCustomer, createOrder, getOrder } from "../helpers/fixtures";
 import { adminClient, createTestUser, must, resetTestData } from "../helpers/supabase";
 
 afterAll(resetTestData);
@@ -46,6 +46,41 @@ describe("order_status_transitions", () => {
       .update({ status: "cancelled" })
       .eq("id", order.id);
     expect(error).not.toBeNull();
+  });
+
+  it("lets app users make the changes listed for them (the trigger can read the table)", async () => {
+    const collector = await createTestUser("collector");
+    const customer = await createCustomer();
+
+    // Customer cancels while there are no confirmed payments or packages.
+    const own = await createOrder(customer.customerId);
+    must(
+      await customer.client
+        .from("orders")
+        .update({ status: "cancelled", cancelled_reason: "Ya no lo quiero" })
+        .eq("id", own.id),
+    );
+    expect((await getOrder(own.id)).status).toBe("cancelled");
+
+    // Collector: receiving -> complete and shipped -> delivered.
+    const receiving = await createOrder(customer.customerId, "receiving");
+    must(await collector.client.from("orders").update({ status: "complete" }).eq("id", receiving.id));
+    expect((await getOrder(receiving.id)).status).toBe("complete");
+
+    const shipped = await createOrder(customer.customerId, "shipped");
+    must(await collector.client.from("orders").update({ status: "delivered" }).eq("id", shipped.id));
+    expect((await getOrder(shipped.id)).status).toBe("delivered");
+  });
+
+  it("a customer cannot cancel once the payment is confirmed", async () => {
+    const customer = await createCustomer();
+    const order = await createOrder(customer.customerId, "payment_confirmed");
+    const { error } = await customer.client
+      .from("orders")
+      .update({ status: "cancelled", cancelled_reason: "Ya no" })
+      .eq("id", order.id);
+    expect(error).not.toBeNull();
+    expect((await getOrder(order.id)).status).toBe("payment_confirmed");
   });
 
   it("records every change in the history", async () => {
