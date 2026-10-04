@@ -360,7 +360,7 @@ eliminación, eliminación por la recolectora y baja temporal. Depende de US1, U
 - [X] T147 [P] Escribir `docs/manual-recolectora.md` en español sencillo y con capturas de celular: instalar la app, revisar pagos, registrar paquetes, paquetes sin identificar, cerrar y enviar pedidos, dar de alta clientas sin cuenta, revisar bazares, autorizar o rechazar cambios de ficha de bazares, editar plantillas, dar de baja y eliminar datos
 - [X] T148 [P] Crear `supabase/scripts/find-orphan-files.sql` (archivos en Storage sin referencia en tablas) y documentar su uso manual en `docs/arquitectura.md`
 - [X] T149 Revisar todas las pantallas a 360 px y en escritorio: objetivos táctiles ≥ 44 px, formularios con teclado adecuado (`inputMode="numeric"` en teléfonos, mayúsculas en código), estados de carga y vacíos, textos en español de México; corregir en `src/app/**` y `src/features/**/components/**`
-- [ ] T150 Revisar el texto final del aviso de privacidad en `src/app/(public)/aviso-de-privacidad/page.tsx` con los datos reales de la responsable (pendiente de la clienta) y verificar que cubre FR-005 y FR-050
+- [X] T150 Revisar el texto final del aviso de privacidad en `src/app/(public)/aviso-de-privacidad/page.tsx` con los datos reales de la responsable (pendiente de la clienta) y verificar que cubre FR-005 y FR-050
 - [ ] T151 [P] Generar los íconos definitivos de la PWA en `public/icons/` (192, 512 y maskable) y verificar la instalación en Android y iOS
 - [X] T152 Revisión de seguridad: confirmar RLS activado en todas las tablas (`select relname from pg_class where relrowsecurity = false` en el esquema `public` no devuelve tablas), que `SUPABASE_SERVICE_ROLE_KEY` solo se importa en `src/lib/supabase/admin.ts` y `tests/`, y que Sentry no envía datos personales
 - [X] T153 [P] Crear `supabase/scripts/seed-volume.sql` (uso manual en local) que genera ~1,000 clientas, ~3,000 pedidos con pagos, ~6,000 paquetes y ~200 bazares aprobados, y documentarlo en `README.md`
@@ -480,7 +480,7 @@ Task: "T090 src/features/packages/components/package-gallery.tsx"
 
 ## Estado de implementación (2026-10-04)
 
-Validación automática completa en local: 126 pruebas unitarias, 103 de integración y 44 E2E
+Validación automática completa en local: 126 pruebas unitarias, 104 de integración y 44 E2E
 (celular y escritorio) en verde; lint, typecheck, formato y tipos de base de datos al día.
 
 **T002** cerrada: el código está en <https://github.com/Flaky7/sistema-recolectora> (público, sin
@@ -488,16 +488,20 @@ licencia abierta), con *secret scanning* y *push protection* activos y `main` pr
 pull request, check `ci` obligatorio, sin excepción para administradores). Los commits usan el
 correo `noreply` de GitHub del desarrollador.
 
+**T150** cerrada con datos **ficticios** por decisión del desarrollador ("María Ejemplo
+Ficticia", `privacidad@ejemplo.com`): antes de producción hay que poner el nombre, domicilio y
+contacto reales en `CONTROLLER` de `src/app/(public)/aviso-de-privacidad/page.tsx`.
+
 Tareas abiertas que requieren acciones fuera del código:
 
-- **T150**: texto final del aviso de privacidad con los datos reales de la responsable (pendiente
-  de la clienta).
-- **T151**: íconos definitivos de la PWA (hoy son provisionales) y prueba de instalación en
-  Android e iOS reales.
+- **T151**: ícono por defecto listo (caja sobre fondo oscuro; fuente en `public/icons/icon.svg`,
+  se regenera con `pnpm icons`). Falta probar la instalación en Android (emulador Pixel 8 de
+  Android Studio) y, si hay un iPhone a la mano, en iOS.
 - **T154**: medido en local (consultas < 4 ms y páginas < 0.7 s con 4× CPU; ver
-  `docs/arquitectura.md`). Falta el cronómetro de registro de paquete en un celular real (SC-001)
-  y Lighthouse sobre la URL de Vercel.
-- **T155**: escenarios 1–6 de quickstart.md cubiertos por las pruebas E2E; faltan a mano la
-  expiración del enlace firmado a los 60 min (escenario 4) y la instalación de la PWA
-  (escenario 7).
+  `docs/arquitectura.md`). Falta el cronómetro de registro de paquete (SC-001; en el emulador) y
+  Lighthouse en modo móvil.
+- **T155**: escenarios 1–6 de quickstart.md cubiertos por las pruebas E2E; la expiración del
+  enlace firmado de la foto (escenario 4) ya es automática en `tests/integration/rls-packages.test.ts`
+  (el token dura 3600 s y Storage rechaza uno vencido). Falta a mano la instalación de la PWA
+  (escenario 7, junto con T151).
 - **T156**: traspaso de cuentas a la clienta al entregar.

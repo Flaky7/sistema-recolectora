@@ -58,9 +58,14 @@ Los correos de confirmación y recuperación se ven en Mailpit: <http://localhos
 | `pnpm test:integration`                        | Vitest contra Supabase local: RLS, Storage, triggers por rol      |
 | `pnpm test:e2e`                                | Playwright en celular (Pixel 7) y escritorio: los flujos críticos |
 | `pnpm db:types`                                | Regenera los tipos después de una migración                       |
+| `pnpm icons`                                   | Genera los íconos de la PWA desde `public/icons/icon.svg`         |
 
 Las pruebas de integración y E2E necesitan Supabase local corriendo; crean sus propios datos y
 pueden repetirse sin reiniciar la base. `pnpm test:e2e` hace el build y levanta el servidor.
+
+El ícono actual (una caja sobre fondo oscuro) es provisional. Para usar el logo de la clienta,
+reemplaza `public/icons/icon.svg` (512 × 512; deja el dibujo dentro del 60 % central para que
+Android no lo recorte) y ejecuta `pnpm icons`.
 
 ### Datos de volumen y archivos huérfanos (manuales)
 

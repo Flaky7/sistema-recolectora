@@ -96,6 +96,27 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
     expect(other.error).not.toBeNull();
   });
 
+  // Quickstart scenario 4 (SC-005): the app signs photos for 60 min; instead of waiting an hour,
+  // check that the token carries that lifetime and that Storage refuses an expired one.
+  it("a signed photo link carries its lifetime and stops working once expired", async () => {
+    const photo = await uploadPhoto(alice.customerId);
+    const bucket = collector.client.storage.from("package-photos");
+
+    const hour = must(await bucket.createSignedUrl(photo, 60 * 60));
+    const token = new URL(hour.signedUrl).searchParams.get("token") ?? "";
+    const payload = token.split(".")[1] ?? "";
+    const claims = JSON.parse(Buffer.from(payload, "base64url").toString()) as {
+      iat: number;
+      exp: number;
+    };
+    expect(claims.exp - claims.iat).toBe(60 * 60);
+
+    const short = must(await bucket.createSignedUrl(photo, 1));
+    expect((await fetch(short.signedUrl)).status).toBe(200);
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+    expect((await fetch(short.signedUrl)).ok).toBe(false);
+  });
+
   it("the first package moves a confirmed order to receiving and builds the message", async () => {
     const order = await createOrder(alice.customerId, "payment_confirmed", {
       expectedPackages: 3,
