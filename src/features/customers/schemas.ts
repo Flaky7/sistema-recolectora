@@ -20,6 +20,11 @@ const contactFields = {
   type: customerTypeSchema,
 };
 
+/** FR-005. A boolean (not a literal) so forms can start unchecked. */
+export const acceptPrivacySchema = z
+  .boolean({ error: "Debes aceptar el aviso de privacidad para registrarte." })
+  .refine((value) => value, "Debes aceptar el aviso de privacidad para registrarte.");
+
 const optionalCustomerCode = z
   .union([z.literal(""), customerCode])
   .optional()
@@ -30,9 +35,7 @@ export const signUpCustomerSchema = z.object({
   ...contactFields,
   email,
   password,
-  acceptPrivacy: z.literal(true, {
-    error: "Debes aceptar el aviso de privacidad para registrarte.",
-  }),
+  acceptPrivacy: acceptPrivacySchema,
   /** Only when the WhatsApp belongs to a customer registered by the collector (FR-044). */
   customerCode: optionalCustomerCode,
 });

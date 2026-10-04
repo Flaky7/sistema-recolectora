@@ -4,6 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import type {
   FieldValues,
   Path,
+  RegisterOptions,
   UseFormReturn,
 } from "react-hook-form";
 
@@ -21,6 +22,7 @@ type CommonProps<T extends FieldValues> = {
   name: Path<T>;
   label: ReactNode;
   description?: ReactNode;
+  registerOptions?: RegisterOptions<T, Path<T>>;
 };
 
 /** Label, input and error for a react-hook-form field (shadcn/ui Field). */
@@ -29,6 +31,7 @@ export function TextField<T extends FieldValues>({
   name,
   label,
   description,
+  registerOptions,
   ...inputProps
 }: CommonProps<T> & Omit<ComponentProps<typeof Input>, "name" | "form">) {
   const error = form.formState.errors[name];
@@ -40,7 +43,7 @@ export function TextField<T extends FieldValues>({
         id={id}
         aria-invalid={Boolean(error)}
         {...inputProps}
-        {...form.register(name)}
+        {...form.register(name, registerOptions)}
       />
       {description ? <FieldDescription>{description}</FieldDescription> : null}
       <FieldError errors={[error as { message?: string } | undefined]} />
@@ -53,6 +56,7 @@ export function TextAreaField<T extends FieldValues>({
   name,
   label,
   description,
+  registerOptions,
   ...inputProps
 }: CommonProps<T> & Omit<ComponentProps<typeof Textarea>, "name" | "form">) {
   const error = form.formState.errors[name];
@@ -64,7 +68,7 @@ export function TextAreaField<T extends FieldValues>({
         id={id}
         aria-invalid={Boolean(error)}
         {...inputProps}
-        {...form.register(name)}
+        {...form.register(name, registerOptions)}
       />
       {description ? <FieldDescription>{description}</FieldDescription> : null}
       <FieldError errors={[error as { message?: string } | undefined]} />
