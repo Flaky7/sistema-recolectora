@@ -7,7 +7,11 @@ import { useState } from "react";
 import { OpenWhatsApp } from "@/components/open-whatsapp";
 import { Button } from "@/components/ui/button";
 
-import { CustomerSearch, OrderChoice, type ReceptionTarget } from "./customer-search";
+import {
+  CustomerSearch,
+  OrderChoice,
+  type ReceptionTarget,
+} from "./customer-search";
 import { PackageForm, type SavedPackage } from "./package-form";
 
 /**
@@ -26,38 +30,61 @@ function ReceptionRound({ onNext }: { onNext: () => void }) {
 
   if (saved) {
     const exceeded =
-      saved.received !== null && saved.expected !== null && saved.received > saved.expected;
+      saved.received !== null &&
+      saved.expected !== null &&
+      saved.received > saved.expected;
     return (
       <div className="space-y-4">
-        <div role="status" className="flex items-start gap-3 rounded-xl bg-emerald-100 p-4 text-emerald-950 dark:bg-emerald-950 dark:text-emerald-50">
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl bg-emerald-100 p-4 text-emerald-950 dark:bg-emerald-950 dark:text-emerald-50"
+        >
           <CheckCircle2Icon className="mt-0.5 size-6 shrink-0" aria-hidden />
           <div>
             <p className="font-semibold">Paquete guardado</p>
             {saved.folio ? (
               <p>
-                Pedido #{saved.folio}: {saved.received} de {saved.expected} paquetes
+                Pedido #{saved.folio}: {saved.received} de {saved.expected}{" "}
+                paquetes
               </p>
             ) : (
-              <p>{target?.kind === "unidentified" ? "Sin identificar" : "Sin pedido"}</p>
+              <p>
+                {target?.kind === "unidentified"
+                  ? "Sin identificar"
+                  : "Sin pedido"}
+              </p>
             )}
           </div>
         </div>
         {exceeded ? (
-          <p role="alert" className="rounded-lg bg-amber-100 p-3 text-amber-950 dark:bg-amber-950 dark:text-amber-50">
-            Llegaron más paquetes de los esperados ({saved.received} de {saved.expected}). Revisa
-            el pedido.
+          <p
+            role="alert"
+            className="rounded-lg bg-amber-100 p-3 text-amber-950 dark:bg-amber-950 dark:text-amber-50"
+          >
+            Llegaron más paquetes de los esperados ({saved.received} de{" "}
+            {saved.expected}). Revisa el pedido.
           </p>
         ) : null}
         {saved.notification ? (
-          <OpenWhatsApp result={saved.notification} title="Avisa a la clienta por WhatsApp" />
+          <OpenWhatsApp
+            result={saved.notification}
+            title="Avisa a la clienta por WhatsApp"
+          />
         ) : null}
-        <Button type="button" size="touch" className="h-14 w-full text-lg" onClick={onNext}>
+        <Button
+          type="button"
+          size="touch"
+          className="h-14 w-full text-lg"
+          onClick={onNext}
+        >
           <PackagePlusIcon aria-hidden />
           Registrar otro paquete
         </Button>
         {saved.folio ? (
           <Button asChild variant="outline" size="touch" className="w-full">
-            <Link href={`/admin/pedidos/${saved.folio}`}>Ver pedido #{saved.folio}</Link>
+            <Link href={`/admin/pedidos/${saved.folio}`}>
+              Ver pedido #{saved.folio}
+            </Link>
           </Button>
         ) : null}
       </div>
@@ -93,14 +120,23 @@ function ReceptionRound({ onNext }: { onNext: () => void }) {
             <p className="font-semibold">Paquete sin identificar</p>
           )}
         </div>
-        <Button type="button" variant="ghost" size="lg" onClick={() => setTarget(null)}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={() => setTarget(null)}
+        >
           <ArrowLeftIcon aria-hidden />
           Cambiar
         </Button>
       </div>
 
       {target.kind === "customer" ? (
-        <OrderChoice customer={target.customer} value={orderId} onChange={setOrderId} />
+        <OrderChoice
+          customer={target.customer}
+          value={orderId}
+          onChange={setOrderId}
+        />
       ) : null}
 
       {selectedOrder ? (

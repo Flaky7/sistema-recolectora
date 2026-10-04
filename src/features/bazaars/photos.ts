@@ -35,11 +35,13 @@ export async function photoUrls(
   return paths.map((path) => ({
     path,
     url: publicPaths.has(path)
-      ? supabase.storage.from(BUCKETS.bazaarPhotos).getPublicUrl(path).data.publicUrl
+      ? supabase.storage.from(BUCKETS.bazaarPhotos).getPublicUrl(path).data
+          .publicUrl
       : (signedByPath.get(path) ?? ""),
   }));
 }
 
 export function publicPhotoUrl(supabase: ServerClient, path: string) {
-  return supabase.storage.from(BUCKETS.bazaarPhotos).getPublicUrl(path).data.publicUrl;
+  return supabase.storage.from(BUCKETS.bazaarPhotos).getPublicUrl(path).data
+    .publicUrl;
 }

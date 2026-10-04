@@ -1,7 +1,14 @@
 import { z } from "zod";
 
 import { acceptPrivacySchema } from "@/features/customers/schemas";
-import { email, httpsUrl, password, phone, text, uuid } from "@/lib/validation/messages";
+import {
+  email,
+  httpsUrl,
+  password,
+  phone,
+  text,
+  uuid,
+} from "@/lib/validation/messages";
 
 export const BAZAAR_DOCUMENT_TYPES = [
   "id_card",
@@ -43,15 +50,22 @@ export const bazaarProposalSchema = z.object({
 export type BazaarProposalInput = z.input<typeof bazaarProposalSchema>;
 
 /** Every photo must live in the bazaar's own folder ("{bazaar_id}/…", contracts/storage.md). */
-export function photosBelongTo(paths: readonly string[], bazaarId: string): boolean {
+export function photosBelongTo(
+  paths: readonly string[],
+  bazaarId: string,
+): boolean {
   return paths.every((path) =>
     new RegExp(`^${bazaarId}/[A-Za-z0-9_-]+\\.(jpg|png|webp)$`).test(path),
   );
 }
 
 export const bazaarDocumentSchema = z.object({
-  type: z.enum(BAZAAR_DOCUMENT_TYPES, { error: "Tipo de documento no válido." }),
-  documentPath: z.string({ error: "Sube el documento." }).min(1, "Sube el documento."),
+  type: z.enum(BAZAAR_DOCUMENT_TYPES, {
+    error: "Tipo de documento no válido.",
+  }),
+  documentPath: z
+    .string({ error: "Sube el documento." })
+    .min(1, "Sube el documento."),
 });
 export type BazaarDocumentInput = z.input<typeof bazaarDocumentSchema>;
 
@@ -82,8 +96,15 @@ export const reviewBazaarSchema = z
     reason: reviewDecisionReason,
   })
   .superRefine((value, ctx) => {
-    if ((value.decision === "reject" || value.decision === "suspend") && (value.reason?.length ?? 0) < 3) {
-      ctx.addIssue({ code: "custom", path: ["reason"], message: "Escribe el motivo." });
+    if (
+      (value.decision === "reject" || value.decision === "suspend") &&
+      (value.reason?.length ?? 0) < 3
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["reason"],
+        message: "Escribe el motivo.",
+      });
     }
   });
 export type ReviewBazaarInput = z.input<typeof reviewBazaarSchema>;
@@ -96,7 +117,11 @@ export const reviewItemSchema = z
   })
   .superRefine((value, ctx) => {
     if (value.decision === "reject" && (value.reason?.length ?? 0) < 3) {
-      ctx.addIssue({ code: "custom", path: ["reason"], message: "Escribe el motivo del rechazo." });
+      ctx.addIssue({
+        code: "custom",
+        path: ["reason"],
+        message: "Escribe el motivo del rechazo.",
+      });
     }
   });
 export type ReviewItemInput = z.input<typeof reviewItemSchema>;

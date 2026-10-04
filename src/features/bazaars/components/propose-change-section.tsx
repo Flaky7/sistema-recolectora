@@ -14,13 +14,24 @@ export function ProposeChangeSection({
   hasPendingChange,
 }: {
   bazaarId: string;
-  defaults: { name: string; brands: string[]; linkUrl: string; photos: ProposalPhoto[] };
+  defaults: {
+    name: string;
+    brands: string[];
+    linkUrl: string;
+    photos: ProposalPhoto[];
+  };
   hasPendingChange: boolean;
 }) {
   const [open, setOpen] = useState(false);
   if (!open) {
     return (
-      <Button type="button" variant="outline" size="touch" className="w-full" onClick={() => setOpen(true)}>
+      <Button
+        type="button"
+        variant="outline"
+        size="touch"
+        className="w-full"
+        onClick={() => setOpen(true)}
+      >
         <PencilIcon aria-hidden />
         {hasPendingChange ? "Cambiar mi propuesta" : "Proponer cambios"}
       </Button>
@@ -30,7 +41,12 @@ export function ProposeChangeSection({
     <div className="space-y-3 rounded-xl border p-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">Proponer cambios</h3>
-        <Button type="button" variant="ghost" size="lg" onClick={() => setOpen(false)}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={() => setOpen(false)}
+        >
           Cerrar
         </Button>
       </div>

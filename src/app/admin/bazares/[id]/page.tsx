@@ -20,7 +20,9 @@ import { uuid } from "@/lib/validation/messages";
 
 export const metadata: Metadata = { title: "Bazar" };
 
-export default async function AdminBazaarPage({ params }: PageProps<"/admin/bazares/[id]">) {
+export default async function AdminBazaarPage({
+  params,
+}: PageProps<"/admin/bazares/[id]">) {
   const { id } = await params;
   if (!uuid.safeParse(id).success) notFound();
   const data = await getBazaarForReview(id);
@@ -31,7 +33,10 @@ export default async function AdminBazaarPage({ params }: PageProps<"/admin/baza
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/admin/bazares" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
+      <Link
+        href="/admin/bazares"
+        className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm"
+      >
         <ArrowLeftIcon className="size-4" aria-hidden />
         Bazares
       </Link>
@@ -41,15 +46,21 @@ export default async function AdminBazaarPage({ params }: PageProps<"/admin/baza
           <h1 className="text-2xl font-semibold">
             {published?.name ?? data.proposal?.name ?? "Bazar sin nombre"}
           </h1>
-          <Badge variant="secondary">{BAZAAR_STATUS_LABELS[bazaar.status]}</Badge>
+          <Badge variant="secondary">
+            {BAZAAR_STATUS_LABELS[bazaar.status]}
+          </Badge>
         </div>
         {bazaar.profile?.email ? (
-          <p className="text-muted-foreground text-sm">Cuenta: {bazaar.profile.email}</p>
+          <p className="text-muted-foreground text-sm">
+            Cuenta: {bazaar.profile.email}
+          </p>
         ) : null}
         {bazaar.status_reason ? <p>Motivo: {bazaar.status_reason}</p> : null}
       </header>
 
-      {reviewing || bazaar.status === "draft" || bazaar.status === "rejected" ? (
+      {reviewing ||
+      bazaar.status === "draft" ||
+      bazaar.status === "rejected" ? (
         <BazaarReviewPanel data={data} />
       ) : null}
 
@@ -71,17 +82,29 @@ export default async function AdminBazaarPage({ params }: PageProps<"/admin/baza
           <DocumentComparison data={data} />
           <DocumentList bazaarId={bazaar.id} documents={data.documents} />
           <ReferenceList references={data.references} />
-          <SuspendButtons bazaarId={bazaar.id} status={bazaar.status as "approved" | "suspended"} />
+          <SuspendButtons
+            bazaarId={bazaar.id}
+            status={bazaar.status as "approved" | "suspended"}
+          />
         </>
       ) : null}
 
       {bazaar.status !== "deleted" ? (
         <section className="space-y-2 border-t pt-6">
           <DeleteAccountDialog
-            target={{ kind: "bazaar", bazaarId: bazaar.id, redirectTo: "/admin/bazares" }}
+            target={{
+              kind: "bazaar",
+              bazaarId: bazaar.id,
+              redirectTo: "/admin/bazares",
+            }}
             triggerLabel="Eliminar datos personales"
             title="¿Eliminar los datos de este bazar?"
-            deleted={<p>Cuenta de acceso, marcas, link, fotos, propuestas, documentos y referencias. Sale del directorio.</p>}
+            deleted={
+              <p>
+                Cuenta de acceso, marcas, link, fotos, propuestas, documentos y
+                referencias. Sale del directorio.
+              </p>
+            }
             kept={<p>El nombre del bazar en el historial de pedidos.</p>}
           />
         </section>

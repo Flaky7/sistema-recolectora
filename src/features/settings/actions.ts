@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 
-import { fromDatabaseError, fromZodError, ok, type ActionResult } from "@/lib/action-result";
+import {
+  fromDatabaseError,
+  fromZodError,
+  ok,
+  type ActionResult,
+} from "@/lib/action-result";
 import { authorize } from "@/lib/auth/session";
 
 import { updateSettingsSchema, type UpdateSettingsInput } from "./schemas";

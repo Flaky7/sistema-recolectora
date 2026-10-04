@@ -21,7 +21,10 @@ import { createOrder, createOrderForCustomer, updateOrder } from "../actions";
 import { createOrderSchema, type CreateOrderInput } from "../schemas";
 import { BazaarPicker, type PickedBazaar } from "./bazaar-picker";
 
-type PaymentInfo = { initial_deposit_cents: number; payment_instructions: string };
+type PaymentInfo = {
+  initial_deposit_cents: number;
+  payment_instructions: string;
+};
 
 type Props =
   | {
@@ -39,7 +42,11 @@ type Props =
   | {
       mode: "edit";
       folio: number;
-      defaults: { bazaars: PickedBazaar[]; description: string; expectedPackages: number };
+      defaults: {
+        bazaars: PickedBazaar[];
+        description: string;
+        expectedPackages: number;
+      };
       redirectTo: string;
     };
 
@@ -59,7 +66,12 @@ export function OrderForm(props: Props) {
     defaultValues:
       props.mode === "edit"
         ? props.defaults
-        : { bazaars: [], description: "", expectedPackages: 1, proofPath: undefined },
+        : {
+            bazaars: [],
+            description: "",
+            expectedPackages: 1,
+            proofPath: undefined,
+          },
   });
 
   async function onSubmit(values: CreateOrderInput) {
@@ -78,7 +90,9 @@ export function OrderForm(props: Props) {
       const result = await createOrder(values);
       if (!result.ok) return setError(applyActionErrors(result, form.setError));
       if (values.proofPath && !result.data.proofSaved) {
-        toast.warning("El pedido se guardó, pero el comprobante no. Súbelo de nuevo desde el pedido.");
+        toast.warning(
+          "El pedido se guardó, pero el comprobante no. Súbelo de nuevo desde el pedido.",
+        );
       } else {
         toast.success(`Pedido #${result.data.folio} registrado.`);
       }
@@ -106,9 +120,13 @@ export function OrderForm(props: Props) {
         proofPath: paymentProof ?? undefined,
       });
       if (!payment.ok) {
-        toast.warning(`Pedido #${result.data.folio} registrado, pero el pago no: ${payment.error}`);
+        toast.warning(
+          `Pedido #${result.data.folio} registrado, pero el pago no: ${payment.error}`,
+        );
       } else {
-        toast.success(`Pedido #${result.data.folio} registrado con el pago confirmado.`);
+        toast.success(
+          `Pedido #${result.data.folio} registrado con el pago confirmado.`,
+        );
       }
     } else {
       toast.success(`Pedido #${result.data.folio} registrado.`);
@@ -129,7 +147,9 @@ export function OrderForm(props: Props) {
             <BazaarPicker
               value={(field.value ?? []) as PickedBazaar[]}
               onChange={field.onChange}
-              error={fieldState.error?.message ?? fieldState.error?.root?.message}
+              error={
+                fieldState.error?.message ?? fieldState.error?.root?.message
+              }
             />
           )}
         />
@@ -156,8 +176,12 @@ export function OrderForm(props: Props) {
             <h2 className="font-semibold">Pago inicial</h2>
             {paymentInfo ? (
               <>
-                <p className="text-2xl font-semibold">{formatMoney(paymentInfo.initial_deposit_cents)}</p>
-                <p className="text-sm whitespace-pre-line">{paymentInfo.payment_instructions}</p>
+                <p className="text-2xl font-semibold">
+                  {formatMoney(paymentInfo.initial_deposit_cents)}
+                </p>
+                <p className="text-sm whitespace-pre-line">
+                  {paymentInfo.payment_instructions}
+                </p>
               </>
             ) : null}
             <Controller
@@ -175,8 +199,8 @@ export function OrderForm(props: Props) {
               )}
             />
             <p className="text-muted-foreground text-sm">
-              Puedes registrar el pedido sin comprobante y subirlo después; el pedido avanza cuando
-              la recolectora confirme tu pago.
+              Puedes registrar el pedido sin comprobante y subirlo después; el
+              pedido avanza cuando la recolectora confirme tu pago.
             </p>
           </section>
         ) : null}
@@ -187,14 +211,20 @@ export function OrderForm(props: Props) {
               <Checkbox
                 id="record-payment"
                 checked={recordPayment}
-                onCheckedChange={(checked) => setRecordPayment(checked === true)}
+                onCheckedChange={(checked) =>
+                  setRecordPayment(checked === true)
+                }
               />
-              <FieldLabel htmlFor="record-payment">Anotar pago inicial recibido</FieldLabel>
+              <FieldLabel htmlFor="record-payment">
+                Anotar pago inicial recibido
+              </FieldLabel>
             </Field>
             {recordPayment ? (
               <>
                 <Field>
-                  <FieldLabel htmlFor="payment-amount">Monto recibido (pesos)</FieldLabel>
+                  <FieldLabel htmlFor="payment-amount">
+                    Monto recibido (pesos)
+                  </FieldLabel>
                   <Input
                     id="payment-amount"
                     inputMode="decimal"
@@ -216,11 +246,19 @@ export function OrderForm(props: Props) {
         ) : null}
 
         {error ? (
-          <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-3 text-sm">
+          <p
+            role="alert"
+            className="bg-destructive/10 text-destructive rounded-lg p-3 text-sm"
+          >
             {error}
           </p>
         ) : null}
-        <Button type="submit" size="touch" className="w-full" disabled={form.formState.isSubmitting}>
+        <Button
+          type="submit"
+          size="touch"
+          className="w-full"
+          disabled={form.formState.isSubmitting}
+        >
           {form.formState.isSubmitting
             ? "Guardando…"
             : props.mode === "edit"

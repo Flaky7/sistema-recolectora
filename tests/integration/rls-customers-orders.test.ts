@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { createCustomer, createOrder, createPayment } from "../helpers/fixtures";
+import {
+  createCustomer,
+  createOrder,
+  createPayment,
+} from "../helpers/fixtures";
 import {
   adminClient,
   anonClient,
@@ -40,13 +44,21 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
     const orders = must(await alice.client.from("orders").select("id"));
     expect(orders.map((o) => o.id)).toEqual([aliceOrderId]);
 
-    const history = must(await alice.client.from("order_status_history").select("order_id"));
-    expect(new Set(history.map((h) => h.order_id))).toEqual(new Set([aliceOrderId]));
+    const history = must(
+      await alice.client.from("order_status_history").select("order_id"),
+    );
+    expect(new Set(history.map((h) => h.order_id))).toEqual(
+      new Set([aliceOrderId]),
+    );
 
-    const payments = must(await alice.client.from("payments").select("order_id"));
+    const payments = must(
+      await alice.client.from("payments").select("order_id"),
+    );
     expect(payments.map((p) => p.order_id)).toEqual([aliceOrderId]);
 
-    const foreign = must(await alice.client.from("orders").select("id").eq("id", bobOrderId));
+    const foreign = must(
+      await alice.client.from("orders").select("id").eq("id", bobOrderId),
+    );
     expect(foreign).toEqual([]);
   });
 
@@ -59,9 +71,17 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
 
   it("a customer cannot change her code, status or name", async () => {
     const before = must(
-      await adminClient().from("customers").select().eq("id", alice.customerId).single(),
+      await adminClient()
+        .from("customers")
+        .select()
+        .eq("id", alice.customerId)
+        .single(),
     );
-    const attempts = [{ code: "ZZZZZ" }, { status: "deleted" as const }, { full_name: "Otra" }];
+    const attempts = [
+      { code: "ZZZZZ" },
+      { status: "deleted" as const },
+      { full_name: "Otra" },
+    ];
     for (const change of attempts) {
       const { error } = await alice.client
         .from("customers")
@@ -70,7 +90,11 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
       expect(error).not.toBeNull();
     }
     const after = must(
-      await adminClient().from("customers").select().eq("id", alice.customerId).single(),
+      await adminClient()
+        .from("customers")
+        .select()
+        .eq("id", alice.customerId)
+        .single(),
     );
     expect(after.code).toBe(before.code);
     expect(after.status).toBe("active");
@@ -81,11 +105,18 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
     must(
       await alice.client
         .from("customers")
-        .update({ shipping_address: "Nueva dirección 456, Tijuana", type: "out_of_town" })
+        .update({
+          shipping_address: "Nueva dirección 456, Tijuana",
+          type: "out_of_town",
+        })
         .eq("id", alice.customerId),
     );
     const row = must(
-      await adminClient().from("customers").select().eq("id", alice.customerId).single(),
+      await adminClient()
+        .from("customers")
+        .select()
+        .eq("id", alice.customerId)
+        .single(),
     );
     expect(row.type).toBe("out_of_town");
   });
@@ -133,9 +164,13 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
         .upload(path, new Blob(["%PDF-1.4"], { type: "application/pdf" })),
     );
 
-    const own = await alice.client.storage.from("payment-proofs").createSignedUrl(path, 60);
+    const own = await alice.client.storage
+      .from("payment-proofs")
+      .createSignedUrl(path, 60);
     expect(own.error).not.toBeNull();
-    const other = await bob.client.storage.from("payment-proofs").createSignedUrl(path, 60);
+    const other = await bob.client.storage
+      .from("payment-proofs")
+      .createSignedUrl(path, 60);
     expect(other.error).not.toBeNull();
     const asCollector = await collector.client.storage
       .from("payment-proofs")
@@ -144,11 +179,12 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
   });
 
   it("a customer cannot upload into another customer's folder", async () => {
-    const { error } = await alice.client.storage
-      .from("payment-proofs")
-      .upload(`${bob.customerId}/${crypto.randomUUID()}.pdf`, new Blob(["x"], {
+    const { error } = await alice.client.storage.from("payment-proofs").upload(
+      `${bob.customerId}/${crypto.randomUUID()}.pdf`,
+      new Blob(["x"], {
         type: "application/pdf",
-      }));
+      }),
+    );
     expect(error).not.toBeNull();
   });
 
@@ -187,7 +223,10 @@ describe("customers and orders RLS (FR-004, US1 scenario 6)", () => {
     );
     expect(customers).toHaveLength(2);
     const orders = must(
-      await collector.client.from("orders").select("id").in("id", [aliceOrderId, bobOrderId]),
+      await collector.client
+        .from("orders")
+        .select("id")
+        .in("id", [aliceOrderId, bobOrderId]),
     );
     expect(orders).toHaveLength(2);
   });

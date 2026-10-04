@@ -9,9 +9,16 @@ import { ReasonDialog } from "@/components/reason-dialog";
 import { Button } from "@/components/ui/button";
 import type { ActionResult } from "@/lib/action-result";
 
-import { reviewBazaar, reviewBazaarDocument, reviewBazaarProposal } from "../actions";
+import {
+  reviewBazaar,
+  reviewBazaarDocument,
+  reviewBazaarProposal,
+} from "../actions";
 
-type Decide = (decision: "approve" | "reject", reason?: string) => Promise<ActionResult<unknown>>;
+type Decide = (
+  decision: "approve" | "reject",
+  reason?: string,
+) => Promise<ActionResult<unknown>>;
 
 /** Approve / reject-with-reason pair used for bazaars, proposals and documents. */
 function ApproveReject({
@@ -48,7 +55,12 @@ function ApproveReject({
     <div className="grid grid-cols-2 gap-2">
       <ReasonDialog
         trigger={
-          <Button type="button" variant="destructive" size="touch" disabled={busy}>
+          <Button
+            type="button"
+            variant="destructive"
+            size="touch"
+            disabled={busy}
+          >
             <XIcon aria-hidden />
             Rechazar
           </Button>
@@ -76,7 +88,9 @@ function ApproveReject({
 export function BazaarRegistrationButtons({ bazaarId }: { bazaarId: string }) {
   return (
     <ApproveReject
-      decide={(decision, reason) => reviewBazaar({ bazaarId, decision, reason })}
+      decide={(decision, reason) =>
+        reviewBazaar({ bazaarId, decision, reason })
+      }
       approveLabel="Aprobar"
       rejectTitle="Rechazar registro"
       rejectDescription="El bazar verá el motivo y podrá corregir y reenviar su registro."
@@ -89,7 +103,9 @@ export function BazaarRegistrationButtons({ bazaarId }: { bazaarId: string }) {
 export function ProposalButtons({ proposalId }: { proposalId: string }) {
   return (
     <ApproveReject
-      decide={(decision, reason) => reviewBazaarProposal({ id: proposalId, decision, reason })}
+      decide={(decision, reason) =>
+        reviewBazaarProposal({ id: proposalId, decision, reason })
+      }
       approveLabel="Autorizar"
       rejectTitle="Rechazar cambio"
       rejectDescription="El directorio no cambia y el bazar verá el motivo."
@@ -102,7 +118,9 @@ export function ProposalButtons({ proposalId }: { proposalId: string }) {
 export function DocumentButtons({ documentId }: { documentId: string }) {
   return (
     <ApproveReject
-      decide={(decision, reason) => reviewBazaarDocument({ id: documentId, decision, reason })}
+      decide={(decision, reason) =>
+        reviewBazaarDocument({ id: documentId, decision, reason })
+      }
       approveLabel="Autorizar"
       rejectTitle="Rechazar documento"
       rejectDescription="El documento vigente se conserva; el nuevo se borra y el bazar verá el motivo."
@@ -132,7 +150,10 @@ export function SuspendButtons({
         disabled={busy}
         onClick={async () => {
           setBusy(true);
-          const result = await reviewBazaar({ bazaarId, decision: "reactivate" });
+          const result = await reviewBazaar({
+            bazaarId,
+            decision: "reactivate",
+          });
           setBusy(false);
           if (!result.ok) return void toast.error(result.error);
           toast.success("Bazar reactivado.");
@@ -146,7 +167,12 @@ export function SuspendButtons({
   return (
     <ReasonDialog
       trigger={
-        <Button type="button" variant="destructive" size="touch" className="w-full">
+        <Button
+          type="button"
+          variant="destructive"
+          size="touch"
+          className="w-full"
+        >
           Suspender
         </Button>
       }
@@ -155,7 +181,11 @@ export function SuspendButtons({
       reasonLabel="Motivo de la suspensión"
       confirmLabel="Suspender"
       onConfirm={async (reason) => {
-        const result = await reviewBazaar({ bazaarId, decision: "suspend", reason });
+        const result = await reviewBazaar({
+          bazaarId,
+          decision: "suspend",
+          reason,
+        });
         if (!result.ok) return result.error;
         toast.success("Bazar suspendido.");
         router.refresh();

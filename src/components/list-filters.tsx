@@ -35,13 +35,20 @@ export function ListFilters({
 }) {
   const active = [...texts, ...selects].some((f) => f.value);
   return (
-    <form action={action} className="grid gap-2 sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]" role="search">
+    <form
+      action={action}
+      className="grid gap-2 sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]"
+      role="search"
+    >
       {texts.map((filter) => (
         <div key={filter.name} className="relative">
           <label htmlFor={`filter-${filter.name}`} className="sr-only">
             {filter.label}
           </label>
-          <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
+          <SearchIcon
+            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+            aria-hidden
+          />
           <input
             id={`filter-${filter.name}`}
             name={filter.name}

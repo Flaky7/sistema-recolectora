@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { TEMPLATE_VARIABLES, validateTemplate } from "@/lib/notifications/messages";
+import {
+  TEMPLATE_VARIABLES,
+  validateTemplate,
+} from "@/lib/notifications/messages";
 import type { NotificationKind } from "@/lib/notifications/types";
 import { text } from "@/lib/validation/messages";
 
@@ -37,11 +40,31 @@ export const updateSettingsSchema = z.object({
 export type UpdateSettingsInput = z.input<typeof updateSettingsSchema>;
 
 export const TEMPLATE_FIELDS = [
-  { name: "templatePackageReceived", kind: "package_received", label: "Paquete recibido" },
-  { name: "templatePackageUnassigned", kind: "package_unassigned", label: "Paquete sin pedido" },
-  { name: "templatePaymentConfirmed", kind: "payment_confirmed", label: "Pago confirmado" },
-  { name: "templatePaymentRejected", kind: "payment_rejected", label: "Pago rechazado" },
-  { name: "templateOrderShipped", kind: "order_shipped", label: "Pedido enviado" },
+  {
+    name: "templatePackageReceived",
+    kind: "package_received",
+    label: "Paquete recibido",
+  },
+  {
+    name: "templatePackageUnassigned",
+    kind: "package_unassigned",
+    label: "Paquete sin pedido",
+  },
+  {
+    name: "templatePaymentConfirmed",
+    kind: "payment_confirmed",
+    label: "Pago confirmado",
+  },
+  {
+    name: "templatePaymentRejected",
+    kind: "payment_rejected",
+    label: "Pago rechazado",
+  },
+  {
+    name: "templateOrderShipped",
+    kind: "order_shipped",
+    label: "Pedido enviado",
+  },
 ] as const satisfies readonly {
   name: keyof UpdateSettingsInput;
   kind: NotificationKind;

@@ -45,7 +45,12 @@ export function CustomerStatusActions({
       {status === "active" ? (
         <ReasonDialog
           trigger={
-            <Button type="button" variant="outline" size="touch" className="w-full">
+            <Button
+              type="button"
+              variant="outline"
+              size="touch"
+              className="w-full"
+            >
               Dar de baja temporal
             </Button>
           }
@@ -56,7 +61,10 @@ export function CustomerStatusActions({
           destructive={false}
           confirmLabel="Dar de baja"
           onConfirm={async () => {
-            const result = await setCustomerActive({ customerId, active: false });
+            const result = await setCustomerActive({
+              customerId,
+              active: false,
+            });
             if (!result.ok) return result.error;
             toast.success("Clienta dada de baja temporal.");
             router.refresh();
@@ -64,12 +72,25 @@ export function CustomerStatusActions({
           }}
         />
       ) : (
-        <Button type="button" size="touch" className="w-full" onClick={reactivate} disabled={busy}>
+        <Button
+          type="button"
+          size="touch"
+          className="w-full"
+          onClick={reactivate}
+          disabled={busy}
+        >
           Reactivar
         </Button>
       )}
       {claimLocked ? (
-        <Button type="button" variant="outline" size="touch" className="w-full" onClick={unlock} disabled={busy}>
+        <Button
+          type="button"
+          variant="outline"
+          size="touch"
+          className="w-full"
+          onClick={unlock}
+          disabled={busy}
+        >
           Desbloquear registro con su código
         </Button>
       ) : null}

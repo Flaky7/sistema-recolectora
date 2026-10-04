@@ -31,13 +31,26 @@ export function SubmitForReviewButton({ resubmit }: { resubmit: boolean }) {
   return (
     <div className="space-y-2">
       {error ? (
-        <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-3">
+        <p
+          role="alert"
+          className="bg-destructive/10 text-destructive rounded-lg p-3"
+        >
           No se pudo enviar. {error}
         </p>
       ) : null}
-      <Button type="button" size="touch" className="h-14 w-full text-lg" onClick={submit} disabled={sending}>
+      <Button
+        type="button"
+        size="touch"
+        className="h-14 w-full text-lg"
+        onClick={submit}
+        disabled={sending}
+      >
         <SendIcon aria-hidden />
-        {sending ? "Enviando…" : resubmit ? "Reenviar a revisión" : "Enviar a revisión"}
+        {sending
+          ? "Enviando…"
+          : resubmit
+            ? "Reenviar a revisión"
+            : "Enviar a revisión"}
       </Button>
     </div>
   );

@@ -38,9 +38,15 @@ export function BazaarPicker({
     if (term.length < 2) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
-      const { data } = await createClient().rpc("search_directory", { q: term });
+      const { data } = await createClient().rpc("search_directory", {
+        q: term,
+      });
       if (!cancelled) {
-        setSuggestions((data ?? []).slice(0, 6).map((b) => ({ id: b.id, name: b.name, brands: b.brands })));
+        setSuggestions(
+          (data ?? [])
+            .slice(0, 6)
+            .map((b) => ({ id: b.id, name: b.name, brands: b.brands })),
+        );
       }
     }, 250);
     return () => {
@@ -56,7 +62,8 @@ export function BazaarPicker({
     const exists = value.some((b) =>
       bazaar.bazaarId
         ? b.bazaarId === bazaar.bazaarId
-        : !b.bazaarId && b.bazaarName.toLowerCase() === bazaar.bazaarName.toLowerCase(),
+        : !b.bazaarId &&
+          b.bazaarName.toLowerCase() === bazaar.bazaarName.toLowerCase(),
     );
     if (!exists) onChange(multiple ? [...value, bazaar] : [bazaar]);
     setQuery("");
@@ -85,7 +92,9 @@ export function BazaarPicker({
               <Badge variant="secondary" className="h-11 gap-1 pr-0 text-sm">
                 <StoreIcon aria-hidden />
                 {bazaar.bazaarName}
-                {!bazaar.bazaarId ? <span className="text-muted-foreground">(no registrado)</span> : null}
+                {!bazaar.bazaarId ? (
+                  <span className="text-muted-foreground">(no registrado)</span>
+                ) : null}
                 <Button
                   type="button"
                   variant="ghost"
@@ -128,7 +137,9 @@ export function BazaarPicker({
                     onClick={() => add({ bazaarId: s.id, bazaarName: s.name })}
                   >
                     <span className="font-medium">{s.name}</span>
-                    <span className="text-muted-foreground text-xs">{s.brands.join(", ")}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {s.brands.join(", ")}
+                    </span>
                   </button>
                 </li>
               ))}

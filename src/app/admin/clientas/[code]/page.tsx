@@ -22,7 +22,9 @@ export async function generateMetadata({
   return { title: `Clienta ${code}` };
 }
 
-export default async function CustomerDetailPage({ params }: PageProps<"/admin/clientas/[code]">) {
+export default async function CustomerDetailPage({
+  params,
+}: PageProps<"/admin/clientas/[code]">) {
   const { code } = await params;
   const customer = await getCustomerByCode(code);
   if (!customer) notFound();
@@ -35,7 +37,10 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/admin/clientas" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
+      <Link
+        href="/admin/clientas"
+        className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm"
+      >
         <ArrowLeftIcon className="size-4" aria-hidden />
         Clientas
       </Link>
@@ -45,18 +50,23 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
           <h1 className="text-2xl font-semibold">{customer.full_name}</h1>
           <span className="font-mono text-xl">{customer.code}</span>
           {customer.status !== "active" ? (
-            <Badge variant="secondary">{CUSTOMER_STATUS_LABELS[customer.status]}</Badge>
+            <Badge variant="secondary">
+              {CUSTOMER_STATUS_LABELS[customer.status]}
+            </Badge>
           ) : null}
         </div>
         <p className="text-muted-foreground text-sm">
-          {customer.profile_id ? "Con cuenta" : "Sin cuenta"} · Alta {formatDate(customer.created_at)}
+          {customer.profile_id ? "Con cuenta" : "Sin cuenta"} · Alta{" "}
+          {formatDate(customer.created_at)}
         </p>
       </header>
 
       {!deleted ? (
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">Datos</h2>
-          <p className="text-muted-foreground text-sm">El código no se puede cambiar.</p>
+          <p className="text-muted-foreground text-sm">
+            El código no se puede cambiar.
+          </p>
           <CustomerForm
             customerId={customer.id}
             defaults={{
@@ -87,11 +97,17 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
           <ul className="divide-y rounded-xl border">
             {orders.map((order) => (
               <li key={order.id}>
-                <Link href={`/admin/pedidos/${order.folio}`} className="hover:bg-muted/50 flex items-center justify-between gap-2 p-3">
+                <Link
+                  href={`/admin/pedidos/${order.folio}`}
+                  className="hover:bg-muted/50 flex items-center justify-between gap-2 p-3"
+                >
                   <span>
-                    <span className="block font-medium">Pedido #{order.folio}</span>
+                    <span className="block font-medium">
+                      Pedido #{order.folio}
+                    </span>
                     <span className="text-muted-foreground text-sm">
-                      {order.received_packages} de {order.expected_packages} paquetes · {formatDate(order.created_at!)}
+                      {order.received_packages} de {order.expected_packages}{" "}
+                      paquetes · {formatDate(order.created_at!)}
                     </span>
                   </span>
                   <OrderStatusBadge status={order.status!} />
@@ -103,18 +119,29 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Paquetes ({ownPackages.length})</h2>
+        <h2 className="text-lg font-semibold">
+          Paquetes ({ownPackages.length})
+        </h2>
         {ownPackages.length === 0 ? (
           <p className="text-muted-foreground">Sin paquetes.</p>
         ) : (
           <ul className="divide-y rounded-xl border">
             {ownPackages.map((pkg) => (
-              <li key={pkg.id} className="flex items-center justify-between gap-2 p-3">
+              <li
+                key={pkg.id}
+                className="flex items-center justify-between gap-2 p-3"
+              >
                 <span>
-                  <span className="block">{pkg.bazaar_name ?? "Bazar desconocido"}</span>
-                  <span className="text-muted-foreground text-sm">{formatDateTime(pkg.received_at)}</span>
+                  <span className="block">
+                    {pkg.bazaar_name ?? "Bazar desconocido"}
+                  </span>
+                  <span className="text-muted-foreground text-sm">
+                    {formatDateTime(pkg.received_at)}
+                  </span>
                 </span>
-                <span className="text-sm">{pkg.order ? `Pedido #${pkg.order.folio}` : "Sin pedido"}</span>
+                <span className="text-sm">
+                  {pkg.order ? `Pedido #${pkg.order.folio}` : "Sin pedido"}
+                </span>
               </li>
             ))}
           </ul>
@@ -127,14 +154,31 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
           <CustomerStatusActions
             customerId={customer.id}
             status={customer.status as "active" | "deactivated"}
-            claimLocked={!customer.profile_id && customer.claim_failed_attempts >= 10}
+            claimLocked={
+              !customer.profile_id && customer.claim_failed_attempts >= 10
+            }
           />
           <DeleteAccountDialog
-            target={{ kind: "customer", customerId: customer.id, redirectTo: "/admin/clientas" }}
+            target={{
+              kind: "customer",
+              customerId: customer.id,
+              redirectTo: "/admin/clientas",
+            }}
             triggerLabel="Eliminar datos personales"
             title={`¿Eliminar los datos de ${customer.full_name}?`}
-            deleted={<p>Nombre, WhatsApp, dirección, cuenta de acceso, comprobantes y fotos de paquetes. Sus pedidos en curso se cancelan con el motivo “Datos eliminados”.</p>}
-            kept={<p>Pedidos, pagos, paquetes y envíos, como “Clienta eliminada”, y su código (no se reutiliza).</p>}
+            deleted={
+              <p>
+                Nombre, WhatsApp, dirección, cuenta de acceso, comprobantes y
+                fotos de paquetes. Sus pedidos en curso se cancelan con el
+                motivo “Datos eliminados”.
+              </p>
+            }
+            kept={
+              <p>
+                Pedidos, pagos, paquetes y envíos, como “Clienta eliminada”, y
+                su código (no se reutiliza).
+              </p>
+            }
           />
         </section>
       ) : null}

@@ -9,7 +9,10 @@ import { getPaymentInfo } from "@/features/payments/queries";
 export const metadata: Metadata = { title: "Nuevo pedido" };
 
 export default async function NewOrderPage() {
-  const [customer, paymentInfo] = await Promise.all([getMyCustomer(), getPaymentInfo()]);
+  const [customer, paymentInfo] = await Promise.all([
+    getMyCustomer(),
+    getPaymentInfo(),
+  ]);
   if (!customer) notFound();
 
   if (customer.status !== "active") {
@@ -17,8 +20,8 @@ export default async function NewOrderPage() {
       <div className="space-y-4">
         <h1 className="text-2xl font-semibold">Nuevo pedido</h1>
         <p className="bg-destructive/10 text-destructive rounded-lg p-4">
-          Tu cuenta está dada de baja temporalmente; no puedes registrar pedidos. Contacta a la
-          recolectora.
+          Tu cuenta está dada de baja temporalmente; no puedes registrar
+          pedidos. Contacta a la recolectora.
         </p>
         <Link href="/mi-cuenta" className="text-primary underline">
           Volver a mi cuenta
@@ -35,7 +38,11 @@ export default async function NewOrderPage() {
           Registra lo que compraste para que podamos recibir tus paquetes.
         </p>
       </div>
-      <OrderForm mode="create" customerId={customer.id} paymentInfo={paymentInfo} />
+      <OrderForm
+        mode="create"
+        customerId={customer.id}
+        paymentInfo={paymentInfo}
+      />
     </div>
   );
 }

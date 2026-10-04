@@ -2,13 +2,20 @@
 
 import { useState } from "react";
 
-import { PaymentReviewCard, type PaymentReviewItem } from "./payment-review-card";
+import {
+  PaymentReviewCard,
+  type PaymentReviewItem,
+} from "./payment-review-card";
 
 /**
  * Keeps the list as it was when the page opened, so a payment just reviewed stays on screen
  * with its WhatsApp button after the server data refreshes.
  */
-export function PaymentReviewList({ payments }: { payments: PaymentReviewItem[] }) {
+export function PaymentReviewList({
+  payments,
+}: {
+  payments: PaymentReviewItem[];
+}) {
   const [items] = useState(payments);
   if (items.length === 0) {
     return (

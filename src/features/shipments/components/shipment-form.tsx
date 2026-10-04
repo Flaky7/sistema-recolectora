@@ -10,7 +10,11 @@ import type { DeliveryResult } from "@/lib/notifications/types";
 import { cn } from "@/lib/utils";
 
 import { registerShipment } from "../actions";
-import { SHIPMENT_TYPE_LABELS, shipmentTypesFor, type ShipmentType } from "../labels";
+import {
+  SHIPMENT_TYPE_LABELS,
+  shipmentTypesFor,
+  type ShipmentType,
+} from "../labels";
 
 /**
  * FR-021: out-of-town customers only get "Paquetería"; local ones also get delivery or pickup
@@ -39,7 +43,9 @@ export function ShipmentForm({
     setErrors({});
     const costCents = toCents(cost);
     if (costCents === null) {
-      setErrors({ costCents: ["Escribe el costo en pesos, por ejemplo 150 o 150.50."] });
+      setErrors({
+        costCents: ["Escribe el costo en pesos, por ejemplo 150 o 150.50."],
+      });
       return;
     }
     setSaving(true);
@@ -126,7 +132,13 @@ export function ShipmentForm({
           {error}
         </p>
       ) : null}
-      <Button type="button" size="touch" className="w-full" onClick={save} disabled={saving}>
+      <Button
+        type="button"
+        size="touch"
+        className="w-full"
+        onClick={save}
+        disabled={saving}
+      >
         {saving ? "Guardando…" : "Registrar envío"}
       </Button>
     </div>

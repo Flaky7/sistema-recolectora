@@ -22,7 +22,9 @@ export function BazaarReferencesForm({
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const filled = [0, 1, 2].map((i) => defaults[i] ?? { fullName: "", phone: "" });
+  const filled = [0, 1, 2].map(
+    (i) => defaults[i] ?? { fullName: "", phone: "" },
+  );
   const form = useForm<BazaarReferencesInput>({
     resolver: zodResolver(bazaarReferencesSchema),
     defaultValues: { references: filled },

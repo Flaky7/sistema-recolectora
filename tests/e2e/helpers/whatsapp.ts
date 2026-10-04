@@ -10,10 +10,15 @@ export async function captureWhatsApp(
   action: () => Promise<void>,
 ): Promise<{ url: string; phone: string; text: string }> {
   await page.route("https://wa.me/**", (route) =>
-    route.fulfill({ contentType: "text/html", body: "<html><body>WhatsApp</body></html>" }),
+    route.fulfill({
+      contentType: "text/html",
+      body: "<html><body>WhatsApp</body></html>",
+    }),
   );
   const navigated = page
-    .waitForRequest((request) => request.url().startsWith("https://wa.me/"), { timeout: 20_000 })
+    .waitForRequest((request) => request.url().startsWith("https://wa.me/"), {
+      timeout: 20_000,
+    })
     .then((request) => request.url());
   const linked = page
     .getByRole("link", { name: "Abrir WhatsApp" })
@@ -27,7 +32,9 @@ export async function captureWhatsApp(
   navigated.catch(() => undefined);
   linked.catch(() => undefined);
 
-  const touch = await page.evaluate(() => window.matchMedia("(pointer: coarse)").matches);
+  const touch = await page.evaluate(
+    () => window.matchMedia("(pointer: coarse)").matches,
+  );
   await action();
   // Phones open WhatsApp by themselves: wait for that navigation so it cannot interrupt the
   // next step. Desktop only shows the link.

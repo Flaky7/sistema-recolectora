@@ -14,10 +14,16 @@ export const metadata: Metadata = { title: "Paquetes" };
 const TABS: { value: string; filter: PackageFilter; label: string }[] = [
   { value: "todos", filter: "all", label: "Todos" },
   { value: "sin-pedido", filter: "no_order", label: "Sin pedido" },
-  { value: "sin-identificar", filter: "unidentified", label: "Sin identificar" },
+  {
+    value: "sin-identificar",
+    filter: "unidentified",
+    label: "Sin identificar",
+  },
 ];
 
-export default async function PackagesPage({ searchParams }: PageProps<"/admin/paquetes">) {
+export default async function PackagesPage({
+  searchParams,
+}: PageProps<"/admin/paquetes">) {
   const params = await searchParams;
   const tab = TABS.find((t) => t.value === params.filtro) ?? TABS[0]!;
   const q = typeof params.q === "string" ? params.q : "";
@@ -36,11 +42,18 @@ export default async function PackagesPage({ searchParams }: PageProps<"/admin/p
         </Button>
       </div>
 
-      <nav aria-label="Filtros" className="bg-muted grid grid-cols-3 gap-1 rounded-lg p-1">
+      <nav
+        aria-label="Filtros"
+        className="bg-muted grid grid-cols-3 gap-1 rounded-lg p-1"
+      >
         {TABS.map((t) => (
           <Link
             key={t.value}
-            href={t.value === "todos" ? "/admin/paquetes" : `/admin/paquetes?filtro=${t.value}`}
+            href={
+              t.value === "todos"
+                ? "/admin/paquetes"
+                : `/admin/paquetes?filtro=${t.value}`
+            }
             aria-current={t === tab ? "page" : undefined}
             className={cn(
               "flex min-h-11 items-center justify-center rounded-md text-center text-sm",
@@ -53,7 +66,9 @@ export default async function PackagesPage({ searchParams }: PageProps<"/admin/p
       </nav>
 
       <form action="/admin/paquetes" className="flex gap-2">
-        {tab.value !== "todos" ? <input type="hidden" name="filtro" value={tab.value} /> : null}
+        {tab.value !== "todos" ? (
+          <input type="hidden" name="filtro" value={tab.value} />
+        ) : null}
         <label htmlFor="packages-q" className="sr-only">
           Buscar
         </label>
@@ -78,22 +93,35 @@ export default async function PackagesPage({ searchParams }: PageProps<"/admin/p
       ) : (
         <ul className="divide-y rounded-xl border">
           {packages.map((pkg) => (
-            <li key={pkg.id} className="flex flex-wrap items-center justify-between gap-2 p-3">
+            <li
+              key={pkg.id}
+              className="flex flex-wrap items-center justify-between gap-2 p-3"
+            >
               <div>
                 <p className="font-medium">
-                  {pkg.customer ? `${pkg.customer.full_name} · ${pkg.customer.code}` : "Sin identificar"}
+                  {pkg.customer
+                    ? `${pkg.customer.full_name} · ${pkg.customer.code}`
+                    : "Sin identificar"}
                 </p>
                 <p className="text-muted-foreground text-sm">
-                  {pkg.bazaar_name ?? "Bazar desconocido"} · {formatDateTime(pkg.received_at)}
+                  {pkg.bazaar_name ?? "Bazar desconocido"} ·{" "}
+                  {formatDateTime(pkg.received_at)}
                 </p>
               </div>
               {pkg.order ? (
-                <Link href={`/admin/pedidos/${pkg.order.folio}`} className="flex min-h-11 items-center gap-2">
-                  <span className="underline-offset-4 hover:underline">Pedido #{pkg.order.folio}</span>
+                <Link
+                  href={`/admin/pedidos/${pkg.order.folio}`}
+                  className="flex min-h-11 items-center gap-2"
+                >
+                  <span className="underline-offset-4 hover:underline">
+                    Pedido #{pkg.order.folio}
+                  </span>
                   <OrderStatusBadge status={pkg.order.status} />
                 </Link>
               ) : (
-                <span className="text-sm">{pkg.customer ? "Sin pedido" : "Sin identificar"}</span>
+                <span className="text-sm">
+                  {pkg.customer ? "Sin pedido" : "Sin identificar"}
+                </span>
               )}
             </li>
           ))}

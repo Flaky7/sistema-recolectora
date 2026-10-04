@@ -16,7 +16,11 @@ import {
 } from "@/components/ui/dialog";
 import type { DeliveryResult } from "@/lib/notifications/types";
 
-import { assignPackage, findCustomerForPackage, type FoundCustomer } from "../actions";
+import {
+  assignPackage,
+  findCustomerForPackage,
+  type FoundCustomer,
+} from "../actions";
 import { CustomerSearch, OrderChoice } from "./customer-search";
 
 /**
@@ -41,7 +45,9 @@ export function AssignPackage({
   useEffect(() => {
     if (!open || !customerCode) return;
     findCustomerForPackage(customerCode).then((result) => {
-      const found = result.ok ? result.data.find((c) => c.code === customerCode) : undefined;
+      const found = result.ok
+        ? result.data.find((c) => c.code === customerCode)
+        : undefined;
       if (found) setCustomer(found);
     });
   }, [open, customerCode]);
@@ -59,7 +65,11 @@ export function AssignPackage({
       toast.error(result.error);
       return;
     }
-    toast.success(result.data.folio ? `Asignado al pedido #${result.data.folio}.` : "Paquete asignado.");
+    toast.success(
+      result.data.folio
+        ? `Asignado al pedido #${result.data.folio}.`
+        : "Paquete asignado.",
+    );
     if (result.data.notification) setNotification(result.data.notification);
     else setOpen(false);
     router.refresh();
@@ -76,7 +86,9 @@ export function AssignPackage({
         <DialogHeader>
           <DialogTitle>Asignar paquete</DialogTitle>
           <DialogDescription>
-            {customerCode ? "Elige el pedido de la clienta." : "Busca a la clienta y su pedido."}
+            {customerCode
+              ? "Elige el pedido de la clienta."
+              : "Busca a la clienta y su pedido."}
           </DialogDescription>
         </DialogHeader>
 
@@ -100,13 +112,21 @@ export function AssignPackage({
               <span className="font-semibold">{customer.fullName}</span> ·{" "}
               <span className="font-mono">{customer.code}</span>
             </p>
-            <OrderChoice customer={customer} value={orderId} onChange={setOrderId} />
+            <OrderChoice
+              customer={customer}
+              value={orderId}
+              onChange={setOrderId}
+            />
             <Button
               type="button"
               size="touch"
               className="w-full"
               onClick={save}
-              disabled={saving || orderId === undefined || (Boolean(customerCode) && orderId === null)}
+              disabled={
+                saving ||
+                orderId === undefined ||
+                (Boolean(customerCode) && orderId === null)
+              }
             >
               {saving ? "Guardando…" : "Guardar"}
             </Button>

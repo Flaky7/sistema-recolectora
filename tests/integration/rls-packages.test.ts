@@ -1,6 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { assignPackageWith, registerPackageWith } from "@/features/packages/service";
+import {
+  assignPackageWith,
+  registerPackageWith,
+} from "@/features/packages/service";
 
 import {
   createCustomer,
@@ -39,13 +42,21 @@ async function uploadPhoto(folder: string) {
   must(
     await collector.client.storage
       .from("package-photos")
-      .upload(path, new Blob([new Uint8Array([0xff, 0xd8, 0xff])], { type: "image/jpeg" })),
+      .upload(
+        path,
+        new Blob([new Uint8Array([0xff, 0xd8, 0xff])], { type: "image/jpeg" }),
+      ),
   );
   return path;
 }
 
 async function notificationsFor(packageId: string) {
-  return must(await adminClient().from("notifications").select().eq("package_id", packageId));
+  return must(
+    await adminClient()
+      .from("notifications")
+      .select()
+      .eq("package_id", packageId),
+  );
 }
 
 describe("packages RLS and status sync (FR-016 to FR-019)", () => {
@@ -69,13 +80,19 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
     });
     expect(result.ok).toBe(true);
 
-    const mine = must(await alice.client.from("packages").select("id, photo_path"));
+    const mine = must(
+      await alice.client.from("packages").select("id, photo_path"),
+    );
     expect(mine.map((p) => p.photo_path)).toContain(photo);
     expect(must(await bob.client.from("packages").select("id"))).toEqual([]);
 
-    const own = await alice.client.storage.from("package-photos").createSignedUrl(photo, 60);
+    const own = await alice.client.storage
+      .from("package-photos")
+      .createSignedUrl(photo, 60);
     expect(own.error).toBeNull();
-    const other = await bob.client.storage.from("package-photos").createSignedUrl(photo, 60);
+    const other = await bob.client.storage
+      .from("package-photos")
+      .createSignedUrl(photo, 60);
     expect(other.error).not.toBeNull();
   });
 
@@ -96,7 +113,9 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
 
     const delivery = result.data.notification;
     expect(delivery?.kind).toBe("open_url");
-    const text = new URL((delivery as { url: string }).url).searchParams.get("text")!;
+    const text = new URL((delivery as { url: string }).url).searchParams.get(
+      "text",
+    )!;
     expect(text).toContain("Bazar de Ana");
     expect(text).toContain("1 de 3");
     expect(text).toContain(`/mi-cuenta/pedidos/${order.folio}`);
@@ -134,7 +153,12 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
     expect(into.error).not.toBeNull();
 
     const shippedPackage = must(
-      await adminClient().from("packages").select("id").eq("order_id", shipped.id).limit(1).single(),
+      await adminClient()
+        .from("packages")
+        .select("id")
+        .eq("order_id", shipped.id)
+        .limit(1)
+        .single(),
     );
     const outOf = await collector.client
       .from("packages")
@@ -150,14 +174,14 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
       photoPath: await uploadPhoto(alice.customerId),
     });
     if (!result.ok) throw new Error(result.error);
-    const text = new URL((result.data.notification as { url: string }).url).searchParams.get(
-      "text",
-    )!;
+    const text = new URL(
+      (result.data.notification as { url: string }).url,
+    ).searchParams.get("text")!;
     expect(text).toContain("Bazar Sorpresa");
     expect(text).toMatch(/\/mi-cuenta$/m);
-    expect((await notificationsFor(result.data.package.id)).map((n) => n.kind)).toEqual([
-      "package_unassigned",
-    ]);
+    expect(
+      (await notificationsFor(result.data.package.id)).map((n) => n.kind),
+    ).toEqual(["package_unassigned"]);
 
     // Assigning it to an order afterwards generates the normal message (FR-018).
     const order = await createOrder(alice.customerId, "payment_confirmed");
@@ -168,10 +192,11 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
     });
     if (!assigned.ok) throw new Error(assigned.error);
     expect(assigned.data.notification).not.toBeNull();
-    expect((await notificationsFor(result.data.package.id)).map((n) => n.kind).sort()).toEqual([
-      "package_received",
-      "package_unassigned",
-    ]);
+    expect(
+      (await notificationsFor(result.data.package.id))
+        .map((n) => n.kind)
+        .sort(),
+    ).toEqual(["package_received", "package_unassigned"]);
   });
 
   it("customers without an account get no link line (FR-045)", async () => {
@@ -182,9 +207,9 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
       photoPath: await uploadPhoto(noAccount.id),
     });
     if (!result.ok) throw new Error(result.error);
-    const text = new URL((result.data.notification as { url: string }).url).searchParams.get(
-      "text",
-    )!;
+    const text = new URL(
+      (result.data.notification as { url: string }).url,
+    ).searchParams.get("text")!;
     expect(text).not.toContain("http");
   });
 
@@ -208,6 +233,8 @@ describe("packages RLS and status sync (FR-016 to FR-019)", () => {
   });
 
   it("customers and bazaars cannot read notifications", async () => {
-    expect(must(await alice.client.from("notifications").select("id"))).toEqual([]);
+    expect(must(await alice.client.from("notifications").select("id"))).toEqual(
+      [],
+    );
   });
 });

@@ -6,12 +6,16 @@ import { captureWhatsApp } from "./helpers/whatsapp";
 
 // Critical flow "creación de pedido" (constitution V; US1).
 test.describe("crear pedido y revisar el pago", () => {
-  test("registro → código → pedido con comprobante → pago confirmado", async ({ page }) => {
+  test("registro → código → pedido con comprobante → pago confirmado", async ({
+    page,
+  }) => {
     const customer = await registerCustomer(page);
     await expect(page.getByText(customer.code, { exact: true })).toBeVisible();
 
     const folio = await createOrderAsCustomer(page);
-    await expect(page.getByText("Pago inicial pendiente").first()).toBeVisible();
+    await expect(
+      page.getByText("Pago inicial pendiente").first(),
+    ).toBeVisible();
 
     await signOut(page);
     await signIn(page, SEED_USERS.collector, "collector");
@@ -32,7 +36,9 @@ test.describe("crear pedido y revisar el pago", () => {
     await expect(page.getByText("Pago confirmado").first()).toBeVisible();
   });
 
-  test("pago rechazado con motivo → la clienta sube otro comprobante", async ({ page }) => {
+  test("pago rechazado con motivo → la clienta sube otro comprobante", async ({
+    page,
+  }) => {
     await signIn(page, SEED_USERS.localCustomer, "customer");
     const folio = await createOrderAsCustomer(page);
 
@@ -51,10 +57,16 @@ test.describe("crear pedido y revisar el pago", () => {
     await signOut(page);
     await signIn(page, SEED_USERS.localCustomer, "customer");
     await page.goto(`/mi-cuenta/pedidos/${folio}`);
-    await expect(page.getByText("Motivo: El monto no coincide").first()).toBeVisible();
-    await page.locator('input[type="file"]').setInputFiles("tests/e2e/fixtures/proof.pdf");
+    await expect(
+      page.getByText("Motivo: El monto no coincide").first(),
+    ).toBeVisible();
+    await page
+      .locator('input[type="file"]')
+      .setInputFiles("tests/e2e/fixtures/proof.pdf");
     await page.getByRole("button", { name: "Enviar comprobante" }).click();
-    await expect(page.getByText("Pago inicial pendiente").first()).toBeVisible();
+    await expect(
+      page.getByText("Pago inicial pendiente").first(),
+    ).toBeVisible();
   });
 
   test("otra clienta no puede abrir el pedido", async ({ page }) => {

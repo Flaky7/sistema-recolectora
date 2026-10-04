@@ -12,7 +12,11 @@ export default async function AdminHomePage() {
   const counts = await getDashboardCounts();
 
   const cards = [
-    { label: "Pagos por confirmar", value: counts.paymentsToReview, href: "/admin/pagos" },
+    {
+      label: "Pagos por confirmar",
+      value: counts.paymentsToReview,
+      href: "/admin/pagos",
+    },
     {
       label: "Paquetes sin asignar",
       value: counts.unassignedPackages,
@@ -72,7 +76,10 @@ export default async function AdminHomePage() {
                   card.value > 0 && "border-primary/40 bg-primary/5",
                 )}
               >
-                <span className="text-3xl font-semibold" data-testid={`count-${card.label}`}>
+                <span
+                  className="text-3xl font-semibold"
+                  data-testid={`count-${card.label}`}
+                >
                   {card.value}
                 </span>
                 <span className="text-sm">{card.label}</span>

@@ -97,7 +97,9 @@ export async function signUpBazaar(
         fieldErrors: { password: ["Elige una contraseña más segura."] },
       });
     }
-    return fail("No pudimos crear tu cuenta. Revisa tus datos e intenta de nuevo.");
+    return fail(
+      "No pudimos crear tu cuenta. Revisa tus datos e intenta de nuevo.",
+    );
   }
   return ok({ needsEmailConfirmation: true });
 }
@@ -113,7 +115,9 @@ export async function saveBazaarProposal(input: BazaarProposalInput) {
 export async function setBazaarDocument(input: BazaarDocumentInput) {
   const parsed = bazaarDocumentSchema.safeParse(input);
   if (!parsed.success) return fromZodError(parsed.error);
-  return asBazaar((supabase, bazaarId) => setBazaarDocumentWith(supabase, bazaarId, parsed.data));
+  return asBazaar((supabase, bazaarId) =>
+    setBazaarDocumentWith(supabase, bazaarId, parsed.data),
+  );
 }
 
 export async function saveBazaarReferences(input: BazaarReferencesInput) {
@@ -125,11 +129,15 @@ export async function saveBazaarReferences(input: BazaarReferencesInput) {
 }
 
 export async function submitBazaarForReview() {
-  return asBazaar((supabase, bazaarId) => submitBazaarForReviewWith(supabase, bazaarId));
+  return asBazaar((supabase, bazaarId) =>
+    submitBazaarForReviewWith(supabase, bazaarId),
+  );
 }
 
 export async function submitBazaarProposal() {
-  return asBazaar((supabase, bazaarId) => submitBazaarProposalWith(supabase, bazaarId));
+  return asBazaar((supabase, bazaarId) =>
+    submitBazaarProposalWith(supabase, bazaarId),
+  );
 }
 
 /**
@@ -149,8 +157,11 @@ export async function getProposalPhotoUrls(
     .select("bazaar_id, photo_paths")
     .eq("id", proposalId)
     .maybeSingle();
-  if (!proposal) return fail("No encontramos la propuesta.", { code: "NOT_FOUND" });
-  return ok(await photoUrls(supabase, proposal.bazaar_id, proposal.photo_paths));
+  if (!proposal)
+    return fail("No encontramos la propuesta.", { code: "NOT_FOUND" });
+  return ok(
+    await photoUrls(supabase, proposal.bazaar_id, proposal.photo_paths),
+  );
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -235,14 +246,17 @@ export async function getBazaarDocumentUrls(
       DOCUMENT_URL_SECONDS,
     );
   if (error) return fail("No tienes permiso para ver estos archivos.");
-  const expiresAt = new Date(Date.now() + DOCUMENT_URL_SECONDS * 1000).toISOString();
+  const expiresAt = new Date(
+    Date.now() + DOCUMENT_URL_SECONDS * 1000,
+  ).toISOString();
 
   return ok(
     withFiles.map((doc) => ({
       documentId: doc.id,
       type: doc.type,
       status: doc.status,
-      signedUrl: signed?.find((s) => s.path === doc.storage_path)?.signedUrl ?? "",
+      signedUrl:
+        signed?.find((s) => s.path === doc.storage_path)?.signedUrl ?? "",
       expiresAt,
     })),
   );

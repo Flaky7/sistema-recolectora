@@ -5,7 +5,9 @@ import { text, uuid } from "@/lib/validation/messages";
 
 export const submitPaymentProofSchema = z.object({
   folio: folioSchema,
-  proofPath: z.string({ error: "Adjunta el comprobante." }).min(1, "Adjunta el comprobante."),
+  proofPath: z
+    .string({ error: "Adjunta el comprobante." })
+    .min(1, "Adjunta el comprobante."),
 });
 export type SubmitPaymentProofInput = z.input<typeof submitPaymentProofSchema>;
 
@@ -14,7 +16,11 @@ export const reviewPaymentSchema = z
   .object({
     paymentId: uuid,
     decision: z.enum(["confirm", "reject"]),
-    reason: z.string().trim().max(500, "Escribe como máximo 500 caracteres.").optional(),
+    reason: z
+      .string()
+      .trim()
+      .max(500, "Escribe como máximo 500 caracteres.")
+      .optional(),
   })
   .superRefine((value, ctx) => {
     if (value.decision === "reject" && (value.reason?.length ?? 0) < 3) {

@@ -116,9 +116,14 @@ export function FileUpload({
               className="size-16 rounded-md object-cover"
             />
           ) : (
-            <FileTextIcon className="text-muted-foreground size-10" aria-hidden />
+            <FileTextIcon
+              className="text-muted-foreground size-10"
+              aria-hidden
+            />
           )}
-          <span className="min-w-0 flex-1 truncate text-sm">{preview.name}</span>
+          <span className="min-w-0 flex-1 truncate text-sm">
+            {preview.name}
+          </span>
           <Button
             type="button"
             variant="ghost"

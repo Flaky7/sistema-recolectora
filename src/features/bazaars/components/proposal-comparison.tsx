@@ -17,7 +17,9 @@ export function ProposalComparison({ data }: { data: BazaarForReview }) {
     name: proposal.name !== published.name,
     brands: proposal.brands.join("|") !== published.brands.join("|"),
     link: proposal.link_url !== published.linkUrl,
-    photos: proposalPhotos.map((p) => p.url).join("|") !== published.photoUrls.join("|"),
+    photos:
+      proposalPhotos.map((p) => p.url).join("|") !==
+      published.photoUrls.join("|"),
   };
   const labels = [
     changed.name && "Nombre",
@@ -27,12 +29,16 @@ export function ProposalComparison({ data }: { data: BazaarForReview }) {
   ].filter(Boolean) as string[];
 
   return (
-    <section className="space-y-3 rounded-xl border border-amber-300 p-4" aria-labelledby="proposal-title">
+    <section
+      className="space-y-3 rounded-xl border border-amber-300 p-4"
+      aria-labelledby="proposal-title"
+    >
       <h2 id="proposal-title" className="text-lg font-semibold">
         Cambio por autorizar
       </h2>
       <p className="text-muted-foreground text-sm">
-        Enviado el {formatDateTime(proposal.submitted_at ?? proposal.created_at)}
+        Enviado el{" "}
+        {formatDateTime(proposal.submitted_at ?? proposal.created_at)}
       </p>
       <p className="flex flex-wrap gap-2">
         <span>Cambia:</span>

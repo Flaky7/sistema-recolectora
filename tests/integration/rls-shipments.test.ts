@@ -1,7 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createCustomer, createOrder, getOrder } from "../helpers/fixtures";
-import { createTestUser, must, resetTestData, type TestUser } from "../helpers/supabase";
+import {
+  createTestUser,
+  must,
+  resetTestData,
+  type TestUser,
+} from "../helpers/supabase";
 
 type Customer = TestUser & { customerId: string };
 
@@ -42,9 +47,12 @@ describe("shipments RLS and rules (FR-020 to FR-023)", () => {
     );
     expect((await getOrder(order.id)).status).toBe("shipped");
 
-    const again = await collector.client
-      .from("shipments")
-      .insert({ order_id: order.id, type: "carrier", carrier: "DHL", tracking_number: "D1234" });
+    const again = await collector.client.from("shipments").insert({
+      order_id: order.id,
+      type: "carrier",
+      carrier: "DHL",
+      tracking_number: "D1234",
+    });
     expect(again.error).not.toBeNull();
   });
 
@@ -85,23 +93,38 @@ describe("shipments RLS and rules (FR-020 to FR-023)", () => {
     const mine = must(await local.client.from("shipments").select("order_id"));
     expect(mine.map((s) => s.order_id)).toContain(order.id);
     const theirs = must(
-      await outOfTown.client.from("shipments").select("order_id").eq("order_id", order.id),
+      await outOfTown.client
+        .from("shipments")
+        .select("order_id")
+        .eq("order_id", order.id),
     );
     expect(theirs).toEqual([]);
   });
 
   it("marking delivered stamps delivered_at", async () => {
     const order = await createOrder(local.customerId, "shipped");
-    must(await collector.client.from("orders").update({ status: "delivered" }).eq("id", order.id));
+    must(
+      await collector.client
+        .from("orders")
+        .update({ status: "delivered" })
+        .eq("id", order.id),
+    );
     const shipment = must(
-      await collector.client.from("shipments").select("delivered_at").eq("order_id", order.id).single(),
+      await collector.client
+        .from("shipments")
+        .select("delivered_at")
+        .eq("order_id", order.id)
+        .single(),
     );
     expect(shipment.delivered_at).not.toBeNull();
   });
 
   it("a customer cannot mark her order delivered or complete", async () => {
     const order = await createOrder(local.customerId, "receiving");
-    await local.client.from("orders").update({ status: "complete" }).eq("id", order.id);
+    await local.client
+      .from("orders")
+      .update({ status: "complete" })
+      .eq("id", order.id);
     expect((await getOrder(order.id)).status).toBe("receiving");
   });
 });

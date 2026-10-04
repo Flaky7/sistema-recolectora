@@ -12,7 +12,11 @@ export type ShipmentSummaryData = {
 };
 
 /** Type, carrier, tracking number and cost, shown to the customer and the collector (FR-023). */
-export function ShipmentSummary({ shipment }: { shipment: ShipmentSummaryData }) {
+export function ShipmentSummary({
+  shipment,
+}: {
+  shipment: ShipmentSummaryData;
+}) {
   return (
     <dl className="grid gap-3 rounded-xl border p-4 sm:grid-cols-2">
       <div>

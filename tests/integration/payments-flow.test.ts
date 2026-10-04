@@ -1,7 +1,17 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { createCustomer, createOrder, createPackage, getOrder } from "../helpers/fixtures";
-import { createTestUser, must, resetTestData, type TestUser } from "../helpers/supabase";
+import {
+  createCustomer,
+  createOrder,
+  createPackage,
+  getOrder,
+} from "../helpers/fixtures";
+import {
+  createTestUser,
+  must,
+  resetTestData,
+  type TestUser,
+} from "../helpers/supabase";
 
 type Customer = TestUser & { customerId: string };
 
@@ -9,7 +19,10 @@ let customer: Customer;
 let collector: TestUser;
 
 beforeAll(async () => {
-  [customer, collector] = await Promise.all([createCustomer(), createTestUser("collector")]);
+  [customer, collector] = await Promise.all([
+    createCustomer(),
+    createTestUser("collector"),
+  ]);
 });
 
 afterAll(resetTestData);
@@ -18,7 +31,10 @@ async function uploadProof(order: { id: string }) {
   return must(
     await customer.client
       .from("payments")
-      .insert({ order_id: order.id, proof_path: `${customer.customerId}/${crypto.randomUUID()}.jpg` })
+      .insert({
+        order_id: order.id,
+        proof_path: `${customer.customerId}/${crypto.randomUUID()}.jpg`,
+      })
       .select()
       .single(),
   );
@@ -33,7 +49,10 @@ describe("payment flow (FR-012, FR-043, FR-051)", () => {
     expect((await getOrder(order.id)).status).toBe("payment_pending");
 
     must(
-      await collector.client.from("payments").update({ status: "confirmed" }).eq("id", payment.id),
+      await collector.client
+        .from("payments")
+        .update({ status: "confirmed" })
+        .eq("id", payment.id),
     );
     expect((await getOrder(order.id)).status).toBe("payment_confirmed");
   });
@@ -51,7 +70,10 @@ describe("payment flow (FR-012, FR-043, FR-051)", () => {
     must(
       await collector.client
         .from("payments")
-        .update({ status: "rejected", rejection_reason: "El monto no coincide" })
+        .update({
+          status: "rejected",
+          rejection_reason: "El monto no coincide",
+        })
         .eq("id", payment.id),
     );
     expect((await getOrder(order.id)).status).toBe("registered");
@@ -68,23 +90,32 @@ describe("payment flow (FR-012, FR-043, FR-051)", () => {
     // The customer can upload a new proof after a rejection; the old one stays as history.
     await uploadProof(order);
     expect((await getOrder(order.id)).status).toBe("payment_pending");
-    const payments = must(await customer.client.from("payments").select().eq("order_id", order.id));
-    expect(payments.map((p) => p.status).sort()).toEqual(["pending", "rejected"]);
+    const payments = must(
+      await customer.client.from("payments").select().eq("order_id", order.id),
+    );
+    expect(payments.map((p) => p.status).sort()).toEqual([
+      "pending",
+      "rejected",
+    ]);
   });
 
   it("a second pending payment for the same order fails", async () => {
     const order = await createOrder(customer.customerId);
     await uploadProof(order);
-    const { error } = await customer.client
-      .from("payments")
-      .insert({ order_id: order.id, proof_path: `${customer.customerId}/again.jpg` });
+    const { error } = await customer.client.from("payments").insert({
+      order_id: order.id,
+      proof_path: `${customer.customerId}/again.jpg`,
+    });
     expect(error).not.toBeNull();
   });
 
   it("a customer cannot confirm her own payment", async () => {
     const order = await createOrder(customer.customerId);
     const payment = await uploadProof(order);
-    await customer.client.from("payments").update({ status: "confirmed" }).eq("id", payment.id);
+    await customer.client
+      .from("payments")
+      .update({ status: "confirmed" })
+      .eq("id", payment.id);
     expect((await getOrder(order.id)).status).toBe("payment_pending");
   });
 
@@ -93,7 +124,11 @@ describe("payment flow (FR-012, FR-043, FR-051)", () => {
     const payment = must(
       await collector.client
         .from("payments")
-        .insert({ order_id: order.id, status: "confirmed", amount_cents: 15000 })
+        .insert({
+          order_id: order.id,
+          status: "confirmed",
+          amount_cents: 15000,
+        })
         .select()
         .single(),
     );
@@ -116,7 +151,10 @@ describe("payment flow (FR-012, FR-043, FR-051)", () => {
         .single(),
     );
     must(
-      await collector.client.from("payments").update({ status: "confirmed" }).eq("id", payment.id),
+      await collector.client
+        .from("payments")
+        .update({ status: "confirmed" })
+        .eq("id", payment.id),
     );
     expect((await getOrder(order.id)).status).toBe("receiving");
   });
@@ -134,6 +172,8 @@ describe("payment flow (FR-012, FR-043, FR-051)", () => {
       .from("payments")
       .insert({ order_id: order.id, proof_path: `${other.customerId}/x.jpg` });
     expect(error).not.toBeNull();
-    expect(must(await other.client.from("orders").select("id"))).toHaveLength(1);
+    expect(must(await other.client.from("orders").select("id"))).toHaveLength(
+      1,
+    );
   });
 });

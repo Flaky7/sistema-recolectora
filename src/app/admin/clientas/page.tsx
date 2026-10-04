@@ -16,15 +16,24 @@ export const metadata: Metadata = { title: "Clientas" };
 
 const STATUSES: CustomerStatus[] = ["active", "deactivated", "deleted"];
 
-export default async function CustomersPage({ searchParams }: PageProps<"/admin/clientas">) {
+export default async function CustomersPage({
+  searchParams,
+}: PageProps<"/admin/clientas">) {
   const params = await searchParams;
-  const q = typeof params.q === "string" && params.q.trim() ? params.q.trim() : undefined;
+  const q =
+    typeof params.q === "string" && params.q.trim()
+      ? params.q.trim()
+      : undefined;
   const status = STATUSES.find((s) => s === params.estado);
-  const account = params.cuenta === "con" || params.cuenta === "sin" ? params.cuenta : undefined;
+  const account =
+    params.cuenta === "con" || params.cuenta === "sin"
+      ? params.cuenta
+      : undefined;
   const customers = await listCustomers({
     q,
     status,
-    hasAccount: account === "con" ? true : account === "sin" ? false : undefined,
+    hasAccount:
+      account === "con" ? true : account === "sin" ? false : undefined,
   });
 
   return (
@@ -58,7 +67,10 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
             label: "Estado",
             value: status,
             allLabel: "Todos los estados",
-            options: STATUSES.map((s) => ({ value: s, label: CUSTOMER_STATUS_LABELS[s] })),
+            options: STATUSES.map((s) => ({
+              value: s,
+              label: CUSTOMER_STATUS_LABELS[s],
+            })),
           },
         ]}
       />
@@ -85,7 +97,9 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
                 </span>
                 <span className="flex items-center gap-2">
                   {c.status !== "active" ? (
-                    <Badge variant="secondary">{CUSTOMER_STATUS_LABELS[c.status]}</Badge>
+                    <Badge variant="secondary">
+                      {CUSTOMER_STATUS_LABELS[c.status]}
+                    </Badge>
                   ) : null}
                   <span className="font-mono">{c.code}</span>
                 </span>

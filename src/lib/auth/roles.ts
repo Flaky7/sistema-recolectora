@@ -10,11 +10,12 @@ export const ROLE_HOME: Record<UserRole, string> = {
 };
 
 /** Protected sections and the only role allowed in each. */
-export const PROTECTED_SECTIONS: readonly { prefix: string; role: UserRole }[] = [
-  { prefix: "/admin", role: "collector" },
-  { prefix: "/mi-cuenta", role: "customer" },
-  { prefix: "/bazar", role: "bazaar" },
-];
+export const PROTECTED_SECTIONS: readonly { prefix: string; role: UserRole }[] =
+  [
+    { prefix: "/admin", role: "collector" },
+    { prefix: "/mi-cuenta", role: "customer" },
+    { prefix: "/bazar", role: "bazaar" },
+  ];
 
 export function sectionFor(pathname: string) {
   return PROTECTED_SECTIONS.find(

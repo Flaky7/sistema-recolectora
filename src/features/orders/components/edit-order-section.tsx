@@ -15,13 +15,23 @@ export function EditOrderSection({
   redirectTo,
 }: {
   folio: number;
-  defaults: { bazaars: PickedBazaar[]; description: string; expectedPackages: number };
+  defaults: {
+    bazaars: PickedBazaar[];
+    description: string;
+    expectedPackages: number;
+  };
   redirectTo: string;
 }) {
   const [editing, setEditing] = useState(false);
   if (!editing) {
     return (
-      <Button type="button" variant="outline" size="touch" className="w-full" onClick={() => setEditing(true)}>
+      <Button
+        type="button"
+        variant="outline"
+        size="touch"
+        className="w-full"
+        onClick={() => setEditing(true)}
+      >
         <PencilIcon aria-hidden />
         Editar pedido
       </Button>
@@ -31,11 +41,21 @@ export function EditOrderSection({
     <div className="space-y-3 rounded-xl border p-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Editar pedido</h2>
-        <Button type="button" variant="ghost" size="lg" onClick={() => setEditing(false)}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={() => setEditing(false)}
+        >
           Cerrar
         </Button>
       </div>
-      <OrderForm mode="edit" folio={folio} defaults={defaults} redirectTo={redirectTo} />
+      <OrderForm
+        mode="edit"
+        folio={folio}
+        defaults={defaults}
+        redirectTo={redirectTo}
+      />
     </div>
   );
 }

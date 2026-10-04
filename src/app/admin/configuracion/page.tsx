@@ -8,7 +8,9 @@ export const metadata: Metadata = { title: "Configuración" };
 export default async function SettingsPage() {
   const settings = await getSettings();
   if (!settings) {
-    return <p className="text-destructive">No se pudo cargar la configuración.</p>;
+    return (
+      <p className="text-destructive">No se pudo cargar la configuración.</p>
+    );
   }
   return (
     <div className="mx-auto max-w-2xl space-y-6">

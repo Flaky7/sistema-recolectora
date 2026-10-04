@@ -128,7 +128,10 @@ export async function recordConfirmedPayment(
     .eq("folio", parsed.data.folio)
     .maybeSingle();
   if (!order) return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
-  if (parsed.data.proofPath && !isPathInFolder(parsed.data.proofPath, order.customer_id)) {
+  if (
+    parsed.data.proofPath &&
+    !isPathInFolder(parsed.data.proofPath, order.customer_id)
+  ) {
     return fail("El comprobante no es válido. Vuelve a subirlo.");
   }
 

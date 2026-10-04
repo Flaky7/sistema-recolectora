@@ -85,7 +85,9 @@ export function AdminNav({ signOut }: { signOut: ReactNode }) {
                     <Link
                       href={href}
                       onClick={() => setOpen(false)}
-                      aria-current={isActive(pathname, href) ? "page" : undefined}
+                      aria-current={
+                        isActive(pathname, href) ? "page" : undefined
+                      }
                       className="hover:bg-muted aria-[current=page]:bg-muted flex h-11 items-center rounded-lg px-3"
                     >
                       {label}

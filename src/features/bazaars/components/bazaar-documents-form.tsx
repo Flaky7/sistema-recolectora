@@ -1,6 +1,12 @@
 "use client";
 
-import { CheckCircle2Icon, ClockIcon, Loader2Icon, UploadIcon, XCircleIcon } from "lucide-react";
+import {
+  CheckCircle2Icon,
+  ClockIcon,
+  Loader2Icon,
+  UploadIcon,
+  XCircleIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -30,7 +36,12 @@ export function BazaarDocumentsForm({
   return (
     <ul className="space-y-3">
       {slots.map((slot) => (
-        <DocumentRow key={slot.type} bazaarId={bazaarId} slot={slot} disabled={disabled} />
+        <DocumentRow
+          key={slot.type}
+          bazaarId={bazaarId}
+          slot={slot}
+          disabled={disabled}
+        />
       ))}
     </ul>
   );
@@ -68,7 +79,11 @@ function DocumentRow({
       toast.success(`${label}: enviado a revisión.`);
       router.refresh();
     } catch (cause) {
-      toast.error(cause instanceof UploadError ? cause.message : "No se pudo subir el archivo.");
+      toast.error(
+        cause instanceof UploadError
+          ? cause.message
+          : "No se pudo subir el archivo.",
+      );
     } finally {
       setBusy(false);
       if (input.current) input.current.value = "";
@@ -78,7 +93,10 @@ function DocumentRow({
   const hasAny = Boolean(slot.current || slot.latest);
 
   return (
-    <li className="space-y-2 rounded-xl border p-3" data-testid={`document-${slot.type}`}>
+    <li
+      className="space-y-2 rounded-xl border p-3"
+      data-testid={`document-${slot.type}`}
+    >
       <p className="font-medium">{label}</p>
       {slot.current ? (
         <p className="flex items-center gap-1 text-sm">
@@ -98,10 +116,13 @@ function DocumentRow({
           Rechazado: {slot.latest.reason}
         </p>
       ) : null}
-      {!hasAny ? <p className="text-muted-foreground text-sm">Falta subirlo.</p> : null}
+      {!hasAny ? (
+        <p className="text-muted-foreground text-sm">Falta subirlo.</p>
+      ) : null}
       {slot.current ? (
         <p className="text-muted-foreground text-xs">
-          El documento actual sigue vigente hasta que la recolectora autorice el nuevo.
+          El documento actual sigue vigente hasta que la recolectora autorice el
+          nuevo.
         </p>
       ) : null}
 
@@ -122,8 +143,16 @@ function DocumentRow({
         disabled={disabled || busy}
         onClick={() => input.current?.click()}
       >
-        {busy ? <Loader2Icon className="animate-spin" aria-hidden /> : <UploadIcon aria-hidden />}
-        {busy ? "Subiendo…" : hasAny ? "Actualizar documento" : "Subir documento"}
+        {busy ? (
+          <Loader2Icon className="animate-spin" aria-hidden />
+        ) : (
+          <UploadIcon aria-hidden />
+        )}
+        {busy
+          ? "Subiendo…"
+          : hasAny
+            ? "Actualizar documento"
+            : "Subir documento"}
       </Button>
     </li>
   );

@@ -1,6 +1,10 @@
 import { afterAll, describe, expect, it } from "vitest";
 
-import { createCustomer, createCustomerWithoutAccount, createOrder } from "../helpers/fixtures";
+import {
+  createCustomer,
+  createCustomerWithoutAccount,
+  createOrder,
+} from "../helpers/fixtures";
 import {
   adminClient,
   anonClient,
@@ -40,25 +44,36 @@ async function signUpConfirmed(whatsapp: string, code?: string) {
 describe("check_customer_claim (FR-044)", () => {
   it("answers only free / code_required / ok / has_account", async () => {
     const anon = anonClient();
-    const free = must(await anon.rpc("check_customer_claim", { whatsapp: uniquePhone() }));
+    const free = must(
+      await anon.rpc("check_customer_claim", { whatsapp: uniquePhone() }),
+    );
     expect(free).toBe("free");
 
     const phone = uniquePhone();
     const withoutAccount = await createCustomerWithoutAccount(phone);
-    expect(must(await anon.rpc("check_customer_claim", { whatsapp: phone }))).toBe(
-      "code_required",
-    );
     expect(
-      must(await anon.rpc("check_customer_claim", { whatsapp: phone, code: withoutAccount.code })),
+      must(await anon.rpc("check_customer_claim", { whatsapp: phone })),
+    ).toBe("code_required");
+    expect(
+      must(
+        await anon.rpc("check_customer_claim", {
+          whatsapp: phone,
+          code: withoutAccount.code,
+        }),
+      ),
     ).toBe("ok");
 
     const withAccount = await createCustomer();
     const row = must(
-      await adminClient().from("customers").select("whatsapp").eq("id", withAccount.customerId).single(),
+      await adminClient()
+        .from("customers")
+        .select("whatsapp")
+        .eq("id", withAccount.customerId)
+        .single(),
     );
-    expect(must(await anon.rpc("check_customer_claim", { whatsapp: row.whatsapp! }))).toBe(
-      "has_account",
-    );
+    expect(
+      must(await anon.rpc("check_customer_claim", { whatsapp: row.whatsapp! })),
+    ).toBe("has_account");
   });
 });
 
@@ -68,7 +83,10 @@ describe("claiming a customer registered by the collector", () => {
     const existing = await createCustomerWithoutAccount(phone);
     const order = await createOrder(existing.id);
 
-    const { email, error } = await signUpConfirmed(phone, existing.code.toLowerCase());
+    const { email, error } = await signUpConfirmed(
+      phone,
+      existing.code.toLowerCase(),
+    );
     expect(error).toBeNull();
 
     const client = await signInAs(email);
@@ -76,7 +94,9 @@ describe("claiming a customer registered by the collector", () => {
     expect(mine.id).toBe(existing.id);
     expect(mine.code).toBe(existing.code);
     expect(mine.full_name).toBe(existing.full_name);
-    expect(must(await client.from("orders").select("id")).map((o) => o.id)).toEqual([order.id]);
+    expect(
+      must(await client.from("orders").select("id")).map((o) => o.id),
+    ).toEqual([order.id]);
   });
 
   it("rejects a wrong or missing code without creating anything", async () => {
@@ -89,7 +109,10 @@ describe("claiming a customer registered by the collector", () => {
     expect(missing.error).not.toBeNull();
 
     const profiles = must(
-      await adminClient().from("profiles").select("id").in("email", [wrong.email, missing.email]),
+      await adminClient()
+        .from("profiles")
+        .select("id")
+        .in("email", [wrong.email, missing.email]),
     );
     expect(profiles).toEqual([]);
   });
@@ -97,12 +120,19 @@ describe("claiming a customer registered by the collector", () => {
   it("rejects the WhatsApp of a customer who already has an account (ACCOUNT_EXISTS)", async () => {
     const owner = await createCustomer();
     const row = must(
-      await adminClient().from("customers").select("whatsapp").eq("id", owner.customerId).single(),
+      await adminClient()
+        .from("customers")
+        .select("whatsapp")
+        .eq("id", owner.customerId)
+        .single(),
     );
     const attempt = await signUpConfirmed(row.whatsapp!);
     expect(attempt.error).not.toBeNull();
     const profiles = must(
-      await adminClient().from("profiles").select("id").eq("email", attempt.email),
+      await adminClient()
+        .from("profiles")
+        .select("id")
+        .eq("email", attempt.email),
     );
     expect(profiles).toEqual([]);
   });

@@ -56,7 +56,9 @@ export function CustomerTypeField<T extends FieldValues>({
                   <RadioGroupItem value={type} id={`${name}-${type}`} />
                   <FieldContent>
                     <FieldTitle>{CUSTOMER_TYPE_LABELS[type]}</FieldTitle>
-                    <FieldDescription>{CUSTOMER_TYPE_DESCRIPTIONS[type]}</FieldDescription>
+                    <FieldDescription>
+                      {CUSTOMER_TYPE_DESCRIPTIONS[type]}
+                    </FieldDescription>
                   </FieldContent>
                 </Field>
               </FieldLabel>

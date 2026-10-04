@@ -29,13 +29,21 @@ export default async function AdminNewOrderPage({
           <h1 className="text-2xl font-semibold">Nuevo pedido</h1>
           <p>
             Para <strong>{customer.full_name}</strong> ·{" "}
-            <span className="font-mono">{customer.code}</span> · {CUSTOMER_TYPE_LABELS[customer.type]}
+            <span className="font-mono">{customer.code}</span> ·{" "}
+            {CUSTOMER_TYPE_LABELS[customer.type]}
           </p>
-          <Link href="/admin/pedidos/nuevo" className="text-primary text-sm underline">
+          <Link
+            href="/admin/pedidos/nuevo"
+            className="text-primary text-sm underline"
+          >
             Cambiar clienta
           </Link>
         </div>
-        <OrderForm mode="create-for-customer" customerId={customer.id} paymentInfo={paymentInfo} />
+        <OrderForm
+          mode="create-for-customer"
+          customerId={customer.id}
+          paymentInfo={paymentInfo}
+        />
       </div>
     );
   }
@@ -71,7 +79,9 @@ export default async function AdminNewOrderPage({
 
       {q ? (
         results.length === 0 ? (
-          <p className="text-muted-foreground">No encontramos clientas activas con “{q}”.</p>
+          <p className="text-muted-foreground">
+            No encontramos clientas activas con “{q}”.
+          </p>
         ) : (
           <ul className="divide-y rounded-xl border">
             {results.map((c) => (
@@ -83,7 +93,10 @@ export default async function AdminNewOrderPage({
                   <span>
                     <span className="font-medium">{c.full_name}</span>
                     {c.profile_id ? null : (
-                      <span className="text-muted-foreground text-sm"> (sin cuenta)</span>
+                      <span className="text-muted-foreground text-sm">
+                        {" "}
+                        (sin cuenta)
+                      </span>
                     )}
                   </span>
                   <span className="font-mono">{c.code}</span>

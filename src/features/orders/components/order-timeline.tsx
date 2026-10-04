@@ -23,7 +23,9 @@ export function OrderTimeline({ history }: { history: Entry[] }) {
           />
           <p className="font-medium">{ORDER_STATUS_LABELS[entry.to_status]}</p>
           <p className="text-muted-foreground text-sm">
-            <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
+            <time dateTime={entry.created_at}>
+              {formatDateTime(entry.created_at)}
+            </time>
           </p>
           {entry.note ? <p className="mt-1 text-sm">{entry.note}</p> : null}
         </li>

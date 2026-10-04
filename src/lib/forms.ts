@@ -16,5 +16,7 @@ export function applyActionErrors<T extends FieldValues>(
       setError(name as Path<T>, { type: "server", message: messages[0] });
     }
   }
-  return entries.length > 0 && result.code === "VALIDATION" ? null : result.error;
+  return entries.length > 0 && result.code === "VALIDATION"
+    ? null
+    : result.error;
 }

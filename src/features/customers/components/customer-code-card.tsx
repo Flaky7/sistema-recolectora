@@ -10,7 +10,13 @@ import { Button } from "@/components/ui/button";
  * The customer code, big and easy to dictate (FR-007), with instructions to share it with
  * bazaars so they write it on each package label.
  */
-export function CustomerCodeCard({ code, name }: { code: string; name: string }) {
+export function CustomerCodeCard({
+  code,
+  name,
+}: {
+  code: string;
+  name: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -31,7 +37,10 @@ export function CustomerCodeCard({ code, name }: { code: string; name: string })
       <h2 id="customer-code-title" className="text-sm font-medium opacity-90">
         Tu código de clienta
       </h2>
-      <p className="font-mono text-5xl font-bold tracking-[0.3em]" aria-label={code.split("").join(" ")}>
+      <p
+        className="font-mono text-5xl font-bold tracking-[0.3em]"
+        aria-label={code.split("").join(" ")}
+      >
         {code}
       </p>
       <p className="text-sm opacity-90">
@@ -41,7 +50,13 @@ export function CustomerCodeCard({ code, name }: { code: string; name: string })
         </strong>
         . Así sabremos que es tuyo cuando llegue.
       </p>
-      <Button type="button" variant="secondary" size="touch" className="w-full" onClick={copy}>
+      <Button
+        type="button"
+        variant="secondary"
+        size="touch"
+        className="w-full"
+        onClick={copy}
+      >
         {copied ? <CheckIcon aria-hidden /> : <CopyIcon aria-hidden />}
         {copied ? "Copiado" : "Copiar código"}
       </Button>

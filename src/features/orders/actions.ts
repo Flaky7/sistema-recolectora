@@ -141,7 +141,8 @@ export async function updateOrder(
   if (!parsed.success) return fromZodError(parsed.error);
 
   const existing = await orderByFolio(auth.supabase, parsed.data.folio);
-  if (!existing) return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
+  if (!existing)
+    return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
 
   const { data: order, error } = await auth.supabase.rpc("update_order", {
     order_id: existing.id,
@@ -201,7 +202,8 @@ export async function cancelOrder(
   if (!parsed.success) return fromZodError(parsed.error);
 
   const existing = await orderByFolio(auth.supabase, parsed.data.folio);
-  if (!existing) return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
+  if (!existing)
+    return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
 
   const { data: order, error } = await auth.supabase
     .from("orders")
@@ -211,7 +213,9 @@ export async function cancelOrder(
     .single();
   if (error) {
     if (error.code === "PGRST116") {
-      return fail("Este pedido ya no se puede cancelar desde tu cuenta; pide ayuda a la recolectora.");
+      return fail(
+        "Este pedido ya no se puede cancelar desde tu cuenta; pide ayuda a la recolectora.",
+      );
     }
     return fromDatabaseError(error);
   }

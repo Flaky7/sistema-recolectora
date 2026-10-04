@@ -18,19 +18,27 @@ export async function registerBazaarAccount(page: Page) {
 
 export async function fillPublicProfile(
   page: Page,
-  { name, brands, photos = [] }: { name: string; brands: string[]; photos?: string[] },
+  {
+    name,
+    brands,
+    photos = [],
+  }: { name: string; brands: string[]; photos?: string[] },
 ) {
   await page.getByLabel("Nombre del bazar").fill(name);
   for (const brand of brands) {
     await page.getByLabel("Marcas que manejas").fill(brand);
     await page.getByRole("button", { name: "Agregar", exact: true }).click();
   }
-  await page.getByLabel("Link de tu página o perfil").fill(
-    `https://www.facebook.com/${name.toLowerCase().replace(/\s+/g, "")}`,
-  );
+  await page
+    .getByLabel("Link de tu página o perfil")
+    .fill(`https://www.facebook.com/${name.toLowerCase().replace(/\s+/g, "")}`);
   for (const [index, photo] of photos.entries()) {
-    await page.getByLabel("Elegir foto del bazar").setInputFiles(fixture(photo));
-    await expect(page.getByRole("img", { name: `Foto ${index + 1}` })).toBeVisible();
+    await page
+      .getByLabel("Elegir foto del bazar")
+      .setInputFiles(fixture(photo));
+    await expect(
+      page.getByRole("img", { name: `Foto ${index + 1}` }),
+    ).toBeVisible();
   }
   await page.getByRole("button", { name: "Guardar datos públicos" }).click();
   await expect(page.getByText("Datos públicos guardados.")).toBeVisible();
@@ -45,14 +53,22 @@ const DOCUMENTS = {
 
 export async function uploadDocument(page: Page, type: keyof typeof DOCUMENTS) {
   const [label, file] = DOCUMENTS[type];
-  await page.getByLabel(`Archivo: ${label}`, { exact: true }).setInputFiles(fixture(file));
-  await expect(page.getByTestId(`document-${type}`).getByText(/En revisión/)).toBeVisible();
+  await page
+    .getByLabel(`Archivo: ${label}`, { exact: true })
+    .setInputFiles(fixture(file));
+  await expect(
+    page.getByTestId(`document-${type}`).getByText(/En revisión/),
+  ).toBeVisible();
 }
 
 export async function fillReferences(page: Page) {
   for (const i of [1, 2, 3]) {
-    await page.getByLabel(`Nombre de la referencia ${i}`).fill(`Referencia Número ${i}`);
-    await page.getByLabel(`Teléfono de la referencia ${i}`).fill(`664555000${i}`);
+    await page
+      .getByLabel(`Nombre de la referencia ${i}`)
+      .fill(`Referencia Número ${i}`);
+    await page
+      .getByLabel(`Teléfono de la referencia ${i}`)
+      .fill(`664555000${i}`);
   }
   await page.getByRole("button", { name: "Guardar referencias" }).click();
   await expect(page.getByText("Referencias guardadas.")).toBeVisible();

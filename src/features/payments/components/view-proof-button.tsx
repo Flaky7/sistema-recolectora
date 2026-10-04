@@ -28,7 +28,14 @@ export function ViewProofButton({ paymentId }: { paymentId: string }) {
   }
 
   return (
-    <Button type="button" variant="outline" size="touch" className="w-full" onClick={open} disabled={loading}>
+    <Button
+      type="button"
+      variant="outline"
+      size="touch"
+      className="w-full"
+      onClick={open}
+      disabled={loading}
+    >
       <FileSearchIcon aria-hidden />
       {loading ? "Abriendo…" : "Ver comprobante"}
     </Button>

@@ -7,15 +7,27 @@ import { toast } from "sonner";
 
 import { TextAreaField } from "@/components/text-field";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { applyActionErrors } from "@/lib/forms";
 import { formatMoney, toCents } from "@/lib/format";
-import { renderTemplate, TEMPLATE_VARIABLES } from "@/lib/notifications/messages";
+import {
+  renderTemplate,
+  TEMPLATE_VARIABLES,
+} from "@/lib/notifications/messages";
 import type { NotificationKind } from "@/lib/notifications/types";
 
 import { updateSettings } from "../actions";
-import { TEMPLATE_FIELDS, updateSettingsSchema, type UpdateSettingsInput } from "../schemas";
+import {
+  TEMPLATE_FIELDS,
+  updateSettingsSchema,
+  type UpdateSettingsInput,
+} from "../schemas";
 
 /** Example values for the preview of each template. */
 const SAMPLE = {
@@ -33,10 +45,19 @@ const SAMPLE = {
   costo: formatMoney(18900),
 };
 
-function Preview({ form, name }: { form: ReturnType<typeof useForm<UpdateSettingsInput>>; name: keyof UpdateSettingsInput }) {
+function Preview({
+  form,
+  name,
+}: {
+  form: ReturnType<typeof useForm<UpdateSettingsInput>>;
+  name: keyof UpdateSettingsInput;
+}) {
   const value = useWatch({ control: form.control, name });
   return (
-    <div className="bg-muted rounded-lg p-3 text-sm whitespace-pre-line" aria-label="Vista previa">
+    <div
+      className="bg-muted rounded-lg p-3 text-sm whitespace-pre-line"
+      aria-label="Vista previa"
+    >
       {renderTemplate(String(value ?? ""), SAMPLE) || "—"}
     </div>
   );
@@ -44,7 +65,9 @@ function Preview({ form, name }: { form: ReturnType<typeof useForm<UpdateSetting
 
 export function SettingsForm({ defaults }: { defaults: UpdateSettingsInput }) {
   const [error, setError] = useState<string | null>(null);
-  const [pesos, setPesos] = useState(String(defaults.initialDepositCents / 100));
+  const [pesos, setPesos] = useState(
+    String(defaults.initialDepositCents / 100),
+  );
   const form = useForm<UpdateSettingsInput>({
     resolver: zodResolver(updateSettingsSchema),
     defaultValues: defaults,
@@ -66,7 +89,9 @@ export function SettingsForm({ defaults }: { defaults: UpdateSettingsInput }) {
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Pago inicial</h2>
           <Field data-invalid={Boolean(depositError)}>
-            <FieldLabel htmlFor="deposit">Monto del pago inicial (pesos)</FieldLabel>
+            <FieldLabel htmlFor="deposit">
+              Monto del pago inicial (pesos)
+            </FieldLabel>
             <Input
               id="deposit"
               inputMode="decimal"
@@ -74,10 +99,14 @@ export function SettingsForm({ defaults }: { defaults: UpdateSettingsInput }) {
               aria-invalid={Boolean(depositError)}
               onChange={(e) => {
                 setPesos(e.target.value);
-                form.setValue("initialDepositCents", toCents(e.target.value) ?? Number.NaN, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
+                form.setValue(
+                  "initialDepositCents",
+                  toCents(e.target.value) ?? Number.NaN,
+                  {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  },
+                );
               }}
             />
             <FieldError>{depositError}</FieldError>
@@ -94,8 +123,8 @@ export function SettingsForm({ defaults }: { defaults: UpdateSettingsInput }) {
         <section className="space-y-6">
           <h2 className="text-lg font-semibold">Mensajes de WhatsApp</h2>
           <p className="text-muted-foreground text-sm">
-            Una línea que usa una variable sin valor se omite (por ejemplo, el enlace para clientas
-            sin cuenta).
+            Una línea que usa una variable sin valor se omite (por ejemplo, el
+            enlace para clientas sin cuenta).
           </p>
           {TEMPLATE_FIELDS.map((field) => (
             <div key={field.name} className="space-y-2">
@@ -116,7 +145,12 @@ export function SettingsForm({ defaults }: { defaults: UpdateSettingsInput }) {
             {error}
           </p>
         ) : null}
-        <Button type="submit" size="touch" className="w-full" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
+        <Button
+          type="submit"
+          size="touch"
+          className="w-full"
+          disabled={form.formState.isSubmitting || !form.formState.isDirty}
+        >
           {form.formState.isSubmitting ? "Guardando…" : "Guardar configuración"}
         </Button>
       </FieldGroup>

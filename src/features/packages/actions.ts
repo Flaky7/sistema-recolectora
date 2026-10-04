@@ -2,7 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 
-import { fail, fromDatabaseError, fromZodError, ok, type ActionResult } from "@/lib/action-result";
+import {
+  fail,
+  fromDatabaseError,
+  fromZodError,
+  ok,
+  type ActionResult,
+} from "@/lib/action-result";
 import { authorize } from "@/lib/auth/session";
 import type { ServerClient } from "@/lib/supabase/server";
 import { BUCKETS } from "@/lib/uploads/paths";
@@ -16,7 +22,11 @@ import {
   type AssignPackageInput,
   type RegisterPackageInput,
 } from "./schemas";
-import { assignPackageWith, registerPackageWith, type PackageResult } from "./service";
+import {
+  assignPackageWith,
+  registerPackageWith,
+  type PackageResult,
+} from "./service";
 
 /** Package photos are shown through 60-minute signed links (FR-019, research R7). */
 const PHOTO_URL_SECONDS = 60 * 60;
@@ -74,7 +84,11 @@ export async function findCustomerForPackage(
 
 async function folioOf(supabase: ServerClient, orderId: string | null) {
   if (!orderId) return null;
-  const { data } = await supabase.from("orders").select("folio").eq("id", orderId).single();
+  const { data } = await supabase
+    .from("orders")
+    .select("folio")
+    .eq("id", orderId)
+    .single();
   return data?.folio ?? null;
 }
 

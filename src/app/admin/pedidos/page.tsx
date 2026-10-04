@@ -19,7 +19,9 @@ function param(value: string | string[] | undefined) {
 }
 
 /** FR-039: filter by status, customer (name or code) and bazaar. */
-export default async function OrdersPage({ searchParams }: PageProps<"/admin/pedidos">) {
+export default async function OrdersPage({
+  searchParams,
+}: PageProps<"/admin/pedidos">) {
   const params = await searchParams;
   const status = STATUSES.find((s) => s === params.estado);
   const customer = param(params.clienta);
@@ -41,7 +43,11 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ped
       <ListFilters
         action="/admin/pedidos"
         texts={[
-          { name: "clienta", label: "Clienta (nombre o código)", value: customer },
+          {
+            name: "clienta",
+            label: "Clienta (nombre o código)",
+            value: customer,
+          },
           { name: "bazar", label: "Bazar", value: bazaar },
         ]}
         selects={[
@@ -50,7 +56,10 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ped
             label: "Estado",
             value: status,
             allLabel: "Todos los estados",
-            options: STATUSES.map((s) => ({ value: s, label: ORDER_STATUS_LABELS[s] })),
+            options: STATUSES.map((s) => ({
+              value: s,
+              label: ORDER_STATUS_LABELS[s],
+            })),
           },
         ]}
       />
@@ -74,11 +83,14 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ped
                 <div className="min-w-0 space-y-1">
                   <p className="font-medium">
                     Pedido #{order.folio} · {order.customer_name}{" "}
-                    <span className="font-mono text-sm">{order.customer_code}</span>
+                    <span className="font-mono text-sm">
+                      {order.customer_code}
+                    </span>
                   </p>
                   <p className="text-muted-foreground truncate text-sm">
-                    {order.received_packages} de {order.expected_packages} paquetes ·{" "}
-                    {formatDate(order.created_at!)} · {order.description}
+                    {order.received_packages} de {order.expected_packages}{" "}
+                    paquetes · {formatDate(order.created_at!)} ·{" "}
+                    {order.description}
                   </p>
                 </div>
                 <OrderStatusBadge status={order.status!} />

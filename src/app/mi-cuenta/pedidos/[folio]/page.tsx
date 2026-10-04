@@ -38,7 +38,9 @@ export default async function CustomerOrderPage({
   const active = customer.status === "active";
   const status = order.status;
   const lastPayment = order.payments.at(-1);
-  const hasConfirmedPayment = order.payments.some((p) => p.status === "confirmed");
+  const hasConfirmedPayment = order.payments.some(
+    (p) => p.status === "confirmed",
+  );
   const canEdit = active && isEditableOrder(status);
   const canUploadProof = active && status === "registered";
   const canCancel =
@@ -49,7 +51,10 @@ export default async function CustomerOrderPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/mi-cuenta" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
+      <Link
+        href="/mi-cuenta"
+        className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm"
+      >
         <ArrowLeftIcon className="size-4" aria-hidden />
         Mis pedidos
       </Link>
@@ -61,12 +66,16 @@ export default async function CustomerOrderPage({
         </div>
         <p className="text-muted-foreground">{ORDER_STATUS_HINTS[status]}</p>
         <p className="text-lg font-medium">
-          {order.received_packages} de {order.expected_packages} paquetes recibidos
+          {order.received_packages} de {order.expected_packages} paquetes
+          recibidos
         </p>
       </header>
 
       {lastPayment?.status === "rejected" && status === "registered" ? (
-        <div role="alert" className="bg-destructive/10 text-destructive space-y-1 rounded-lg p-4">
+        <div
+          role="alert"
+          className="bg-destructive/10 text-destructive space-y-1 rounded-lg p-4"
+        >
           <p className="font-medium">No pudimos confirmar tu pago.</p>
           <p>Motivo: {lastPayment.rejection_reason}</p>
           <p>Sube un nuevo comprobante para que tu pedido avance.</p>
@@ -89,7 +98,8 @@ export default async function CustomerOrderPage({
 
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">
-          Paquetes recibidos ({order.received_packages} de {order.expected_packages})
+          Paquetes recibidos ({order.received_packages} de{" "}
+          {order.expected_packages})
         </h2>
         <PackageGallery packages={order.packages} />
       </section>
@@ -120,9 +130,13 @@ export default async function CustomerOrderPage({
               <li key={payment.id} className="space-y-1 p-4">
                 <p className="flex justify-between gap-2">
                   <span>{formatMoney(payment.amount_cents)}</span>
-                  <span className="font-medium">{PAYMENT_STATUS_LABELS[payment.status]}</span>
+                  <span className="font-medium">
+                    {PAYMENT_STATUS_LABELS[payment.status]}
+                  </span>
                 </p>
-                <p className="text-muted-foreground text-sm">{formatDateTime(payment.created_at)}</p>
+                <p className="text-muted-foreground text-sm">
+                  {formatDateTime(payment.created_at)}
+                </p>
                 {payment.rejection_reason ? (
                   <p className="text-sm">Motivo: {payment.rejection_reason}</p>
                 ) : null}

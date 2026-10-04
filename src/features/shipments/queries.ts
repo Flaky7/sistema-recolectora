@@ -36,11 +36,17 @@ export async function listShipments({ q, type, status }: ShipmentFilters = {}) {
       .limit(50);
     const customerIds = (customers ?? []).map((c) => c.id);
     const { data: orders } = customerIds.length
-      ? await supabase.from("orders").select("id").in("customer_id", customerIds).limit(500)
+      ? await supabase
+          .from("orders")
+          .select("id")
+          .in("customer_id", customerIds)
+          .limit(500)
       : { data: [] as { id: string }[] };
     const orderIds = (orders ?? []).map((o) => o.id);
     query = orderIds.length
-      ? query.or(`tracking_number.ilike.%${term}%,order_id.in.(${orderIds.join(",")})`)
+      ? query.or(
+          `tracking_number.ilike.%${term}%,order_id.in.(${orderIds.join(",")})`,
+        )
       : query.ilike("tracking_number", `%${term}%`);
   }
 

@@ -3,7 +3,8 @@ import type { Database } from "@/lib/supabase/database.types";
 export type BazaarStatus = Database["public"]["Enums"]["bazaar_status"];
 export type ProposalStatus = Database["public"]["Enums"]["proposal_status"];
 export type DocumentStatus = Database["public"]["Enums"]["document_status"];
-export type BazaarDocumentType = Database["public"]["Enums"]["bazaar_document_type"];
+export type BazaarDocumentType =
+  Database["public"]["Enums"]["bazaar_document_type"];
 
 export const BAZAAR_STATUS_LABELS: Record<BazaarStatus, string> = {
   draft: "Registro incompleto",
@@ -16,10 +17,13 @@ export const BAZAAR_STATUS_LABELS: Record<BazaarStatus, string> = {
 
 /** What each status means for the bazaar (US4, scenario 3). */
 export const BAZAAR_STATUS_HINTS: Record<BazaarStatus, string> = {
-  draft: "Completa tu ficha y envíala a revisión. Mientras tanto nadie más la ve.",
-  pending_review: "La recolectora está revisando tu registro. Te avisaremos cuando lo apruebe.",
+  draft:
+    "Completa tu ficha y envíala a revisión. Mientras tanto nadie más la ve.",
+  pending_review:
+    "La recolectora está revisando tu registro. Te avisaremos cuando lo apruebe.",
   approved: "Tu bazar aparece en el directorio.",
-  rejected: "Corrige lo que se indica en el motivo y vuelve a enviar tu registro.",
+  rejected:
+    "Corrige lo que se indica en el motivo y vuelve a enviar tu registro.",
   suspended:
     "Tu bazar está dado de baja temporalmente y no aparece en el directorio. Contacta a la recolectora.",
   deleted: "Este bazar fue eliminado.",

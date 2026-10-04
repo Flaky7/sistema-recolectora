@@ -95,7 +95,9 @@ export async function signUpCustomer(
         fieldErrors: { password: ["Elige una contraseña más segura."] },
       });
     }
-    return fail("No pudimos crear tu cuenta. Revisa tus datos e intenta de nuevo.");
+    return fail(
+      "No pudimos crear tu cuenta. Revisa tus datos e intenta de nuevo.",
+    );
   }
   return ok({ needsEmailConfirmation: true });
 }

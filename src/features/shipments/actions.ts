@@ -2,7 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 
-import { fail, fromDatabaseError, fromZodError, ok, type ActionResult } from "@/lib/action-result";
+import {
+  fail,
+  fromDatabaseError,
+  fromZodError,
+  ok,
+  type ActionResult,
+} from "@/lib/action-result";
 import { authorize } from "@/lib/auth/session";
 import { notify } from "@/lib/notifications";
 import type { DeliveryResult } from "@/lib/notifications/types";
@@ -45,14 +51,18 @@ export async function markOrderComplete(
     .select("id, received_packages, expected_packages")
     .eq("folio", parsed.data.folio)
     .maybeSingle();
-  if (!summary?.id) return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
+  if (!summary?.id)
+    return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
 
   const received = summary.received_packages ?? 0;
   const expected = summary.expected_packages ?? 0;
   if (received < expected && !parsed.data.confirmIncomplete) {
-    return fail(`Llegaron ${received} de ${expected} paquetes. ¿Marcar el pedido como completo?`, {
-      code: "INCOMPLETE_PACKAGES",
-    });
+    return fail(
+      `Llegaron ${received} de ${expected} paquetes. ¿Marcar el pedido como completo?`,
+      {
+        code: "INCOMPLETE_PACKAGES",
+      },
+    );
   }
 
   const { data, error } = await auth.supabase
@@ -69,7 +79,9 @@ export async function markOrderComplete(
 /** FR-021, FR-022: registers the shipment (order -> shipped) and prepares the WhatsApp message. */
 export async function registerShipment(
   input: RegisterShipmentInput,
-): Promise<ActionResult<{ shipment: Shipment; notification: DeliveryResult | null }>> {
+): Promise<
+  ActionResult<{ shipment: Shipment; notification: DeliveryResult | null }>
+> {
   const auth = await authorize("collector");
   if (!auth.ok) return auth.result;
   const parsed = registerShipmentSchema.safeParse(input);
@@ -79,7 +91,9 @@ export async function registerShipment(
 
   const { data: order } = await supabase
     .from("orders")
-    .select("id, folio, customer:customers(id, full_name, whatsapp, profile_id)")
+    .select(
+      "id, folio, customer:customers(id, full_name, whatsapp, profile_id)",
+    )
     .eq("folio", data.folio)
     .maybeSingle();
   if (!order) return fail("No encontramos ese pedido.", { code: "NOT_FOUND" });
@@ -98,7 +112,8 @@ export async function registerShipment(
     .select()
     .single();
   if (error) {
-    if (error.code === "23505") return fail("Este pedido ya tiene un envío registrado.");
+    if (error.code === "23505")
+      return fail("Este pedido ya tiene un envío registrado.");
     return fromDatabaseError(error);
   }
 

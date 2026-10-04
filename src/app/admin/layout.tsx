@@ -12,7 +12,9 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           <Brand href="/admin" />
         </div>
       </header>
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-6 pb-24">{children}</main>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-6 pb-24">
+        {children}
+      </main>
       <AdminNav signOut={<SignOutButton />} />
     </>
   );

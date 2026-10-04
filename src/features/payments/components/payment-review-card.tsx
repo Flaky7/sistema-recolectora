@@ -31,13 +31,18 @@ export type PaymentReviewItem = {
  */
 export function PaymentReviewCard({ payment }: { payment: PaymentReviewItem }) {
   const router = useRouter();
-  const [done, setDone] = useState<{ label: string; notification: DeliveryResult | null } | null>(
-    null,
-  );
+  const [done, setDone] = useState<{
+    label: string;
+    notification: DeliveryResult | null;
+  } | null>(null);
   const [confirming, setConfirming] = useState(false);
 
   async function decide(decision: "confirm" | "reject", reason?: string) {
-    const result = await reviewPayment({ paymentId: payment.id, decision, reason });
+    const result = await reviewPayment({
+      paymentId: payment.id,
+      decision,
+      reason,
+    });
     if (!result.ok) return result.error;
     const label = decision === "confirm" ? "Pago confirmado" : "Pago rechazado";
     toast.success(`${label}. Pedido #${payment.folio}.`);
@@ -57,22 +62,33 @@ export function PaymentReviewCard({ payment }: { payment: PaymentReviewItem }) {
     <article className="space-y-3 rounded-xl border p-4">
       <header className="flex items-start justify-between gap-3">
         <div>
-          <Link href={`/admin/pedidos/${payment.folio}`} className="inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline">
+          <Link
+            href={`/admin/pedidos/${payment.folio}`}
+            className="inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline"
+          >
             Pedido #{payment.folio}
           </Link>
           <p className="text-sm">
-            {payment.customerName} · <span className="font-mono">{payment.customerCode}</span>
+            {payment.customerName} ·{" "}
+            <span className="font-mono">{payment.customerCode}</span>
           </p>
-          <p className="text-muted-foreground text-sm">{formatDateTime(payment.createdAt)}</p>
+          <p className="text-muted-foreground text-sm">
+            {formatDateTime(payment.createdAt)}
+          </p>
         </div>
-        <p className="text-lg font-semibold">{formatMoney(payment.amountCents)}</p>
+        <p className="text-lg font-semibold">
+          {formatMoney(payment.amountCents)}
+        </p>
       </header>
 
       {done ? (
         <div className="space-y-3">
           <p className="font-medium">{done.label}</p>
           {done.notification ? (
-            <OpenWhatsApp result={done.notification} title="Avisa a la clienta por WhatsApp" />
+            <OpenWhatsApp
+              result={done.notification}
+              title="Avisa a la clienta por WhatsApp"
+            />
           ) : null}
         </div>
       ) : (
@@ -92,7 +108,12 @@ export function PaymentReviewCard({ payment }: { payment: PaymentReviewItem }) {
               confirmLabel="Rechazar pago"
               onConfirm={(reason) => decide("reject", reason)}
             />
-            <Button type="button" size="touch" onClick={confirm} disabled={confirming}>
+            <Button
+              type="button"
+              size="touch"
+              onClick={confirm}
+              disabled={confirming}
+            >
               <CheckIcon aria-hidden />
               {confirming ? "Confirmando…" : "Confirmar"}
             </Button>

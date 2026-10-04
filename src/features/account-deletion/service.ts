@@ -1,6 +1,11 @@
 import "server-only";
 
-import { fail, fromDatabaseError, ok, type ActionResult } from "@/lib/action-result";
+import {
+  fail,
+  fromDatabaseError,
+  ok,
+  type ActionResult,
+} from "@/lib/action-result";
 import { deleteAuthUser, deleteStorageObjects } from "@/lib/supabase/admin";
 import type { ServerClient } from "@/lib/supabase/server";
 
@@ -16,14 +21,20 @@ async function deleteFiles(files: FileRef[]) {
   const byBucket = new Map<string, string[]>();
   for (const file of files) {
     if (!file.path) continue;
-    byBucket.set(file.bucket, [...(byBucket.get(file.bucket) ?? []), file.path]);
+    byBucket.set(file.bucket, [
+      ...(byBucket.get(file.bucket) ?? []),
+      file.path,
+    ]);
   }
   for (const [bucket, paths] of byBucket) {
     await deleteStorageObjects(bucket, paths);
   }
 }
 
-async function finish(files: FileRef[], userId: string | null): Promise<ActionResult<Record<string, never>>> {
+async function finish(
+  files: FileRef[],
+  userId: string | null,
+): Promise<ActionResult<Record<string, never>>> {
   try {
     await deleteFiles(files);
     if (userId) await deleteAuthUser(userId);
@@ -45,9 +56,12 @@ export async function deleteCustomerWith(
     .select("id, profile_id")
     .eq("id", customerId)
     .maybeSingle();
-  if (!customer) return fail("No encontramos a la clienta.", { code: "NOT_FOUND" });
+  if (!customer)
+    return fail("No encontramos a la clienta.", { code: "NOT_FOUND" });
 
-  const { data: files, error } = await supabase.rpc("anonymize_customer", { customer_id: customerId });
+  const { data: files, error } = await supabase.rpc("anonymize_customer", {
+    customer_id: customerId,
+  });
   if (error) return fromDatabaseError(error);
   return finish(files ?? [], customer.profile_id);
 }
@@ -63,7 +77,9 @@ export async function deleteBazaarWith(
     .maybeSingle();
   if (!bazaar) return fail("No encontramos el bazar.", { code: "NOT_FOUND" });
 
-  const { data: files, error } = await supabase.rpc("anonymize_bazaar", { bazaar_id: bazaarId });
+  const { data: files, error } = await supabase.rpc("anonymize_bazaar", {
+    bazaar_id: bazaarId,
+  });
   if (error) return fromDatabaseError(error);
   return finish(files ?? [], bazaar.profile_id);
 }
@@ -78,7 +94,11 @@ export async function deleteOwnAccountWith(
   role: "customer" | "bazaar",
 ): Promise<ActionResult<Record<string, never>>> {
   const table = role === "customer" ? "customers" : "bazaars";
-  const { data: own } = await supabase.from(table).select("id").eq("profile_id", userId).maybeSingle();
+  const { data: own } = await supabase
+    .from(table)
+    .select("id")
+    .eq("profile_id", userId)
+    .maybeSingle();
   if (!own) return finish([], userId);
   return role === "customer"
     ? deleteCustomerWith(supabase, own.id)

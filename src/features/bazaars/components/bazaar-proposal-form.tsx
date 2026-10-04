@@ -14,7 +14,12 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { BUCKETS } from "@/lib/uploads/paths";
 import { uploadFile, UploadError } from "@/lib/uploads/upload";
@@ -25,7 +30,12 @@ export type ProposalPhoto = { path: string; url: string };
 
 type Props = {
   bazaarId: string;
-  defaults: { name: string; brands: string[]; linkUrl: string; photos: ProposalPhoto[] };
+  defaults: {
+    name: string;
+    brands: string[];
+    linkUrl: string;
+    photos: ProposalPhoto[];
+  };
   /** "registration": saved as part of the first submission; "change": the approved bazaar
    * proposes a change and sends it for authorization (FR-029). */
   mode: "registration" | "change";
@@ -36,7 +46,12 @@ type Props = {
  * Name, brands as tags, link and 0 to 3 optional photos that can be removed and reordered.
  * Photos go to the private bucket; nothing is public until the collector authorizes (FR-030).
  */
-export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) {
+export function BazaarProposalForm({
+  bazaarId,
+  defaults,
+  mode,
+  onDone,
+}: Props) {
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
   const [name, setName] = useState(defaults.name);
@@ -67,9 +82,16 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
         folder: bazaarId,
         kind: "image",
       });
-      setPhotos((current) => [...current, { path, url: URL.createObjectURL(file) }]);
+      setPhotos((current) => [
+        ...current,
+        { path, url: URL.createObjectURL(file) },
+      ]);
     } catch (cause) {
-      toast.error(cause instanceof UploadError ? cause.message : "No se pudo subir la foto.");
+      toast.error(
+        cause instanceof UploadError
+          ? cause.message
+          : "No se pudo subir la foto.",
+      );
     } finally {
       setUploading(false);
       if (fileInput.current) fileInput.current.value = "";
@@ -96,7 +118,11 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
     if (!result.ok) {
       setSaving(false);
       setErrors(result.fieldErrors ?? {});
-      setError(result.code === "VALIDATION" ? "Revisa los datos marcados." : result.error);
+      setError(
+        result.code === "VALIDATION"
+          ? "Revisa los datos marcados."
+          : result.error,
+      );
       return;
     }
     setBrandDraft("");
@@ -107,7 +133,9 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
         setError(sent.error);
         return;
       }
-      toast.success("Cambio enviado. Se publicará cuando la recolectora lo autorice.");
+      toast.success(
+        "Cambio enviado. Se publicará cuando la recolectora lo autorice.",
+      );
     } else {
       setSaving(false);
       toast.success("Datos públicos guardados.");
@@ -120,7 +148,13 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
     <div className="space-y-5">
       <Field data-invalid={Boolean(errors.name)}>
         <FieldLabel htmlFor="bazaar-name">Nombre del bazar</FieldLabel>
-        <Input id="bazaar-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} aria-invalid={Boolean(errors.name)} />
+        <Input
+          id="bazaar-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={80}
+          aria-invalid={Boolean(errors.name)}
+        />
         <FieldError>{errors.name?.[0]}</FieldError>
       </Field>
 
@@ -136,7 +170,7 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
                     type="button"
                     variant="ghost"
                     size="icon-lg"
-                  className="size-11"
+                    className="size-11"
                     onClick={() => setBrands(brands.filter((b) => b !== brand))}
                     aria-label={`Quitar ${brand}`}
                   >
@@ -162,7 +196,12 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
             maxLength={40}
             aria-invalid={Boolean(errors.brands)}
           />
-          <Button type="button" variant="outline" size="touch" onClick={addBrand}>
+          <Button
+            type="button"
+            variant="outline"
+            size="touch"
+            onClick={addBrand}
+          >
             <PlusIcon aria-hidden />
             Agregar
           </Button>
@@ -171,7 +210,9 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
       </Field>
 
       <Field data-invalid={Boolean(errors.linkUrl)}>
-        <FieldLabel htmlFor="bazaar-link">Link de tu página o perfil</FieldLabel>
+        <FieldLabel htmlFor="bazaar-link">
+          Link de tu página o perfil
+        </FieldLabel>
         <Input
           id="bazaar-link"
           type="url"
@@ -187,7 +228,8 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
       <Field>
         <FieldLabel>Fotos (opcionales, hasta 3)</FieldLabel>
         <FieldDescription>
-          Las fotos son opcionales; los cambios se publican cuando la recolectora los autorice.
+          Las fotos son opcionales; los cambios se publican cuando la
+          recolectora los autorice.
         </FieldDescription>
         {photos.length > 0 ? (
           <ol className="grid grid-cols-3 gap-2" aria-label="Fotos propuestas">
@@ -200,13 +242,35 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
                   className="bg-muted aspect-square w-full rounded-lg object-cover"
                 />
                 <div className="flex justify-center gap-1">
-                  <Button type="button" variant="ghost" size="icon-lg" disabled={index === 0} onClick={() => move(index, -1)} aria-label={`Mover foto ${index + 1} antes`}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-lg"
+                    disabled={index === 0}
+                    onClick={() => move(index, -1)}
+                    aria-label={`Mover foto ${index + 1} antes`}
+                  >
                     <ArrowUpIcon />
                   </Button>
-                  <Button type="button" variant="ghost" size="icon-lg" disabled={index === photos.length - 1} onClick={() => move(index, 1)} aria-label={`Mover foto ${index + 1} después`}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-lg"
+                    disabled={index === photos.length - 1}
+                    onClick={() => move(index, 1)}
+                    aria-label={`Mover foto ${index + 1} después`}
+                  >
                     <ArrowDownIcon />
                   </Button>
-                  <Button type="button" variant="ghost" size="icon-lg" onClick={() => setPhotos(photos.filter((p) => p.path !== photo.path))} aria-label={`Quitar foto ${index + 1}`}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-lg"
+                    onClick={() =>
+                      setPhotos(photos.filter((p) => p.path !== photo.path))
+                    }
+                    aria-label={`Quitar foto ${index + 1}`}
+                  >
                     <XIcon />
                   </Button>
                 </div>
@@ -223,25 +287,51 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
           onChange={(e) => addPhoto(e.target.files?.[0])}
         />
         {photos.length < 3 ? (
-          <Button type="button" variant="outline" size="touch" className="w-full" disabled={uploading} onClick={() => fileInput.current?.click()}>
-            {uploading ? <Loader2Icon className="animate-spin" aria-hidden /> : <ImagePlusIcon aria-hidden />}
+          <Button
+            type="button"
+            variant="outline"
+            size="touch"
+            className="w-full"
+            disabled={uploading}
+            onClick={() => fileInput.current?.click()}
+          >
+            {uploading ? (
+              <Loader2Icon className="animate-spin" aria-hidden />
+            ) : (
+              <ImagePlusIcon aria-hidden />
+            )}
             {uploading ? "Subiendo…" : "Agregar foto"}
           </Button>
         ) : null}
       </Field>
 
       {error ? (
-        <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-3 text-sm">
+        <p
+          role="alert"
+          className="bg-destructive/10 text-destructive rounded-lg p-3 text-sm"
+        >
           {error}
         </p>
       ) : null}
 
       {mode === "change" ? (
-        <Button type="button" size="touch" className="w-full" onClick={() => save(true)} disabled={saving || uploading}>
+        <Button
+          type="button"
+          size="touch"
+          className="w-full"
+          onClick={() => save(true)}
+          disabled={saving || uploading}
+        >
           {saving ? "Enviando…" : "Enviar cambio a revisión"}
         </Button>
       ) : (
-        <Button type="button" size="touch" className="w-full" onClick={() => save(false)} disabled={saving || uploading}>
+        <Button
+          type="button"
+          size="touch"
+          className="w-full"
+          onClick={() => save(false)}
+          disabled={saving || uploading}
+        >
           {saving ? "Guardando…" : "Guardar datos públicos"}
         </Button>
       )}

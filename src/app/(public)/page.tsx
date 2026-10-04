@@ -20,10 +20,12 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
         </p>
       ) : null}
       <section className="space-y-3">
-        <h1 className="text-2xl font-semibold sm:text-3xl">Directorio de bazares</h1>
+        <h1 className="text-2xl font-semibold sm:text-3xl">
+          Directorio de bazares
+        </h1>
         <p className="text-muted-foreground">
-          Compra en tus bazares favoritos de Facebook; nosotros recibimos tus paquetes y te los
-          enviamos juntos.
+          Compra en tus bazares favoritos de Facebook; nosotros recibimos tus
+          paquetes y te los enviamos juntos.
         </p>
         <div className="grid grid-cols-2 gap-2 sm:max-w-md">
           <Button asChild variant="outline" size="touch">
@@ -46,13 +48,19 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
       </Suspense>
 
       {bazaars.length === 0 ? (
-        <p role="status" className="text-muted-foreground rounded-xl border border-dashed p-8 text-center">
+        <p
+          role="status"
+          className="text-muted-foreground rounded-xl border border-dashed p-8 text-center"
+        >
           {term
             ? "No encontramos bazares con esa búsqueda."
             : "Todavía no hay bazares en el directorio."}
         </p>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Bazares">
+        <ul
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          aria-label="Bazares"
+        >
           {bazaars.map((bazaar) => (
             <li key={bazaar.id}>
               <BazaarCard

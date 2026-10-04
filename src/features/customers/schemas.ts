@@ -23,7 +23,10 @@ const contactFields = {
 /** FR-005. A boolean (not a literal) so forms can start unchecked. */
 export const acceptPrivacySchema = z
   .boolean({ error: "Debes aceptar el aviso de privacidad para registrarte." })
-  .refine((value) => value, "Debes aceptar el aviso de privacidad para registrarte.");
+  .refine(
+    (value) => value,
+    "Debes aceptar el aviso de privacidad para registrarte.",
+  );
 
 const optionalCustomerCode = z
   .union([z.literal(""), customerCode])

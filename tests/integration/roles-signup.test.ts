@@ -23,12 +23,17 @@ async function signUp(metadata: Record<string, unknown>) {
 
 describe("sign-up and roles (FR-003)", () => {
   it("rejects signing up as collector", async () => {
-    const { error } = await signUp({ role: "collector", privacy_accepted: true });
+    const { error } = await signUp({
+      role: "collector",
+      privacy_accepted: true,
+    });
     expect(error).not.toBeNull();
   });
 
   it("rejects an unknown or missing role", async () => {
-    expect((await signUp({ role: "admin", privacy_accepted: true })).error).not.toBeNull();
+    expect(
+      (await signUp({ role: "admin", privacy_accepted: true })).error,
+    ).not.toBeNull();
     expect((await signUp({ privacy_accepted: true })).error).not.toBeNull();
   });
 
@@ -46,7 +51,9 @@ describe("sign-up and roles (FR-003)", () => {
   it("creates profile and customer with a 5-character code", async () => {
     const user = await createTestUser("customer");
     const admin = adminClient();
-    const profile = must(await admin.from("profiles").select().eq("id", user.id).single());
+    const profile = must(
+      await admin.from("profiles").select().eq("id", user.id).single(),
+    );
     expect(profile.role).toBe("customer");
     expect(profile.privacy_accepted_at).not.toBeNull();
 
@@ -60,7 +67,11 @@ describe("sign-up and roles (FR-003)", () => {
   it("creates a bazaar in draft without published data", async () => {
     const user = await createTestUser("bazaar");
     const bazaar = must(
-      await adminClient().from("bazaars").select().eq("profile_id", user.id).single(),
+      await adminClient()
+        .from("bazaars")
+        .select()
+        .eq("profile_id", user.id)
+        .single(),
     );
     expect(bazaar.status).toBe("draft");
     expect(bazaar.name).toBeNull();
@@ -71,9 +82,16 @@ describe("sign-up and roles (FR-003)", () => {
   it("does not let any user change their role", async () => {
     for (const role of ["customer", "bazaar", "collector"] as const) {
       const user = await createTestUser(role);
-      await user.client.from("profiles").update({ role: "collector" }).eq("id", user.id);
+      await user.client
+        .from("profiles")
+        .update({ role: "collector" })
+        .eq("id", user.id);
       const profile = must(
-        await adminClient().from("profiles").select("role").eq("id", user.id).single(),
+        await adminClient()
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single(),
       );
       expect(profile.role).toBe(role);
     }
@@ -81,9 +99,13 @@ describe("sign-up and roles (FR-003)", () => {
 
   it("does not expose promote_to_collector through the API", async () => {
     const user = await createTestUser("customer");
-    const { error } = await user.client.rpc("promote_to_collector", { email: user.email });
+    const { error } = await user.client.rpc("promote_to_collector", {
+      email: user.email,
+    });
     expect(error).not.toBeNull();
-    const anon = await anonClient().rpc("promote_to_collector", { email: user.email });
+    const anon = await anonClient().rpc("promote_to_collector", {
+      email: user.email,
+    });
     expect(anon.error).not.toBeNull();
   });
 });

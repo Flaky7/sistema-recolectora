@@ -3,12 +3,24 @@ import { expect, test } from "@playwright/test";
 import { adminClient } from "../helpers/supabase";
 
 import { fixture, SEED_USERS, signIn, signOut } from "./helpers/auth";
-import { approveBazaar, registerCompleteBazaar, uniqueBazaarName } from "./helpers/bazaar";
+import {
+  approveBazaar,
+  registerCompleteBazaar,
+  uniqueBazaarName,
+} from "./helpers/bazaar";
 
 async function proofOfAddressRows(email: string) {
   const admin = adminClient();
-  const { data: profile } = await admin.from("profiles").select("id").eq("email", email).single();
-  const { data: bazaar } = await admin.from("bazaars").select("id").eq("profile_id", profile!.id).single();
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .single();
+  const { data: bazaar } = await admin
+    .from("bazaars")
+    .select("id")
+    .eq("profile_id", profile!.id)
+    .single();
   const { data } = await admin
     .from("bazaar_documents")
     .select("id, status, storage_path")
@@ -19,7 +31,9 @@ async function proofOfAddressRows(email: string) {
 
 async function fileExists(path: string) {
   const [folder, name] = path.split("/") as [string, string];
-  const { data } = await adminClient().storage.from("bazaar-documents").list(folder, { search: name });
+  const { data } = await adminClient()
+    .storage.from("bazaar-documents")
+    .list(folder, { search: name });
   return (data ?? []).some((f) => f.name === name);
 }
 
@@ -52,28 +66,42 @@ test("nuevo comprobante → rechazado con motivo → otro → autorizado; el ant
   await signOut(page);
   await signIn(page, SEED_USERS.collector, "collector");
   await page.goto("/admin/bazares?estado=cambios");
-  await page.getByRole("link", { name: new RegExp(name) }).first().click();
+  await page
+    .getByRole("link", { name: new RegExp(name) })
+    .first()
+    .click();
   await expect(page.getByRole("button", { name: "Ver vigente" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Ver nuevo" })).toBeVisible();
   await page.getByRole("button", { name: "Rechazar" }).click();
   await page.getByLabel("Motivo del rechazo").fill("La dirección no se lee");
   await page.getByRole("button", { name: "Rechazar" }).last().click();
-  await expect(page.getByRole("heading", { name: "Documentos por autorizar" })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Documentos por autorizar" }),
+  ).toHaveCount(0);
 
   await signOut(page);
   await signIn(page, email, "bazaar");
-  await expect(slot.getByText("Rechazado: La dirección no se lee")).toBeVisible();
+  await expect(
+    slot.getByText("Rechazado: La dirección no se lee"),
+  ).toBeVisible();
   const afterReject = await proofOfAddressRows(email);
-  expect(afterReject.find((d) => d.status === "current")?.id).toBe(original!.id);
+  expect(afterReject.find((d) => d.status === "current")?.id).toBe(
+    original!.id,
+  );
 
   await upload();
 
   await signOut(page);
   await signIn(page, SEED_USERS.collector, "collector");
   await page.goto("/admin/bazares?estado=cambios");
-  await page.getByRole("link", { name: new RegExp(name) }).first().click();
+  await page
+    .getByRole("link", { name: new RegExp(name) })
+    .first()
+    .click();
   await page.getByRole("button", { name: "Autorizar" }).click();
-  await expect(page.getByRole("heading", { name: "Documentos por autorizar" })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Documentos por autorizar" }),
+  ).toHaveCount(0);
 
   const final = await proofOfAddressRows(email);
   const current = final.filter((d) => d.status === "current");

@@ -18,7 +18,10 @@ const valid = {
 
 describe("bazaarProposalSchema (FR-024)", () => {
   it("accepts a profile without photos", () => {
-    expect(bazaarProposalSchema.parse({ ...valid, photoPaths: undefined }).photoPaths).toEqual([]);
+    expect(
+      bazaarProposalSchema.parse({ ...valid, photoPaths: undefined })
+        .photoPaths,
+    ).toEqual([]);
   });
 
   it.each([
@@ -32,7 +35,9 @@ describe("bazaarProposalSchema (FR-024)", () => {
     ["linkUrl", "facebook.com/bazar"],
     ["photoPaths", ["a", "b", "c", "d"]],
   ])("rejects %s = %j", (field, value) => {
-    expect(bazaarProposalSchema.safeParse({ ...valid, [field]: value }).success).toBe(false);
+    expect(
+      bazaarProposalSchema.safeParse({ ...valid, [field]: value }).success,
+    ).toBe(false);
   });
 
   it("accepts boundaries: 2 and 80 characters, 30 brands of 40, 3 photos", () => {
@@ -44,7 +49,10 @@ describe("bazaarProposalSchema (FR-024)", () => {
         photoPaths: ["a", "b", "c"],
       }).success,
     ).toBe(true);
-    expect(bazaarProposalSchema.safeParse({ ...valid, name: "x".repeat(80) }).success).toBe(true);
+    expect(
+      bazaarProposalSchema.safeParse({ ...valid, name: "x".repeat(80) })
+        .success,
+    ).toBe(true);
   });
 });
 
@@ -62,11 +70,16 @@ describe("bazaarReferencesSchema", () => {
   const ref = { fullName: "Ana López", phone: "664 123 4567" };
 
   it("requires exactly 3 references", () => {
-    expect(bazaarReferencesSchema.safeParse({ references: [ref, ref, ref] }).success).toBe(true);
-    expect(bazaarReferencesSchema.safeParse({ references: [ref, ref] }).success).toBe(false);
-    expect(bazaarReferencesSchema.safeParse({ references: [ref, ref, ref, ref] }).success).toBe(
-      false,
-    );
+    expect(
+      bazaarReferencesSchema.safeParse({ references: [ref, ref, ref] }).success,
+    ).toBe(true);
+    expect(
+      bazaarReferencesSchema.safeParse({ references: [ref, ref] }).success,
+    ).toBe(false);
+    expect(
+      bazaarReferencesSchema.safeParse({ references: [ref, ref, ref, ref] })
+        .success,
+    ).toBe(false);
   });
 
   it("validates name (2–120) and a 10-digit phone", () => {
@@ -77,31 +90,45 @@ describe("bazaarReferencesSchema", () => {
     ];
     for (const reference of bad) {
       expect(
-        bazaarReferencesSchema.safeParse({ references: [reference, ref, ref] }).success,
+        bazaarReferencesSchema.safeParse({ references: [reference, ref, ref] })
+          .success,
       ).toBe(false);
     }
-    expect(bazaarReferencesSchema.parse({ references: [ref, ref, ref] }).references[0]?.phone).toBe(
-      "6641234567",
-    );
+    expect(
+      bazaarReferencesSchema.parse({ references: [ref, ref, ref] })
+        .references[0]?.phone,
+    ).toBe("6641234567");
   });
 });
 
 describe("signUpBazaarSchema and reviewBazaarSchema", () => {
   it("requires accepting the privacy notice", () => {
     expect(
-      signUpBazaarSchema.safeParse({ email: "a@b.mx", password: "secreta123", acceptPrivacy: false })
-        .success,
+      signUpBazaarSchema.safeParse({
+        email: "a@b.mx",
+        password: "secreta123",
+        acceptPrivacy: false,
+      }).success,
     ).toBe(false);
   });
 
   it("requires a reason to reject or suspend", () => {
     const base = { bazaarId };
-    expect(reviewBazaarSchema.safeParse({ ...base, decision: "approve" }).success).toBe(true);
-    expect(reviewBazaarSchema.safeParse({ ...base, decision: "reject" }).success).toBe(false);
-    expect(reviewBazaarSchema.safeParse({ ...base, decision: "suspend" }).success).toBe(false);
     expect(
-      reviewBazaarSchema.safeParse({ ...base, decision: "suspend", reason: "Fotos inapropiadas" })
-        .success,
+      reviewBazaarSchema.safeParse({ ...base, decision: "approve" }).success,
+    ).toBe(true);
+    expect(
+      reviewBazaarSchema.safeParse({ ...base, decision: "reject" }).success,
+    ).toBe(false);
+    expect(
+      reviewBazaarSchema.safeParse({ ...base, decision: "suspend" }).success,
+    ).toBe(false);
+    expect(
+      reviewBazaarSchema.safeParse({
+        ...base,
+        decision: "suspend",
+        reason: "Fotos inapropiadas",
+      }).success,
     ).toBe(true);
   });
 });

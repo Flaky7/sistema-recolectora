@@ -24,7 +24,9 @@ export function DirectorySearch() {
       if (term) params.set("q", term);
       else params.delete("q");
       const query = params.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
     }, 300);
     return () => clearTimeout(timer);
   }, [value, pathname, router, searchParams]);

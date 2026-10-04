@@ -68,7 +68,9 @@ export function ReasonDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          {description ? <AlertDialogDescription>{description}</AlertDialogDescription> : null}
+          {description ? (
+            <AlertDialogDescription>{description}</AlertDialogDescription>
+          ) : null}
         </AlertDialogHeader>
         <Field data-invalid={Boolean(error)}>
           <FieldLabel htmlFor="reason-dialog-text">{reasonLabel}</FieldLabel>

@@ -5,7 +5,7 @@ Detalles de datos y contratos: [data-model.md](./data-model.md), [contracts/](./
 
 ## Requisitos
 
-- Node.js 22 LTS y pnpm 9
+- Node.js 22 LTS o más reciente y pnpm 10
 - Docker Desktop (para Supabase local)
 - Supabase CLI (`pnpm dlx supabase --version`)
 - Navegadores de Playwright (`pnpm exec playwright install --with-deps chromium`)

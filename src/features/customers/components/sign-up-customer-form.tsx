@@ -54,8 +54,8 @@ export function SignUpCustomerForm() {
         <MailCheckIcon className="text-primary size-8" aria-hidden />
         <h2 className="text-lg font-semibold">Revisa tu correo</h2>
         <p>
-          Te enviamos un enlace a <strong>{sentTo}</strong> para confirmar tu cuenta. Al abrirlo
-          verás tu código de clienta.
+          Te enviamos un enlace a <strong>{sentTo}</strong> para confirmar tu
+          cuenta. Al abrirlo verás tu código de clienta.
         </p>
         <p className="text-muted-foreground text-sm">
           Si no lo ves, busca en la carpeta de correo no deseado.
@@ -67,7 +67,12 @@ export function SignUpCustomerForm() {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <FieldGroup>
-        <TextField form={form} name="fullName" label="Nombre completo" autoComplete="name" />
+        <TextField
+          form={form}
+          name="fullName"
+          label="Nombre completo"
+          autoComplete="name"
+        />
         <TextField
           form={form}
           name="whatsapp"
@@ -118,7 +123,10 @@ export function SignUpCustomerForm() {
         <PrivacyConsent form={form} name="acceptPrivacy" />
 
         {error ? (
-          <div role="alert" className="bg-destructive/10 text-destructive space-y-2 rounded-lg p-3 text-sm">
+          <div
+            role="alert"
+            className="bg-destructive/10 text-destructive space-y-2 rounded-lg p-3 text-sm"
+          >
             <p>{error}</p>
             {errorCode === "ACCOUNT_EXISTS" ? (
               <p className="flex gap-4">
@@ -139,7 +147,9 @@ export function SignUpCustomerForm() {
           className="w-full"
           disabled={form.formState.isSubmitting}
         >
-          {form.formState.isSubmitting ? "Creando tu cuenta…" : "Crear mi cuenta"}
+          {form.formState.isSubmitting
+            ? "Creando tu cuenta…"
+            : "Crear mi cuenta"}
         </Button>
       </FieldGroup>
     </form>

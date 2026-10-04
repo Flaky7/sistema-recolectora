@@ -11,13 +11,17 @@ export default function SignUpCustomerPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Crea tu cuenta de clienta</h1>
         <p className="text-muted-foreground">
-          Recibirás un código para que los bazares lo escriban en la etiqueta de tus paquetes.
+          Recibirás un código para que los bazares lo escriban en la etiqueta de
+          tus paquetes.
         </p>
       </div>
       <SignUpCustomerForm />
       <p className="text-muted-foreground text-center text-sm">
         ¿Ya tienes cuenta?{" "}
-        <Link href="/entrar" className="text-primary underline underline-offset-4">
+        <Link
+          href="/entrar"
+          className="text-primary underline underline-offset-4"
+        >
           Entrar
         </Link>
       </p>

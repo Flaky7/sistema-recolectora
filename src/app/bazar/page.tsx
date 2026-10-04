@@ -10,7 +10,10 @@ import { BazaarProposalForm } from "@/features/bazaars/components/bazaar-proposa
 import { BazaarReferencesForm } from "@/features/bazaars/components/bazaar-references-form";
 import { ProposeChangeSection } from "@/features/bazaars/components/propose-change-section";
 import { SubmitForReviewButton } from "@/features/bazaars/components/submit-for-review-button";
-import { BAZAAR_STATUS_HINTS, BAZAAR_STATUS_LABELS } from "@/features/bazaars/labels";
+import {
+  BAZAAR_STATUS_HINTS,
+  BAZAAR_STATUS_LABELS,
+} from "@/features/bazaars/labels";
 import { getBazaarCompleteness, getMyBazaar } from "@/features/bazaars/queries";
 import { formatDateTime } from "@/lib/format";
 
@@ -20,9 +23,15 @@ function Step({ done, label }: { done: boolean; label: string }) {
   return (
     <li className="flex items-center gap-2">
       {done ? (
-        <CheckCircle2Icon className="size-5 text-emerald-600" aria-label="Listo" />
+        <CheckCircle2Icon
+          className="size-5 text-emerald-600"
+          aria-label="Listo"
+        />
       ) : (
-        <CircleIcon className="text-muted-foreground size-5" aria-label="Pendiente" />
+        <CircleIcon
+          className="text-muted-foreground size-5"
+          aria-label="Pendiente"
+        />
       )}
       {label}
     </li>
@@ -32,7 +41,13 @@ function Step({ done, label }: { done: boolean; label: string }) {
 export default async function BazaarHomePage() {
   const data = await getMyBazaar();
   if (!data) notFound();
-  const { bazaar, published, openProposal, openProposalPhotos, rejectedProposal } = data;
+  const {
+    bazaar,
+    published,
+    openProposal,
+    openProposalPhotos,
+    rejectedProposal,
+  } = data;
   const status = bazaar.status;
   const registering = status === "draft" || status === "rejected";
   const suspended = status === "suspended";
@@ -50,7 +65,10 @@ export default async function BazaarHomePage() {
           name: published.name,
           brands: published.brands,
           linkUrl: published.linkUrl,
-          photos: published.photoPaths.map((path, i) => ({ path, url: published.photoUrls[i]! })),
+          photos: published.photoPaths.map((path, i) => ({
+            path,
+            url: published.photoUrls[i]!,
+          })),
         }
       : { name: "", brands: [], linkUrl: "", photos: [] };
 
@@ -65,21 +83,36 @@ export default async function BazaarHomePage() {
         </div>
         <p className="text-muted-foreground">{BAZAAR_STATUS_HINTS[status]}</p>
         {bazaar.status_reason && (status === "rejected" || suspended) ? (
-          <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-3">
+          <p
+            role="alert"
+            className="bg-destructive/10 text-destructive rounded-lg p-3"
+          >
             Motivo: {bazaar.status_reason}
           </p>
         ) : null}
       </section>
 
       {registering ? (
-        <section className="space-y-3 rounded-xl border p-4" aria-labelledby="steps-title">
+        <section
+          className="space-y-3 rounded-xl border p-4"
+          aria-labelledby="steps-title"
+        >
           <h2 id="steps-title" className="font-semibold">
             Tu registro
           </h2>
           <ol className="space-y-2">
-            <Step done={completeness.hasProfile} label="Datos públicos (nombre, marcas y link)" />
-            <Step done={completeness.documentsReady === 4} label={`Documentos (${completeness.documentsReady} de 4)`} />
-            <Step done={completeness.referencesReady === 3} label={`Referencias (${completeness.referencesReady} de 3)`} />
+            <Step
+              done={completeness.hasProfile}
+              label="Datos públicos (nombre, marcas y link)"
+            />
+            <Step
+              done={completeness.documentsReady === 4}
+              label={`Documentos (${completeness.documentsReady} de 4)`}
+            />
+            <Step
+              done={completeness.referencesReady === 3}
+              label={`Referencias (${completeness.referencesReady} de 3)`}
+            />
             <li className="text-muted-foreground text-sm">Fotos: opcionales</li>
           </ol>
           <SubmitForReviewButton resubmit={status === "rejected"} />
@@ -105,8 +138,12 @@ export default async function BazaarHomePage() {
             <div className="space-y-2 rounded-xl border border-amber-300 p-4">
               <p className="font-semibold">Cambio en revisión</p>
               <p className="text-muted-foreground text-sm">
-                Enviado el {formatDateTime(openProposal.submitted_at ?? openProposal.created_at)}. El
-                directorio muestra tu versión anterior hasta que la recolectora lo autorice.
+                Enviado el{" "}
+                {formatDateTime(
+                  openProposal.submitted_at ?? openProposal.created_at,
+                )}
+                . El directorio muestra tu versión anterior hasta que la
+                recolectora lo autorice.
               </p>
               <BazaarCard
                 name={openProposal.name}
@@ -119,8 +156,12 @@ export default async function BazaarHomePage() {
           ) : null}
 
           {rejectedProposal ? (
-            <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-3">
-              Tu último cambio no se autorizó. Motivo: {rejectedProposal.rejection_reason}
+            <p
+              role="alert"
+              className="bg-destructive/10 text-destructive rounded-lg p-3"
+            >
+              Tu último cambio no se autorizó. Motivo:{" "}
+              {rejectedProposal.rejection_reason}
             </p>
           ) : null}
 
@@ -139,7 +180,11 @@ export default async function BazaarHomePage() {
           <h2 id="profile-title" className="text-xl font-semibold">
             Datos públicos
           </h2>
-          <BazaarProposalForm bazaarId={bazaar.id} defaults={proposalDefaults} mode="registration" />
+          <BazaarProposalForm
+            bazaarId={bazaar.id}
+            defaults={proposalDefaults}
+            mode="registration"
+          />
         </section>
       ) : null}
 
@@ -163,9 +208,14 @@ export default async function BazaarHomePage() {
           Documentos privados
         </h2>
         <p className="text-muted-foreground text-sm">
-          Solo la recolectora puede verlos. Una vez enviados, ni tú puedes abrirlos.
+          Solo la recolectora puede verlos. Una vez enviados, ni tú puedes
+          abrirlos.
         </p>
-        <BazaarDocumentsForm bazaarId={bazaar.id} slots={data.documents} disabled={suspended} />
+        <BazaarDocumentsForm
+          bazaarId={bazaar.id}
+          slots={data.documents}
+          disabled={suspended}
+        />
       </section>
 
       <section className="space-y-3" aria-labelledby="references-title">
@@ -173,11 +223,17 @@ export default async function BazaarHomePage() {
           Referencias
         </h2>
         <BazaarReferencesForm
-          defaults={data.references.map((r) => ({ fullName: r.full_name, phone: r.phone }))}
+          defaults={data.references.map((r) => ({
+            fullName: r.full_name,
+            phone: r.phone,
+          }))}
         />
       </section>
 
-      <section aria-labelledby="delete-title" className="space-y-3 border-t pt-6">
+      <section
+        aria-labelledby="delete-title"
+        className="space-y-3 border-t pt-6"
+      >
         <h2 id="delete-title" className="text-xl font-semibold">
           Eliminar mi cuenta
         </h2>
@@ -185,8 +241,17 @@ export default async function BazaarHomePage() {
           target={{ kind: "self" }}
           triggerLabel="Eliminar mi cuenta"
           title="¿Eliminar la cuenta de tu bazar?"
-          deleted={<p>Tu cuenta, marcas, link, fotos, propuestas, documentos y referencias. Dejas de aparecer en el directorio.</p>}
-          kept={<p>El nombre del bazar en los pedidos anteriores de las clientas.</p>}
+          deleted={
+            <p>
+              Tu cuenta, marcas, link, fotos, propuestas, documentos y
+              referencias. Dejas de aparecer en el directorio.
+            </p>
+          }
+          kept={
+            <p>
+              El nombre del bazar en los pedidos anteriores de las clientas.
+            </p>
+          }
         />
       </section>
     </div>

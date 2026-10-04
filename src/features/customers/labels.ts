@@ -9,7 +9,8 @@ export const CUSTOMER_TYPE_LABELS: Record<CustomerType, string> = {
 };
 
 export const CUSTOMER_TYPE_DESCRIPTIONS: Record<CustomerType, string> = {
-  local: "Vivo en la ciudad de la recolectora; puedo recoger o recibir en persona.",
+  local:
+    "Vivo en la ciudad de la recolectora; puedo recoger o recibir en persona.",
   out_of_town: "Vivo en otra ciudad; mis pedidos se envían por paquetería.",
 };
 

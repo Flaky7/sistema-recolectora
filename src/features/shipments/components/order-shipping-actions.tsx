@@ -46,10 +46,16 @@ export function OrderShippingActions({
   return (
     <div className="space-y-3">
       {notification ? (
-        <OpenWhatsApp result={notification} title="Avisa a la clienta que su pedido va en camino" />
+        <OpenWhatsApp
+          result={notification}
+          title="Avisa a la clienta que su pedido va en camino"
+        />
       ) : null}
       {status === "receiving" ? (
-        <CompleteOrderButton folio={folio} onCompleted={() => router.refresh()} />
+        <CompleteOrderButton
+          folio={folio}
+          onCompleted={() => router.refresh()}
+        />
       ) : null}
       {status === "complete" ? (
         <section className="space-y-3 rounded-xl border p-4">
@@ -66,7 +72,13 @@ export function OrderShippingActions({
         </section>
       ) : null}
       {status === "shipped" ? (
-        <Button type="button" size="touch" className="w-full" onClick={deliver} disabled={delivering}>
+        <Button
+          type="button"
+          size="touch"
+          className="w-full"
+          onClick={deliver}
+          disabled={delivering}
+        >
           {delivering ? "Guardando…" : "Marcar entregado"}
         </Button>
       ) : null}

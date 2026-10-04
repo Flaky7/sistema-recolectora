@@ -16,20 +16,27 @@ test("cuenta → ficha sin fotos → falta un documento → completo → pendien
   await registerBazaarAccount(page);
   await expect(page.getByText("Registro incompleto")).toBeVisible();
 
-  await fillPublicProfile(page, { name: "Bazar Sin Fotos E2E", brands: ["Shein", "Zara"] });
+  await fillPublicProfile(page, {
+    name: "Bazar Sin Fotos E2E",
+    brands: ["Shein", "Zara"],
+  });
   await uploadDocument(page, "id_card");
   await uploadDocument(page, "selfie");
   await uploadDocument(page, "proof_of_address");
   await fillReferences(page);
 
   await page.getByRole("button", { name: "Enviar a revisión" }).click();
-  await expect(page.getByRole("alert").filter({ hasText: "los 4 documentos" })).toBeVisible();
+  await expect(
+    page.getByRole("alert").filter({ hasText: "los 4 documentos" }),
+  ).toBeVisible();
   await expect(page.getByText("Pendiente de revisión")).toHaveCount(0);
 
   await uploadDocument(page, "registration_payment");
   await page.getByRole("button", { name: "Enviar a revisión" }).click();
   await expect(page.getByText("Pendiente de revisión").first()).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Vista previa" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Vista previa" }),
+  ).toBeVisible();
 });
 
 test("ficha con 2 fotos → la vista previa las muestra", async ({ page }) => {

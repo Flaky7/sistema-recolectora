@@ -355,9 +355,9 @@ eliminación, eliminación por la recolectora y baja temporal. Depende de US1, U
 
 **Purpose**: documentación de traspaso, revisión móvil, seguridad y validación final.
 
-- [ ] T145 [P] Escribir `README.md`: requisitos, instalación local (según quickstart.md), variables de entorno, scripts, pruebas, despliegue en Vercel y Supabase (dev y prod, `supabase link`, `db push`, `promote_to_collector`, URLs de Auth), cuentas de servicios (Vercel, Supabase, Sentry, GitHub), flujo de trabajo con pull requests y la protección de la rama `main` (cómo verificarla y restaurarla), por qué el repositorio es público y qué nunca debe subirse (secretos, datos reales), y el procedimiento de traspaso de cuentas de T156 y sus planes y costos (Vercel Hobby vs Pro para uso comercial; pausa de proyectos inactivos en el plan gratuito de Supabase)
-- [ ] T146 [P] Escribir `docs/arquitectura.md`: diagrama de componentes, estructura de carpetas, patrón Server Action + Zod + RLS, máquinas de estado, buckets y enlaces firmados, módulo de notificaciones y cómo cambiar a WhatsApp Cloud en la fase 2, dónde se usa la service role key y por qué
-- [ ] T147 [P] Escribir `docs/manual-recolectora.md` en español sencillo y con capturas de celular: instalar la app, revisar pagos, registrar paquetes, paquetes sin identificar, cerrar y enviar pedidos, dar de alta clientas sin cuenta, revisar bazares, autorizar o rechazar cambios de ficha de bazares, editar plantillas, dar de baja y eliminar datos
+- [X] T145 [P] Escribir `README.md`: requisitos, instalación local (según quickstart.md), variables de entorno, scripts, pruebas, despliegue en Vercel y Supabase (dev y prod, `supabase link`, `db push`, `promote_to_collector`, URLs de Auth), cuentas de servicios (Vercel, Supabase, Sentry, GitHub), flujo de trabajo con pull requests y la protección de la rama `main` (cómo verificarla y restaurarla), por qué el repositorio es público y qué nunca debe subirse (secretos, datos reales), y el procedimiento de traspaso de cuentas de T156 y sus planes y costos (Vercel Hobby vs Pro para uso comercial; pausa de proyectos inactivos en el plan gratuito de Supabase)
+- [X] T146 [P] Escribir `docs/arquitectura.md`: diagrama de componentes, estructura de carpetas, patrón Server Action + Zod + RLS, máquinas de estado, buckets y enlaces firmados, módulo de notificaciones y cómo cambiar a WhatsApp Cloud en la fase 2, dónde se usa la service role key y por qué
+- [X] T147 [P] Escribir `docs/manual-recolectora.md` en español sencillo y con capturas de celular: instalar la app, revisar pagos, registrar paquetes, paquetes sin identificar, cerrar y enviar pedidos, dar de alta clientas sin cuenta, revisar bazares, autorizar o rechazar cambios de ficha de bazares, editar plantillas, dar de baja y eliminar datos
 - [X] T148 [P] Crear `supabase/scripts/find-orphan-files.sql` (archivos en Storage sin referencia en tablas) y documentar su uso manual en `docs/arquitectura.md`
 - [X] T149 Revisar todas las pantallas a 360 px y en escritorio: objetivos táctiles ≥ 44 px, formularios con teclado adecuado (`inputMode="numeric"` en teléfonos, mayúsculas en código), estados de carga y vacíos, textos en español de México; corregir en `src/app/**` y `src/features/**/components/**`
 - [ ] T150 Revisar el texto final del aviso de privacidad en `src/app/(public)/aviso-de-privacidad/page.tsx` con los datos reales de la responsable (pendiente de la clienta) y verificar que cubre FR-005 y FR-050
@@ -475,3 +475,26 @@ Task: "T090 src/features/packages/components/package-gallery.tsx"
 - Hacer commit al terminar cada tarea o grupo lógico.
 - Los cuatro supuestos pendientes de confirmar con la clienta (spec.md, Assumptions) no bloquean
   ninguna tarea; si cambian, actualizar spec.md antes de implementar la parte afectada.
+
+---
+
+## Estado de implementación (2026-10-04)
+
+Validación automática completa en local: 126 pruebas unitarias, 103 de integración y 44 E2E
+(celular y escritorio) en verde; lint, typecheck, formato y tipos de base de datos al día.
+
+Tareas abiertas que requieren acciones fuera del código:
+
+- **T002**: crear el repositorio público en GitHub, activar *secret scanning*/*push protection* y
+  proteger `main` (publica el código; pendiente de confirmación del desarrollador).
+- **T150**: texto final del aviso de privacidad con los datos reales de la responsable (pendiente
+  de la clienta).
+- **T151**: íconos definitivos de la PWA (hoy son provisionales) y prueba de instalación en
+  Android e iOS reales.
+- **T154**: medido en local (consultas < 4 ms y páginas < 0.7 s con 4× CPU; ver
+  `docs/arquitectura.md`). Falta el cronómetro de registro de paquete en un celular real (SC-001)
+  y Lighthouse sobre la URL de Vercel.
+- **T155**: escenarios 1–6 de quickstart.md cubiertos por las pruebas E2E; faltan a mano la
+  expiración del enlace firmado a los 60 min (escenario 4) y la instalación de la PWA
+  (escenario 7).
+- **T156**: traspaso de cuentas a la clienta al entregar.

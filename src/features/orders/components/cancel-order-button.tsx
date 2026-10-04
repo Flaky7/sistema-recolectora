@@ -13,7 +13,12 @@ export function CancelOrderButton({ folio }: { folio: number }) {
   return (
     <ReasonDialog
       trigger={
-        <Button type="button" variant="destructive" size="touch" className="w-full">
+        <Button
+          type="button"
+          variant="destructive"
+          size="touch"
+          className="w-full"
+        >
           Cancelar pedido
         </Button>
       }

@@ -25,7 +25,9 @@ export function ViewDocumentButton({
     setLoading(true);
     const result = await getBazaarDocumentUrls(bazaarId);
     setLoading(false);
-    const url = result.ok ? result.data.find((d) => d.documentId === documentId)?.signedUrl : null;
+    const url = result.ok
+      ? result.data.find((d) => d.documentId === documentId)?.signedUrl
+      : null;
     if (!url) {
       tab?.close();
       toast.error(result.ok ? "No encontramos el archivo." : result.error);
@@ -36,7 +38,13 @@ export function ViewDocumentButton({
   }
 
   return (
-    <Button type="button" variant="outline" size="lg" onClick={open} disabled={loading}>
+    <Button
+      type="button"
+      variant="outline"
+      size="lg"
+      onClick={open}
+      disabled={loading}
+    >
       <FileSearchIcon aria-hidden />
       {loading ? "Abriendo…" : label}
     </Button>

@@ -15,7 +15,9 @@ export async function listPendingPayments() {
   return data ?? [];
 }
 
-export type PendingPayment = Awaited<ReturnType<typeof listPendingPayments>>[number];
+export type PendingPayment = Awaited<
+  ReturnType<typeof listPendingPayments>
+>[number];
 
 /** Deposit amount and instructions for customers (FR-010, research R19). */
 export async function getPaymentInfo() {

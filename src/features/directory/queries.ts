@@ -17,13 +17,17 @@ export type DirectoryBazaar = {
  */
 export async function searchDirectory(q = ""): Promise<DirectoryBazaar[]> {
   const supabase = await createClient();
-  const { data } = await supabase.rpc("search_directory", { q: q.slice(0, 80) });
+  const { data } = await supabase.rpc("search_directory", {
+    q: q.slice(0, 80),
+  });
   const photos = supabase.storage.from(BUCKETS.bazaarPhotos);
   return (data ?? []).map((bazaar) => ({
     id: bazaar.id,
     name: bazaar.name,
     brands: bazaar.brands,
     linkUrl: bazaar.link_url,
-    photoUrls: (bazaar.photo_paths ?? []).map((path) => photos.getPublicUrl(path).data.publicUrl),
+    photoUrls: (bazaar.photo_paths ?? []).map(
+      (path) => photos.getPublicUrl(path).data.publicUrl,
+    ),
   }));
 }

@@ -19,7 +19,8 @@ export async function listPackages({
     .order("received_at", { ascending: false })
     .limit(200);
 
-  if (filter === "no_order") query = query.not("customer_id", "is", null).is("order_id", null);
+  if (filter === "no_order")
+    query = query.not("customer_id", "is", null).is("order_id", null);
   if (filter === "unidentified") query = query.is("customer_id", null);
 
   const term = q?.trim().replace(/[%_,()]/g, " ");
@@ -32,7 +33,9 @@ export async function listPackages({
       .limit(50);
     const ids = (customers ?? []).map((c) => c.id);
     query = ids.length
-      ? query.or(`bazaar_name.ilike.%${term}%,note.ilike.%${term}%,customer_id.in.(${ids.join(",")})`)
+      ? query.or(
+          `bazaar_name.ilike.%${term}%,note.ilike.%${term}%,customer_id.in.(${ids.join(",")})`,
+        )
       : query.or(`bazaar_name.ilike.%${term}%,note.ilike.%${term}%`);
   }
 

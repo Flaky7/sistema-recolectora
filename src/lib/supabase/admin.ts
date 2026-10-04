@@ -13,17 +13,24 @@ import type { Database } from "./database.types";
 function adminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Falta SUPABASE_SERVICE_ROLE_KEY en el servidor.");
+  if (!url || !key)
+    throw new Error("Falta SUPABASE_SERVICE_ROLE_KEY en el servidor.");
   return createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
 
 /** Deletes files; succeeds when they are already gone, so a retry is safe. */
-export async function deleteStorageObjects(bucket: string, paths: string[]): Promise<void> {
+export async function deleteStorageObjects(
+  bucket: string,
+  paths: string[],
+): Promise<void> {
   if (paths.length === 0) return;
   const { error } = await adminClient().storage.from(bucket).remove(paths);
-  if (error) throw new Error(`No se pudieron borrar archivos de ${bucket}: ${error.message}`);
+  if (error)
+    throw new Error(
+      `No se pudieron borrar archivos de ${bucket}: ${error.message}`,
+    );
 }
 
 /** Deletes the Auth user; its profile goes with it (on delete cascade). Missing user = done. */

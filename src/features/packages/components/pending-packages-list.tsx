@@ -31,10 +31,15 @@ export function PendingPackagesList({ packages }: { packages: Item[] }) {
       {items.map((pkg) => (
         <li key={pkg.id} className="space-y-2 rounded-xl border p-3">
           <p className="font-medium">
-            {pkg.customer ? `${pkg.customer.full_name} · ${pkg.customer.code}` : "Sin identificar"}
+            {pkg.customer
+              ? `${pkg.customer.full_name} · ${pkg.customer.code}`
+              : "Sin identificar"}
           </p>
           <PackageGallery packages={[pkg]} />
-          <AssignPackage packageId={pkg.id} customerCode={pkg.customer?.code ?? null} />
+          <AssignPackage
+            packageId={pkg.id}
+            customerCode={pkg.customer?.code ?? null}
+          />
         </li>
       ))}
     </ul>

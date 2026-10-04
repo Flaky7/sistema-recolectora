@@ -11,7 +11,13 @@ import { BUCKETS } from "@/lib/uploads/paths";
 import { submitPaymentProof } from "../actions";
 
 /** Upload the deposit proof for an order saved without one, or after a rejection. */
-export function SubmitProofForm({ folio, customerId }: { folio: number; customerId: string }) {
+export function SubmitProofForm({
+  folio,
+  customerId,
+}: {
+  folio: number;
+  customerId: string;
+}) {
   const router = useRouter();
   const [proofPath, setProofPath] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +52,13 @@ export function SubmitProofForm({ folio, customerId }: { folio: number; customer
         onChange={setProofPath}
         error={error ?? undefined}
       />
-      <Button type="button" size="touch" className="w-full" onClick={submit} disabled={saving || !proofPath}>
+      <Button
+        type="button"
+        size="touch"
+        className="w-full"
+        onClick={submit}
+        disabled={saving || !proofPath}
+      >
         {saving ? "Enviando…" : "Enviar comprobante"}
       </Button>
     </div>

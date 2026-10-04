@@ -59,7 +59,12 @@ export function CustomerProfileForm({
             inputMode="numeric"
             autoComplete="tel-national"
           />
-          <TextAreaField form={form} name="shippingAddress" label="Dirección de envío" rows={3} />
+          <TextAreaField
+            form={form}
+            name="shippingAddress"
+            label="Dirección de envío"
+            rows={3}
+          />
           <CustomerTypeField form={form} name="type" />
           {error ? (
             <p role="alert" className="text-destructive text-sm">
@@ -71,7 +76,9 @@ export function CustomerProfileForm({
             size="touch"
             variant="outline"
             className="w-full"
-            disabled={disabled || form.formState.isSubmitting || !form.formState.isDirty}
+            disabled={
+              disabled || form.formState.isSubmitting || !form.formState.isDirty
+            }
           >
             Guardar mis datos
           </Button>

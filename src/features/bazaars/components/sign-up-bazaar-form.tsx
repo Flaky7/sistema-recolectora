@@ -36,8 +36,8 @@ export function SignUpBazaarForm() {
         <MailCheckIcon className="text-primary size-8" aria-hidden />
         <h2 className="text-lg font-semibold">Revisa tu correo</h2>
         <p>
-          Te enviamos un enlace a <strong>{sentTo}</strong>. Al abrirlo podrás completar la ficha
-          de tu bazar y enviarla a revisión.
+          Te enviamos un enlace a <strong>{sentTo}</strong>. Al abrirlo podrás
+          completar la ficha de tu bazar y enviarla a revisión.
         </p>
       </div>
     );
@@ -68,8 +68,15 @@ export function SignUpBazaarForm() {
             {error}
           </p>
         ) : null}
-        <Button type="submit" size="touch" className="w-full" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Creando tu cuenta…" : "Crear cuenta de bazar"}
+        <Button
+          type="submit"
+          size="touch"
+          className="w-full"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting
+            ? "Creando tu cuenta…"
+            : "Crear cuenta de bazar"}
         </Button>
       </FieldGroup>
     </form>

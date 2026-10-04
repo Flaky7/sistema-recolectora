@@ -26,11 +26,17 @@ export function NewCustomerFlow() {
       <div className="space-y-4">
         <div className="bg-primary text-primary-foreground space-y-2 rounded-2xl p-5">
           <p className="text-sm opacity-90">Código de {created.full_name}</p>
-          <p className="font-mono text-5xl font-bold tracking-[0.3em]">{created.code}</p>
+          <p className="font-mono text-5xl font-bold tracking-[0.3em]">
+            {created.code}
+          </p>
         </div>
         {created.whatsapp ? (
           <Button asChild size="touch" className="w-full">
-            <a href={buildWhatsAppUrl(created.whatsapp, codeMessage(created))} target="_blank" rel="noopener noreferrer">
+            <a
+              href={buildWhatsAppUrl(created.whatsapp, codeMessage(created))}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <MessageCircleIcon aria-hidden />
               Compartir código por WhatsApp
             </a>
@@ -43,7 +49,12 @@ export function NewCustomerFlow() {
               Registrar pedido
             </Link>
           </Button>
-          <Button type="button" variant="outline" size="touch" onClick={() => setCreated(null)}>
+          <Button
+            type="button"
+            variant="outline"
+            size="touch"
+            onClick={() => setCreated(null)}
+          >
             Dar de alta otra
           </Button>
         </div>

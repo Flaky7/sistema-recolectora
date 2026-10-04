@@ -3,7 +3,11 @@ import "server-only";
 import { getSessionProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 
-import type { BazaarDocumentType, BazaarStatus, DocumentStatus } from "./labels";
+import type {
+  BazaarDocumentType,
+  BazaarStatus,
+  DocumentStatus,
+} from "./labels";
 import { photoUrls, publicPhotoUrl } from "./photos";
 import { BAZAAR_DOCUMENT_TYPES } from "./schemas";
 
@@ -12,9 +16,12 @@ export type DocumentSlot = {
   /** The approved version: only its date, never the file (FR-034). */
   current: { id: string; since: string } | null;
   /** The newest upload: under review, or rejected with its reason. */
-  latest:
-    | { id: string; status: Extract<DocumentStatus, "pending" | "rejected">; at: string; reason: string | null }
-    | null;
+  latest: {
+    id: string;
+    status: Extract<DocumentStatus, "pending" | "rejected">;
+    at: string;
+    reason: string | null;
+  } | null;
 };
 
 type DocumentRow = {
@@ -33,8 +40,14 @@ function documentSlots(rows: DocumentRow[]): DocumentSlot[] {
     const pending = ofType.find((r) => r.status === "pending");
     const rejected = ofType.find((r) => r.status === "rejected");
     const latest = pending
-      ? { id: pending.id, status: "pending" as const, at: pending.created_at, reason: null }
-      : rejected && (!current || rejected.reviewed_at! > (current.reviewed_at ?? ""))
+      ? {
+          id: pending.id,
+          status: "pending" as const,
+          at: pending.created_at,
+          reason: null,
+        }
+      : rejected &&
+          (!current || rejected.reviewed_at! > (current.reviewed_at ?? ""))
         ? {
             id: rejected.id,
             status: "rejected" as const,
@@ -44,7 +57,9 @@ function documentSlots(rows: DocumentRow[]): DocumentSlot[] {
         : null;
     return {
       type,
-      current: current ? { id: current.id, since: current.reviewed_at ?? current.created_at } : null,
+      current: current
+        ? { id: current.id, since: current.reviewed_at ?? current.created_at }
+        : null,
       latest,
     };
   });
@@ -66,7 +81,11 @@ export async function getMyBazaar() {
   if (!bazaar) return null;
 
   const [photos, proposals, documents, references] = await Promise.all([
-    supabase.from("bazaar_photos").select("storage_path").eq("bazaar_id", bazaar.id).order("position"),
+    supabase
+      .from("bazaar_photos")
+      .select("storage_path")
+      .eq("bazaar_id", bazaar.id)
+      .order("position"),
     supabase
       .from("bazaar_profile_proposals")
       .select()
@@ -86,7 +105,9 @@ export async function getMyBazaar() {
 
   const publishedPaths = (photos.data ?? []).map((p) => p.storage_path);
   const allProposals = proposals.data ?? [];
-  const openProposal = allProposals.find((p) => p.status === "draft" || p.status === "pending") ?? null;
+  const openProposal =
+    allProposals.find((p) => p.status === "draft" || p.status === "pending") ??
+    null;
   const lastRejected =
     !openProposal || openProposal.status === "draft"
       ? (allProposals.find((p) => p.status === "rejected") ?? null)
@@ -94,7 +115,8 @@ export async function getMyBazaar() {
   // A rejection only matters if nothing newer was approved since.
   const lastApproved = allProposals.find((p) => p.status === "approved");
   const showRejected =
-    lastRejected && (!lastApproved || lastRejected.created_at > lastApproved.created_at)
+    lastRejected &&
+    (!lastApproved || lastRejected.created_at > lastApproved.created_at)
       ? lastRejected
       : null;
 
@@ -132,8 +154,15 @@ export function getBazaarCompleteness(data: MyBazaar) {
   const missing: string[] = [];
   if (!hasProfile) missing.push("Datos públicos (nombre, marcas y link)");
   if (documentsReady < 4) missing.push(`Documentos (${documentsReady} de 4)`);
-  if (referencesReady < 3) missing.push(`Referencias (${referencesReady} de 3)`);
-  return { hasProfile, documentsReady, referencesReady, missing, complete: missing.length === 0 };
+  if (referencesReady < 3)
+    missing.push(`Referencias (${referencesReady} de 3)`);
+  return {
+    hasProfile,
+    documentsReady,
+    referencesReady,
+    missing,
+    complete: missing.length === 0,
+  };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -141,11 +170,16 @@ export function getBazaarCompleteness(data: MyBazaar) {
 // ---------------------------------------------------------------------------------------------
 
 /** Bazaars by status; search by published or proposed name, or brand (US5, US7). */
-export async function listBazaars({ status, q }: { status?: BazaarStatus; q?: string } = {}) {
+export async function listBazaars({
+  status,
+  q,
+}: { status?: BazaarStatus; q?: string } = {}) {
   const supabase = await createClient();
   let query = supabase
     .from("bazaars")
-    .select("id, name, brands, status, status_reason, submitted_at, reviewed_at, created_at, proposals:bazaar_profile_proposals(name, status)")
+    .select(
+      "id, name, brands, status, status_reason, submitted_at, reviewed_at, created_at, proposals:bazaar_profile_proposals(name, status)",
+    )
     .neq("status", "deleted")
     .order("submitted_at", { ascending: true, nullsFirst: false })
     .limit(200);
@@ -153,15 +187,31 @@ export async function listBazaars({ status, q }: { status?: BazaarStatus; q?: st
 
   const { data } = await query;
   const rows = (data ?? []).map((b) => {
-    const open = b.proposals.find((p) => p.status === "draft" || p.status === "pending");
-    return { ...b, displayName: b.name ?? open?.name ?? "(sin nombre)", proposedName: open?.name ?? null };
+    const open = b.proposals.find(
+      (p) => p.status === "draft" || p.status === "pending",
+    );
+    return {
+      ...b,
+      displayName: b.name ?? open?.name ?? "(sin nombre)",
+      proposedName: open?.name ?? null,
+    };
   });
 
-  const term = q?.trim().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  const term = q
+    ?.trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
   if (!term) return rows;
-  const normalize = (text: string) => text.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  const normalize = (text: string) =>
+    text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "");
   return rows.filter((b) =>
-    [b.name, b.proposedName, ...(b.brands ?? [])].some((text) => text && normalize(text).includes(term)),
+    [b.name, b.proposedName, ...(b.brands ?? [])].some(
+      (text) => text && normalize(text).includes(term),
+    ),
   );
 }
 
@@ -200,7 +250,11 @@ export async function getBazaarForReview(id: string) {
   if (!bazaar) return null;
 
   const [photos, proposal, documents, references] = await Promise.all([
-    supabase.from("bazaar_photos").select("storage_path").eq("bazaar_id", id).order("position"),
+    supabase
+      .from("bazaar_photos")
+      .select("storage_path")
+      .eq("bazaar_id", id)
+      .order("position"),
     supabase
       .from("bazaar_profile_proposals")
       .select()
@@ -238,4 +292,6 @@ export async function getBazaarForReview(id: string) {
   };
 }
 
-export type BazaarForReview = NonNullable<Awaited<ReturnType<typeof getBazaarForReview>>>;
+export type BazaarForReview = NonNullable<
+  Awaited<ReturnType<typeof getBazaarForReview>>
+>;

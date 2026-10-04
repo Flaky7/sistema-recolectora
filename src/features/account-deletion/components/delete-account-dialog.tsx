@@ -20,7 +20,11 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ActionResult } from "@/lib/action-result";
 
-import { deleteBazaarData, deleteCustomerData, deleteMyAccount } from "../actions";
+import {
+  deleteBazaarData,
+  deleteCustomerData,
+  deleteMyAccount,
+} from "../actions";
 
 type Target =
   | { kind: "self" }
@@ -58,9 +62,15 @@ export function DeleteAccountDialog({
       // Redirects to "/" when it succeeds.
       result = await deleteMyAccount({ confirmation: text });
     } else if (target.kind === "customer") {
-      result = await deleteCustomerData({ customerId: target.customerId, confirmation: text });
+      result = await deleteCustomerData({
+        customerId: target.customerId,
+        confirmation: text,
+      });
     } else {
-      result = await deleteBazaarData({ bazaarId: target.bazaarId, confirmation: text });
+      result = await deleteBazaarData({
+        bazaarId: target.bazaarId,
+        confirmation: text,
+      });
     }
     setBusy(false);
     if (!result.ok) {
@@ -78,7 +88,12 @@ export function DeleteAccountDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant="destructive" size="touch" className="w-full">
+        <Button
+          type="button"
+          variant="destructive"
+          size="touch"
+          className="w-full"
+        >
           <Trash2Icon aria-hidden />
           {triggerLabel}
         </Button>
@@ -93,14 +108,18 @@ export function DeleteAccountDialog({
                 {deleted}
               </div>
               <div>
-                <p className="font-medium">Se conserva, sin datos personales:</p>
+                <p className="font-medium">
+                  Se conserva, sin datos personales:
+                </p>
                 {kept}
               </div>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Field data-invalid={Boolean(error)}>
-          <FieldLabel htmlFor="delete-confirmation">Escribe ELIMINAR para confirmar</FieldLabel>
+          <FieldLabel htmlFor="delete-confirmation">
+            Escribe ELIMINAR para confirmar
+          </FieldLabel>
           <Input
             id="delete-confirmation"
             value={text}

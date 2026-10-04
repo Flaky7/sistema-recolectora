@@ -48,7 +48,10 @@ describe("signUpCustomerSchema", () => {
     ["password", "corta1"],
     ["acceptPrivacy", false],
   ])("rejects %s = %j", (field, value) => {
-    const result = signUpCustomerSchema.safeParse({ ...validSignUp, [field]: value });
+    const result = signUpCustomerSchema.safeParse({
+      ...validSignUp,
+      [field]: value,
+    });
     expect(result.success).toBe(false);
   });
 
@@ -77,13 +80,16 @@ describe("signUpCustomerSchema", () => {
 
   it("normalizes an optional customer code and rejects ambiguous characters", () => {
     expect(
-      signUpCustomerSchema.parse({ ...validSignUp, customerCode: " k7m-4p " }).customerCode,
+      signUpCustomerSchema.parse({ ...validSignUp, customerCode: " k7m-4p " })
+        .customerCode,
     ).toBe("K7M4P");
-    expect(signUpCustomerSchema.parse({ ...validSignUp, customerCode: "" }).customerCode).toBe(
-      undefined,
-    );
     expect(
-      signUpCustomerSchema.safeParse({ ...validSignUp, customerCode: "O1I00" }).success,
+      signUpCustomerSchema.parse({ ...validSignUp, customerCode: "" })
+        .customerCode,
+    ).toBe(undefined);
+    expect(
+      signUpCustomerSchema.safeParse({ ...validSignUp, customerCode: "O1I00" })
+        .success,
     ).toBe(false);
   });
 });
@@ -98,7 +104,9 @@ describe("createCustomerSchema", () => {
         type: "out_of_town",
       }).success,
     ).toBe(true);
-    expect(createCustomerSchema.safeParse({ fullName: "Rosa" }).success).toBe(false);
+    expect(createCustomerSchema.safeParse({ fullName: "Rosa" }).success).toBe(
+      false,
+    );
   });
 });
 
@@ -107,7 +115,10 @@ describe("createOrderSchema", () => {
     const result = createOrderSchema.parse({
       ...validOrder,
       bazaars: [
-        { bazaarId: "8d8ac610-566d-4ef0-9c22-186b2a5ed793", bazaarName: "Ñandú" },
+        {
+          bazaarId: "8d8ac610-566d-4ef0-9c22-186b2a5ed793",
+          bazaarName: "Ñandú",
+        },
         { bazaarName: "  Bazar libre  " },
       ],
     });
@@ -118,7 +129,9 @@ describe("createOrderSchema", () => {
   });
 
   it("requires at least one bazaar", () => {
-    expect(createOrderSchema.safeParse({ ...validOrder, bazaars: [] }).success).toBe(false);
+    expect(
+      createOrderSchema.safeParse({ ...validOrder, bazaars: [] }).success,
+    ).toBe(false);
   });
 
   it.each([
@@ -129,14 +142,22 @@ describe("createOrderSchema", () => {
     ["expectedPackages", 1.5],
     ["expectedPackages", Number.NaN],
   ])("rejects %s = %j", (field, value) => {
-    expect(createOrderSchema.safeParse({ ...validOrder, [field]: value }).success).toBe(false);
-  });
-
-  it.each([["B"], ["x".repeat(81)]])("rejects a free-text bazaar named %j", (name) => {
     expect(
-      createOrderSchema.safeParse({ ...validOrder, bazaars: [{ bazaarName: name }] }).success,
+      createOrderSchema.safeParse({ ...validOrder, [field]: value }).success,
     ).toBe(false);
   });
+
+  it.each([["B"], ["x".repeat(81)]])(
+    "rejects a free-text bazaar named %j",
+    (name) => {
+      expect(
+        createOrderSchema.safeParse({
+          ...validOrder,
+          bazaars: [{ bazaarName: name }],
+        }).success,
+      ).toBe(false);
+    },
+  );
 
   it("accepts boundaries", () => {
     expect(
@@ -159,27 +180,39 @@ describe("createOrderSchema", () => {
 describe("payments and cancellation", () => {
   it("requires a reason to reject a payment", () => {
     const base = { paymentId: "8d8ac610-566d-4ef0-9c22-186b2a5ed793" };
-    expect(reviewPaymentSchema.safeParse({ ...base, decision: "confirm" }).success).toBe(true);
-    expect(reviewPaymentSchema.safeParse({ ...base, decision: "reject" }).success).toBe(false);
     expect(
-      reviewPaymentSchema.safeParse({ ...base, decision: "reject", reason: "Monto incorrecto" })
-        .success,
+      reviewPaymentSchema.safeParse({ ...base, decision: "confirm" }).success,
+    ).toBe(true);
+    expect(
+      reviewPaymentSchema.safeParse({ ...base, decision: "reject" }).success,
+    ).toBe(false);
+    expect(
+      reviewPaymentSchema.safeParse({
+        ...base,
+        decision: "reject",
+        reason: "Monto incorrecto",
+      }).success,
     ).toBe(true);
   });
 
   it("requires a positive amount when recording a payment", () => {
-    expect(recordConfirmedPaymentSchema.safeParse({ folio: 1, amountCents: 0 }).success).toBe(
-      false,
-    );
-    expect(recordConfirmedPaymentSchema.safeParse({ folio: 1, amountCents: 10000 }).success).toBe(
-      true,
-    );
+    expect(
+      recordConfirmedPaymentSchema.safeParse({ folio: 1, amountCents: 0 })
+        .success,
+    ).toBe(false);
+    expect(
+      recordConfirmedPaymentSchema.safeParse({ folio: 1, amountCents: 10000 })
+        .success,
+    ).toBe(true);
   });
 
   it("requires a reason to cancel", () => {
-    expect(cancelOrderSchema.safeParse({ folio: 1, reason: "" }).success).toBe(false);
-    expect(cancelOrderSchema.safeParse({ folio: 1, reason: "Ya no lo quiero" }).success).toBe(
-      true,
+    expect(cancelOrderSchema.safeParse({ folio: 1, reason: "" }).success).toBe(
+      false,
     );
+    expect(
+      cancelOrderSchema.safeParse({ folio: 1, reason: "Ya no lo quiero" })
+        .success,
+    ).toBe(true);
   });
 });

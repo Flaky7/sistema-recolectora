@@ -8,14 +8,21 @@ import { fromZodError, type ActionResult } from "@/lib/action-result";
 import { authorize } from "@/lib/auth/session";
 import { uuid } from "@/lib/validation/messages";
 
-import { deleteBazaarWith, deleteCustomerWith, deleteOwnAccountWith } from "./service";
+import {
+  deleteBazaarWith,
+  deleteCustomerWith,
+  deleteOwnAccountWith,
+} from "./service";
 
 const CONFIRMATION = "ELIMINAR";
 
 const confirmation = z
   .string()
   .trim()
-  .refine((value) => value.toUpperCase() === CONFIRMATION, `Escribe ${CONFIRMATION} para confirmar.`);
+  .refine(
+    (value) => value.toUpperCase() === CONFIRMATION,
+    `Escribe ${CONFIRMATION} para confirmar.`,
+  );
 
 /** FR-046: the customer or bazaar deletes its own account; then the session is closed. */
 export async function deleteMyAccount(input: {
@@ -46,7 +53,10 @@ export async function deleteCustomerData(input: {
   const parsed = z.object({ customerId: uuid, confirmation }).safeParse(input);
   if (!parsed.success) return fromZodError(parsed.error);
 
-  const result = await deleteCustomerWith(auth.supabase, parsed.data.customerId);
+  const result = await deleteCustomerWith(
+    auth.supabase,
+    parsed.data.customerId,
+  );
   if (result.ok) {
     revalidatePath("/admin/clientas");
     revalidatePath("/admin/pedidos");

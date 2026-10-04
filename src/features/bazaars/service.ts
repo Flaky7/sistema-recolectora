@@ -2,7 +2,12 @@ import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
 
-import { fail, fromDatabaseError, ok, type ActionResult } from "@/lib/action-result";
+import {
+  fail,
+  fromDatabaseError,
+  ok,
+  type ActionResult,
+} from "@/lib/action-result";
 import type { Database } from "@/lib/supabase/database.types";
 import type { ServerClient } from "@/lib/supabase/server";
 import { BUCKETS } from "@/lib/uploads/paths";
@@ -22,15 +27,24 @@ type Bazaar = Database["public"]["Tables"]["bazaars"]["Row"];
 const STORAGE_DELETE_FAILED = "storage cleanup failed";
 
 /** Deleting files never undoes a saved change; failures are reported and left for cleanup. */
-async function removeFiles(supabase: ServerClient, bucket: string, paths: (string | null)[]) {
+async function removeFiles(
+  supabase: ServerClient,
+  bucket: string,
+  paths: (string | null)[],
+) {
   const list = paths.filter((p): p is string => Boolean(p));
   if (list.length === 0) return;
   const { error } = await supabase.storage.from(bucket).remove(list);
-  if (error) Sentry.captureMessage(`${STORAGE_DELETE_FAILED}: ${bucket}`, "warning");
+  if (error)
+    Sentry.captureMessage(`${STORAGE_DELETE_FAILED}: ${bucket}`, "warning");
 }
 
 async function bazaarOf(supabase: ServerClient, bazaarId: string) {
-  const { data } = await supabase.from("bazaars").select().eq("id", bazaarId).maybeSingle();
+  const { data } = await supabase
+    .from("bazaars")
+    .select()
+    .eq("id", bazaarId)
+    .maybeSingle();
   return data;
 }
 
@@ -73,7 +87,9 @@ export async function saveBazaarProposalWith(
     return fail("Tu bazar está dado de baja; no puedes cambiar tu ficha.");
   }
   if (bazaar.status === "pending_review") {
-    return fail("Tu registro está en revisión; espera la respuesta de la recolectora.");
+    return fail(
+      "Tu registro está en revisión; espera la respuesta de la recolectora.",
+    );
   }
 
   const { data: open } = await supabase
@@ -135,8 +151,16 @@ export async function setBazaarDocumentWith(
   supabase: ServerClient,
   bazaarId: string,
   input: { type: BazaarDocumentType; documentPath: string },
-): Promise<ActionResult<{ type: BazaarDocumentType; status: "pending"; uploadedAt: string }>> {
-  const pattern = new RegExp(`^${bazaarId}/${input.type}-[A-Za-z0-9_-]+\\.(jpg|png|webp|pdf)$`);
+): Promise<
+  ActionResult<{
+    type: BazaarDocumentType;
+    status: "pending";
+    uploadedAt: string;
+  }>
+> {
+  const pattern = new RegExp(
+    `^${bazaarId}/${input.type}-[A-Za-z0-9_-]+\\.(jpg|png|webp|pdf)$`,
+  );
   if (!pattern.test(input.documentPath)) {
     return fail("El archivo no es válido. Vuelve a subirlo.");
   }
@@ -152,24 +176,38 @@ export async function setBazaarDocumentWith(
     // A bazaar cannot delete its document files (that needs read access, FR-034); the replaced
     // file goes to the trash and the collector removes it when she reviews (research R23).
     if (previous.storage_path) {
-      const { error: trashError } = await supabase.from("storage_trash").insert({
-        bazaar_id: bazaarId,
-        bucket_id: BUCKETS.bazaarDocuments,
-        path: previous.storage_path,
-      });
-      if (trashError && trashError.code !== "23505") return fromDatabaseError(trashError);
+      const { error: trashError } = await supabase
+        .from("storage_trash")
+        .insert({
+          bazaar_id: bazaarId,
+          bucket_id: BUCKETS.bazaarDocuments,
+          path: previous.storage_path,
+        });
+      if (trashError && trashError.code !== "23505")
+        return fromDatabaseError(trashError);
     }
-    const { error } = await supabase.from("bazaar_documents").delete().eq("id", previous.id);
+    const { error } = await supabase
+      .from("bazaar_documents")
+      .delete()
+      .eq("id", previous.id);
     if (error) return fromDatabaseError(error);
   }
 
   const { data, error } = await supabase
     .from("bazaar_documents")
-    .insert({ bazaar_id: bazaarId, type: input.type, storage_path: input.documentPath })
+    .insert({
+      bazaar_id: bazaarId,
+      type: input.type,
+      storage_path: input.documentPath,
+    })
     .select("created_at")
     .single();
   if (error) return fromDatabaseError(error);
-  return ok({ type: input.type, status: "pending", uploadedAt: data.created_at });
+  return ok({
+    type: input.type,
+    status: "pending",
+    uploadedAt: data.created_at,
+  });
 }
 
 /** FR-028: the 3 references, editable in any state except deleted (also while suspended). */
@@ -233,7 +271,10 @@ export async function submitBazaarProposalWith(
 // ---------------------------------------------------------------------------------------------
 
 /** Deletes the files a bazaar replaced (research R23). Runs with the collector's session. */
-export async function emptyStorageTrash(supabase: ServerClient, bazaarId: string) {
+export async function emptyStorageTrash(
+  supabase: ServerClient,
+  bazaarId: string,
+) {
   const { data } = await supabase
     .from("storage_trash")
     .select("id, path")
@@ -279,10 +320,13 @@ async function publishProposal(
     copied.push(path);
   }
 
-  const { data: replaced, error } = await supabase.rpc("apply_bazaar_proposal", {
-    proposal_id: proposal.id,
-    public_paths: proposal.photo_paths,
-  });
+  const { data: replaced, error } = await supabase.rpc(
+    "apply_bazaar_proposal",
+    {
+      proposal_id: proposal.id,
+      public_paths: proposal.photo_paths,
+    },
+  );
   if (error) {
     await removeFiles(supabase, BUCKETS.bazaarPhotos, copied);
     return fromDatabaseError(error);
@@ -317,7 +361,8 @@ export async function reviewBazaarProposalWith(
 
   if (decision === "approve") return publishProposal(supabase, proposal);
 
-  if (!reason || reason.trim().length < 3) return fail("Escribe el motivo del rechazo.");
+  if (!reason || reason.trim().length < 3)
+    return fail("Escribe el motivo del rechazo.");
   const { data, error } = await supabase
     .from("bazaar_profile_proposals")
     .update({ status: "rejected", rejection_reason: reason.trim() })
@@ -342,14 +387,16 @@ export async function reviewBazaarWith(
   if (!bazaar) return fail("No encontramos ese bazar.", { code: "NOT_FOUND" });
 
   if (decision === "approve") {
-    if (bazaar.status !== "pending_review") return fail("Este bazar no está pendiente de revisión.");
+    if (bazaar.status !== "pending_review")
+      return fail("Este bazar no está pendiente de revisión.");
     const { data: proposal } = await supabase
       .from("bazaar_profile_proposals")
       .select()
       .eq("bazaar_id", bazaarId)
       .eq("status", "pending")
       .maybeSingle();
-    if (!proposal) return fail("Este bazar no tiene datos públicos por revisar.");
+    if (!proposal)
+      return fail("Este bazar no tiene datos públicos por revisar.");
     const published = await publishProposal(supabase, proposal);
     if (!published.ok) return published;
   }
@@ -380,7 +427,9 @@ export async function reviewBazaarDocumentWith(
 ): Promise<ActionResult<BazaarDocument>> {
   const { data: path, error } =
     decision === "approve"
-      ? await supabase.rpc("approve_bazaar_document", { document_id: documentId })
+      ? await supabase.rpc("approve_bazaar_document", {
+          document_id: documentId,
+        })
       : await supabase.rpc("reject_bazaar_document", {
           document_id: documentId,
           reason: reason ?? "",
@@ -388,7 +437,11 @@ export async function reviewBazaarDocumentWith(
   if (error) return fromDatabaseError(error);
   await removeFiles(supabase, BUCKETS.bazaarDocuments, [path]);
 
-  const { data } = await supabase.from("bazaar_documents").select().eq("id", documentId).single();
+  const { data } = await supabase
+    .from("bazaar_documents")
+    .select()
+    .eq("id", documentId)
+    .single();
   if (!data) return fail("No encontramos el documento.");
   await emptyStorageTrash(supabase, data.bazaar_id);
   return ok(data);

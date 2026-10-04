@@ -54,7 +54,11 @@ export async function getOrderByFolio(folio: number) {
       .select("id, bazaar_id, bazaar_name, note, received_at, photo_path")
       .eq("order_id", orderId)
       .order("received_at"),
-    supabase.from("shipments").select("*").eq("order_id", orderId).maybeSingle(),
+    supabase
+      .from("shipments")
+      .select("*")
+      .eq("order_id", orderId)
+      .maybeSingle(),
   ]);
 
   return {
@@ -77,7 +81,9 @@ export async function getOrderByFolio(folio: number) {
   };
 }
 
-export type OrderDetail = NonNullable<Awaited<ReturnType<typeof getOrderByFolio>>>;
+export type OrderDetail = NonNullable<
+  Awaited<ReturnType<typeof getOrderByFolio>>
+>;
 
 export type OrderFilters = {
   status?: OrderStatus;
@@ -88,7 +94,11 @@ export type OrderFilters = {
 };
 
 /** Collector's list with filters (FR-039). */
-export async function listOrders({ status, customer, bazaar }: OrderFilters = {}) {
+export async function listOrders({
+  status,
+  customer,
+  bazaar,
+}: OrderFilters = {}) {
   const supabase = await createClient();
   let query = supabase
     .from("order_summaries")
@@ -101,20 +111,30 @@ export async function listOrders({ status, customer, bazaar }: OrderFilters = {}
   const customerTerm = customer?.trim().replace(/[%_,()]/g, " ");
   if (customerTerm) {
     const code = customerTerm.toUpperCase().replace(/[\s-]/g, "");
-    query = query.or(`customer_name.ilike.%${customerTerm}%,customer_code.eq.${code}`);
+    query = query.or(
+      `customer_name.ilike.%${customerTerm}%,customer_code.eq.${code}`,
+    );
   }
 
   const bazaarTerm = bazaar?.trim().replace(/[%_,()]/g, " ");
   if (bazaarTerm) {
     const [{ data: byName }, { data: matchingBazaars }] = await Promise.all([
-      supabase.from("order_bazaars").select("order_id").ilike("bazaar_name", `%${bazaarTerm}%`),
+      supabase
+        .from("order_bazaars")
+        .select("order_id")
+        .ilike("bazaar_name", `%${bazaarTerm}%`),
       supabase.from("bazaars").select("id").ilike("name", `%${bazaarTerm}%`),
     ]);
     const bazaarIds = (matchingBazaars ?? []).map((b) => b.id);
     const { data: byId } = bazaarIds.length
-      ? await supabase.from("order_bazaars").select("order_id").in("bazaar_id", bazaarIds)
+      ? await supabase
+          .from("order_bazaars")
+          .select("order_id")
+          .in("bazaar_id", bazaarIds)
       : { data: [] as { order_id: string }[] };
-    const orderIds = [...new Set([...(byName ?? []), ...(byId ?? [])].map((r) => r.order_id))];
+    const orderIds = [
+      ...new Set([...(byName ?? []), ...(byId ?? [])].map((r) => r.order_id)),
+    ];
     if (orderIds.length === 0) return [];
     query = query.in("id", orderIds);
   }

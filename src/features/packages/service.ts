@@ -1,6 +1,11 @@
 import "server-only";
 
-import { fail, fromDatabaseError, ok, type ActionResult } from "@/lib/action-result";
+import {
+  fail,
+  fromDatabaseError,
+  ok,
+  type ActionResult,
+} from "@/lib/action-result";
 import { notify, type NotifyCustomer } from "@/lib/notifications";
 import type { DeliveryResult } from "@/lib/notifications/types";
 import type { Database } from "@/lib/supabase/database.types";
@@ -56,7 +61,9 @@ async function packageMessage(
   pkg: Package,
   kind: "package_received" | "package_unassigned",
 ): Promise<Omit<PackageResult, "package">> {
-  const customer = pkg.customer_id ? await loadCustomer(supabase, pkg.customer_id) : null;
+  const customer = pkg.customer_id
+    ? await loadCustomer(supabase, pkg.customer_id)
+    : null;
   const bazarName = pkg.bazaar_name ?? "un bazar";
 
   if (kind === "package_received" && pkg.order_id) {
@@ -112,7 +119,12 @@ export async function registerPackageWith(
   if (error) return fromDatabaseError(error);
 
   if (!pkg.customer_id) {
-    return ok({ package: pkg, notification: null, received: null, expected: null });
+    return ok({
+      package: pkg,
+      notification: null,
+      received: null,
+      expected: null,
+    });
   }
   const rest = await packageMessage(
     supabase,
@@ -136,7 +148,8 @@ export async function assignPackageWith(
     .select("id, customer_id, order_id")
     .eq("id", input.packageId)
     .single();
-  if (!before) return fail("No encontramos ese paquete.", { code: "NOT_FOUND" });
+  if (!before)
+    return fail("No encontramos ese paquete.", { code: "NOT_FOUND" });
   if (before.customer_id && before.customer_id !== input.customerId) {
     return fail("Este paquete ya es de otra clienta.");
   }
@@ -150,12 +163,20 @@ export async function assignPackageWith(
   if (error) return fromDatabaseError(error);
 
   if (pkg.order_id && !before.order_id) {
-    return ok({ package: pkg, ...(await packageMessage(supabase, pkg, "package_received")) });
+    return ok({
+      package: pkg,
+      ...(await packageMessage(supabase, pkg, "package_received")),
+    });
   }
   if (!pkg.order_id && !before.customer_id) {
-    return ok({ package: pkg, ...(await packageMessage(supabase, pkg, "package_unassigned")) });
+    return ok({
+      package: pkg,
+      ...(await packageMessage(supabase, pkg, "package_unassigned")),
+    });
   }
-  const counts = pkg.order_id ? await orderCounts(supabase, pkg.order_id) : null;
+  const counts = pkg.order_id
+    ? await orderCounts(supabase, pkg.order_id)
+    : null;
   return ok({
     package: pkg,
     notification: null,

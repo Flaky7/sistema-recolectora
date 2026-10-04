@@ -36,11 +36,17 @@ export type CustomerFilters = {
 };
 
 /** Collector's list: search by name, code or WhatsApp (FR-039). */
-export async function listCustomers({ q, status, hasAccount }: CustomerFilters = {}) {
+export async function listCustomers({
+  q,
+  status,
+  hasAccount,
+}: CustomerFilters = {}) {
   const supabase = await createClient();
   let query = supabase
     .from("customers")
-    .select("id, code, full_name, whatsapp, type, status, profile_id, created_at")
+    .select(
+      "id, code, full_name, whatsapp, type, status, profile_id, created_at",
+    )
     .order("full_name")
     .limit(200);
 
@@ -49,7 +55,10 @@ export async function listCustomers({ q, status, hasAccount }: CustomerFilters =
     const code = normalizeCustomerCode(term);
     const digits = normalizePhone(term);
     const safe = term.replace(/[%_,()]/g, " ");
-    const filters = [`full_name.ilike.%${safe}%`, `code.eq.${code.replace(/[^A-Z0-9]/g, "")}`];
+    const filters = [
+      `full_name.ilike.%${safe}%`,
+      `code.eq.${code.replace(/[^A-Z0-9]/g, "")}`,
+    ];
     if (digits.length >= 3) filters.push(`whatsapp.ilike.%${digits}%`);
     query = query.or(filters.join(","));
   }

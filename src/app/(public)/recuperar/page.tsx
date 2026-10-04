@@ -10,8 +10,8 @@ export default function RequestResetPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Recuperar contraseña</h1>
         <p className="text-muted-foreground">
-          Escribe el correo de tu cuenta y te enviaremos un enlace para elegir una nueva
-          contraseña.
+          Escribe el correo de tu cuenta y te enviaremos un enlace para elegir
+          una nueva contraseña.
         </p>
       </div>
       <RequestResetForm />

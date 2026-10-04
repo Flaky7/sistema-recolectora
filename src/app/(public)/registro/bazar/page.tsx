@@ -11,15 +11,18 @@ export default function SignUpBazaarPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Registra tu bazar</h1>
         <p className="text-muted-foreground">
-          Crea tu cuenta y después completa tu ficha: nombre, marcas, link de tu página, fotos
-          (opcionales), tus documentos y 3 referencias. La recolectora la revisará antes de
-          publicarla en el directorio.
+          Crea tu cuenta y después completa tu ficha: nombre, marcas, link de tu
+          página, fotos (opcionales), tus documentos y 3 referencias. La
+          recolectora la revisará antes de publicarla en el directorio.
         </p>
       </div>
       <SignUpBazaarForm />
       <p className="text-muted-foreground text-center text-sm">
         ¿Ya tienes cuenta?{" "}
-        <Link href="/entrar" className="text-primary underline underline-offset-4">
+        <Link
+          href="/entrar"
+          className="text-primary underline underline-offset-4"
+        >
           Entrar
         </Link>
       </p>

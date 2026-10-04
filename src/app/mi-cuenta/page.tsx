@@ -14,7 +14,9 @@ import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Mi cuenta" };
 
-export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-cuenta">) {
+export default async function CustomerHomePage({
+  searchParams,
+}: PageProps<"/mi-cuenta">) {
   const [customer, orders, params] = await Promise.all([
     getMyCustomer(),
     listMyOrders(),
@@ -26,15 +28,22 @@ export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-
   return (
     <div className="space-y-8">
       {params.bienvenida ? (
-        <p role="status" className="rounded-lg bg-emerald-100 p-3 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100">
+        <p
+          role="status"
+          className="rounded-lg bg-emerald-100 p-3 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100"
+        >
           ¡Listo! Tu cuenta está confirmada.
         </p>
       ) : null}
 
       {!active ? (
-        <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-4">
-          Tu cuenta está dada de baja temporalmente. Puedes ver tus pedidos, pero no crear ni
-          modificar ninguno. Contacta a la recolectora para reactivarla.
+        <p
+          role="alert"
+          className="bg-destructive/10 text-destructive rounded-lg p-4"
+        >
+          Tu cuenta está dada de baja temporalmente. Puedes ver tus pedidos,
+          pero no crear ni modificar ninguno. Contacta a la recolectora para
+          reactivarla.
         </p>
       ) : null}
 
@@ -58,7 +67,9 @@ export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-
         {orders.length === 0 ? (
           <div className="text-muted-foreground rounded-xl border border-dashed p-6 text-center">
             <PackageIcon className="mx-auto mb-2 size-8" aria-hidden />
-            <p>Aún no tienes pedidos. Registra uno cuando compres en un bazar.</p>
+            <p>
+              Aún no tienes pedidos. Registra uno cuando compres en un bazar.
+            </p>
           </div>
         ) : (
           <ul className="divide-y rounded-xl border">
@@ -70,16 +81,23 @@ export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-
                 >
                   <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold">Pedido #{order.folio}</span>
+                      <span className="font-semibold">
+                        Pedido #{order.folio}
+                      </span>
                       <OrderStatusBadge status={order.status!} />
                     </div>
-                    <p className="text-muted-foreground truncate text-sm">{order.description}</p>
+                    <p className="text-muted-foreground truncate text-sm">
+                      {order.description}
+                    </p>
                     <p className="text-muted-foreground text-sm">
-                      {order.received_packages} de {order.expected_packages} paquetes ·{" "}
-                      {formatDate(order.created_at!)}
+                      {order.received_packages} de {order.expected_packages}{" "}
+                      paquetes · {formatDate(order.created_at!)}
                     </p>
                   </div>
-                  <ChevronRightIcon className="text-muted-foreground size-5" aria-hidden />
+                  <ChevronRightIcon
+                    className="text-muted-foreground size-5"
+                    aria-hidden
+                  />
                 </Link>
               </li>
             ))}
@@ -92,7 +110,8 @@ export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-
           Mis datos
         </h2>
         <p className="text-muted-foreground text-sm">
-          {customer.full_name}. Si necesitas cambiar tu nombre, pídeselo a la recolectora.
+          {customer.full_name}. Si necesitas cambiar tu nombre, pídeselo a la
+          recolectora.
         </p>
         <CustomerProfileForm
           disabled={!active}
@@ -104,19 +123,33 @@ export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-
         />
       </section>
 
-      <section aria-labelledby="delete-title" className="space-y-3 border-t pt-6">
+      <section
+        aria-labelledby="delete-title"
+        className="space-y-3 border-t pt-6"
+      >
         <h2 id="delete-title" className="text-xl font-semibold">
           Eliminar mi cuenta
         </h2>
         <p className="text-muted-foreground text-sm">
-          Solo es posible si no tienes pedidos en curso (todos entregados o cancelados).
+          Solo es posible si no tienes pedidos en curso (todos entregados o
+          cancelados).
         </p>
         <DeleteAccountDialog
           target={{ kind: "self" }}
           triggerLabel="Eliminar mi cuenta"
           title="¿Eliminar tu cuenta?"
-          deleted={<p>Tu cuenta de acceso, nombre, WhatsApp, dirección, correo, comprobantes de pago y fotos de tus paquetes.</p>}
-          kept={<p>El historial de pedidos de la recolectora, como “Clienta eliminada”.</p>}
+          deleted={
+            <p>
+              Tu cuenta de acceso, nombre, WhatsApp, dirección, correo,
+              comprobantes de pago y fotos de tus paquetes.
+            </p>
+          }
+          kept={
+            <p>
+              El historial de pedidos de la recolectora, como “Clienta
+              eliminada”.
+            </p>
+          }
         />
       </section>
     </div>

@@ -10,8 +10,8 @@ export default function NewCustomerPage() {
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold">Dar de alta clienta</h1>
         <p className="text-muted-foreground">
-          Para clientas que no usan la app. Recibirán avisos por WhatsApp y pueden crear su cuenta
-          después con el mismo número y su código.
+          Para clientas que no usan la app. Recibirán avisos por WhatsApp y
+          pueden crear su cuenta después con el mismo número y su código.
         </p>
       </div>
       <NewCustomerFlow />

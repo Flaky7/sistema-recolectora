@@ -15,15 +15,30 @@ export async function confirmPayment(page: Page, folio: number) {
 }
 
 /** Registers one package for the customer's order from /admin/paquetes/nuevo. */
-export async function registerPackage(page: Page, code: string, folio: number, bazaar = "Bazar E2E") {
+export async function registerPackage(
+  page: Page,
+  code: string,
+  folio: number,
+  bazaar = "Bazar E2E",
+) {
   await page.goto("/admin/paquetes/nuevo");
   await page.getByLabel("Código de la etiqueta").fill(code);
   await page.getByRole("button", { name: new RegExp(code) }).click();
-  const radio = page.getByRole("radio", { name: new RegExp(`Pedido #${folio}`) });
+  const radio = page.getByRole("radio", {
+    name: new RegExp(`Pedido #${folio}`),
+  });
   if (!(await radio.isChecked())) await radio.check();
-  await page.locator('input[type="file"]').setInputFiles(fixture("package.jpg"));
-  await expect(page.getByRole("button", { name: "Cambiar archivo" })).toBeVisible();
+  await page
+    .locator('input[type="file"]')
+    .setInputFiles(fixture("package.jpg"));
+  await expect(
+    page.getByRole("button", { name: "Cambiar archivo" }),
+  ).toBeVisible();
   await page.getByLabel("¿De qué bazar viene?").fill(bazaar);
-  await page.getByRole("button", { name: new RegExp(`Agregar “${bazaar}”`) }).click();
-  return captureWhatsApp(page, () => page.getByRole("button", { name: "Guardar paquete" }).click());
+  await page
+    .getByRole("button", { name: new RegExp(`Agregar “${bazaar}”`) })
+    .click();
+  return captureWhatsApp(page, () =>
+    page.getByRole("button", { name: "Guardar paquete" }).click(),
+  );
 }

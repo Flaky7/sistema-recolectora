@@ -36,7 +36,8 @@ export async function uploadFile(
   file: File,
   { bucket, folder, kind, prefix }: UploadOptions,
 ): Promise<string> {
-  const allowed: readonly string[] = kind === "image" ? IMAGE_TYPES : DOCUMENT_TYPES;
+  const allowed: readonly string[] =
+    kind === "image" ? IMAGE_TYPES : DOCUMENT_TYPES;
   if (!allowed.includes(file.type)) {
     throw new UploadError(
       kind === "image"

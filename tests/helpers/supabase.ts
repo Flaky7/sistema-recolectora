@@ -36,7 +36,9 @@ export function supabaseEnv(): Env {
     serviceKey ??= status.SERVICE_ROLE_KEY;
   }
   if (!url || !anonKey || !serviceKey) {
-    throw new Error("Supabase local no está corriendo: ejecuta `pnpm supabase start`.");
+    throw new Error(
+      "Supabase local no está corriendo: ejecuta `pnpm supabase start`.",
+    );
   }
   cachedEnv = { url, anonKey, serviceKey };
   return cachedEnv;
@@ -63,10 +65,16 @@ export function anonClient(): Client {
   return createClient<Database>(url, anonKey, noSession);
 }
 
-export async function signInAs(email: string, password = TEST_PASSWORD): Promise<Client> {
+export async function signInAs(
+  email: string,
+  password = TEST_PASSWORD,
+): Promise<Client> {
   const client = anonClient();
   const { error } = await client.auth.signInWithPassword({ email, password });
-  if (error) throw new Error(`No se pudo iniciar sesión como ${email}: ${error.message}`);
+  if (error)
+    throw new Error(
+      `No se pudo iniciar sesión como ${email}: ${error.message}`,
+    );
   return client;
 }
 
@@ -125,7 +133,8 @@ export async function createTestUser(
           privacy_accepted: true,
           full_name: data.fullName ?? "Clienta de Prueba",
           whatsapp: data.whatsapp ?? uniquePhone(),
-          shipping_address: data.shippingAddress ?? "Calle de Prueba 123, Tijuana, B.C.",
+          shipping_address:
+            data.shippingAddress ?? "Calle de Prueba 123, Tijuana, B.C.",
           type: data.type ?? "local",
           customer_code: data.customerCode,
         };
@@ -142,8 +151,11 @@ export async function createTestUser(
   createdUsers.push(created.user.id);
 
   if (role === "collector") {
-    const { error: promoteError } = await admin.rpc("promote_to_collector", { email });
-    if (promoteError) throw new Error(`promote_to_collector: ${promoteError.message}`);
+    const { error: promoteError } = await admin.rpc("promote_to_collector", {
+      email,
+    });
+    if (promoteError)
+      throw new Error(`promote_to_collector: ${promoteError.message}`);
   }
 
   let entityId: string | null = null;
@@ -163,7 +175,12 @@ export async function createTestUser(
     entityId = row?.id ?? null;
   }
 
-  return { id: created.user.id, email, client: await signInAs(email), entityId };
+  return {
+    id: created.user.id,
+    email,
+    client: await signInAs(email),
+    entityId,
+  };
 }
 
 /** Deletes the Auth users created by this test file; business rows stay, as after FR-048. */

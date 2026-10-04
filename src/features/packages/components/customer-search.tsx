@@ -65,13 +65,21 @@ export function CustomerSearch({
 
   function chooseCustomer(customer: FoundCustomer) {
     const orders = customer.activeOrders;
-    const orderId = orders.length === 1 ? orders[0]!.id : orders.length === 0 ? null : undefined;
+    const orderId =
+      orders.length === 1
+        ? orders[0]!.id
+        : orders.length === 0
+          ? null
+          : undefined;
     onSelect({ kind: "customer", customer, orderId });
   }
 
   return (
     <div className="space-y-3">
-      <label htmlFor="package-customer-search" className="block text-lg font-medium">
+      <label
+        htmlFor="package-customer-search"
+        className="block text-lg font-medium"
+      >
         Código de la etiqueta
       </label>
       <div className="relative">
@@ -108,12 +116,16 @@ export function CustomerSearch({
 
       {shown && shown.length === 0 ? (
         <p role="status" className="bg-muted rounded-lg p-3">
-          No existe una clienta con “{query.trim()}”. Prueba con su nombre o teléfono.
+          No existe una clienta con “{query.trim()}”. Prueba con su nombre o
+          teléfono.
         </p>
       ) : null}
 
       {shown && shown.length > 0 ? (
-        <ul className="divide-y rounded-xl border" aria-label="Clientas encontradas">
+        <ul
+          className="divide-y rounded-xl border"
+          aria-label="Clientas encontradas"
+        >
           {shown.map((customer) => (
             <li key={customer.id}>
               <button
@@ -125,7 +137,9 @@ export function CustomerSearch({
                 )}
               >
                 <span>
-                  <span className="block font-semibold">{customer.fullName}</span>
+                  <span className="block font-semibold">
+                    {customer.fullName}
+                  </span>
                   <span className="text-muted-foreground text-sm">
                     {customer.activeOrders.length === 0
                       ? "Sin pedidos activos"
@@ -192,7 +206,9 @@ export function OrderChoice({
           />
           <span>
             <span className="block font-medium">{option.label}</span>
-            <span className="text-muted-foreground text-sm">{option.detail}</span>
+            <span className="text-muted-foreground text-sm">
+              {option.detail}
+            </span>
           </span>
         </label>
       ))}

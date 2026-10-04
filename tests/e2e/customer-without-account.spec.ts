@@ -13,18 +13,29 @@ test("alta sin cuenta → pedido con pago anotado → la clienta reclama su cuen
   await page.goto("/admin/clientas/nueva");
   await page.getByLabel("Nombre completo").fill("Rosa Sin Cuenta E2E");
   await page.getByLabel("WhatsApp").fill(phone);
-  await page.getByLabel("Dirección de envío").fill("Avenida de Prueba 456, Tijuana");
+  await page
+    .getByLabel("Dirección de envío")
+    .fill("Avenida de Prueba 456, Tijuana");
   await page.getByText("Local", { exact: true }).click();
   await page.getByRole("button", { name: "Dar de alta" }).click();
 
   const code = (await page.locator("p.font-mono").first().innerText()).trim();
   expect(code).toMatch(/^[2-9A-HJ-NP-Z]{5}$/);
-  const share = page.getByRole("link", { name: "Compartir código por WhatsApp" });
-  await expect(share).toHaveAttribute("href", new RegExp(`wa\\.me/52${phone}.*${code}`));
+  const share = page.getByRole("link", {
+    name: "Compartir código por WhatsApp",
+  });
+  await expect(share).toHaveAttribute(
+    "href",
+    new RegExp(`wa\\.me/52${phone}.*${code}`),
+  );
 
   await page.getByRole("link", { name: "Registrar pedido" }).click();
-  await page.getByLabel("¿En qué bazar o bazares compraste?").fill("Bazar de una amiga");
-  await page.getByRole("button", { name: /Agregar “Bazar de una amiga”/ }).click();
+  await page
+    .getByLabel("¿En qué bazar o bazares compraste?")
+    .fill("Bazar de una amiga");
+  await page
+    .getByRole("button", { name: /Agregar “Bazar de una amiga”/ })
+    .click();
   await page.getByLabel("¿Qué compraste?").fill("Ropa de bebé");
   await page.getByLabel("¿Cuántos paquetes esperas?").fill("1");
   await page.getByLabel("Anotar pago inicial recibido").check();
@@ -34,7 +45,10 @@ test("alta sin cuenta → pedido con pago anotado → la clienta reclama su cuen
   await expect(page.getByText("Pago confirmado").first()).toBeVisible();
 
   await signOut(page);
-  const customer = await registerCustomer(page, { phone, code: code.toLowerCase() });
+  const customer = await registerCustomer(page, {
+    phone,
+    code: code.toLowerCase(),
+  });
   expect(customer.code).toBe(code);
   await expect(page.getByText(`Pedido #${folio}`)).toBeVisible();
 });

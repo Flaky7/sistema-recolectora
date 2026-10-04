@@ -78,22 +78,37 @@ export async function createOrder(
   await createPackage(customerId, order.id);
   if (status === "receiving") return getOrder(order.id);
 
-  must(await admin.from("orders").update({ status: "complete" }).eq("id", order.id));
+  must(
+    await admin
+      .from("orders")
+      .update({ status: "complete" })
+      .eq("id", order.id),
+  );
   if (status === "complete") return getOrder(order.id);
 
   must(
-    await admin
-      .from("shipments")
-      .insert({ order_id: order.id, type: "carrier", carrier: "Estafeta", tracking_number: "ABC123" }),
+    await admin.from("shipments").insert({
+      order_id: order.id,
+      type: "carrier",
+      carrier: "Estafeta",
+      tracking_number: "ABC123",
+    }),
   );
   if (status === "shipped") return getOrder(order.id);
 
-  must(await admin.from("orders").update({ status: "delivered" }).eq("id", order.id));
+  must(
+    await admin
+      .from("orders")
+      .update({ status: "delivered" })
+      .eq("id", order.id),
+  );
   return getOrder(order.id);
 }
 
 export async function getOrder(orderId: string): Promise<Order> {
-  return must(await adminClient().from("orders").select().eq("id", orderId).single());
+  return must(
+    await adminClient().from("orders").select().eq("id", orderId).single(),
+  );
 }
 
 export async function createPayment(
@@ -120,7 +135,10 @@ export async function createPayment(
   );
 }
 
-export async function createPackage(customerId: string | null, orderId: string | null) {
+export async function createPackage(
+  customerId: string | null,
+  orderId: string | null,
+) {
   return must(
     await adminClient()
       .from("packages")
@@ -136,7 +154,10 @@ export async function createPackage(customerId: string | null, orderId: string |
 }
 
 /** Proposal, 4 documents and 3 references: everything needed to submit for review. */
-export async function completeBazaarProfile(bazaarId: string, name = "Bazar de Prueba") {
+export async function completeBazaarProfile(
+  bazaarId: string,
+  name = "Bazar de Prueba",
+) {
   const admin = adminClient();
   must(
     await admin.from("bazaar_profile_proposals").insert({
@@ -148,13 +169,18 @@ export async function completeBazaarProfile(bazaarId: string, name = "Bazar de P
   );
   must(
     await admin.from("bazaar_documents").insert(
-      (["id_card", "selfie", "proof_of_address", "registration_payment"] as const).map(
-        (type) => ({
-          bazaar_id: bazaarId,
-          type,
-          storage_path: `${bazaarId}/${type}-${crypto.randomUUID()}.jpg`,
-        }),
-      ),
+      (
+        [
+          "id_card",
+          "selfie",
+          "proof_of_address",
+          "registration_payment",
+        ] as const
+      ).map((type) => ({
+        bazaar_id: bazaarId,
+        type,
+        storage_path: `${bazaarId}/${type}-${crypto.randomUUID()}.jpg`,
+      })),
     ),
   );
   must(
@@ -183,7 +209,12 @@ export async function createBazaar(
   }
   if (status === "draft") return { ...user, bazaarId };
 
-  must(await admin.from("bazaars").update({ status: "pending_review" }).eq("id", bazaarId));
+  must(
+    await admin
+      .from("bazaars")
+      .update({ status: "pending_review" })
+      .eq("id", bazaarId),
+  );
   if (status === "pending_review") return { ...user, bazaarId };
 
   if (status === "rejected") {

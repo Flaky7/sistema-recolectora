@@ -46,10 +46,19 @@ export function CompleteOrderButton({
 
   return (
     <>
-      <Button type="button" size="touch" className="w-full" onClick={() => complete(false)} disabled={saving}>
+      <Button
+        type="button"
+        size="touch"
+        className="w-full"
+        onClick={() => complete(false)}
+        disabled={saving}
+      >
         Marcar completo
       </Button>
-      <AlertDialog open={question !== null} onOpenChange={(open) => !open && setQuestion(null)}>
+      <AlertDialog
+        open={question !== null}
+        onOpenChange={(open) => !open && setQuestion(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Faltan paquetes</AlertDialogTitle>
@@ -57,7 +66,12 @@ export function CompleteOrderButton({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={saving}>Volver</AlertDialogCancel>
-            <Button type="button" size="lg" onClick={() => complete(true)} disabled={saving}>
+            <Button
+              type="button"
+              size="lg"
+              onClick={() => complete(true)}
+              disabled={saving}
+            >
               Sí, marcar completo
             </Button>
           </AlertDialogFooter>

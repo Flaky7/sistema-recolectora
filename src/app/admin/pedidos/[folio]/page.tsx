@@ -27,7 +27,9 @@ export async function generateMetadata({
   return { title: `Pedido #${folio}` };
 }
 
-export default async function AdminOrderPage({ params }: PageProps<"/admin/pedidos/[folio]">) {
+export default async function AdminOrderPage({
+  params,
+}: PageProps<"/admin/pedidos/[folio]">) {
   const { folio: folioParam } = await params;
   const order = await getOrderByFolio(Number(folioParam));
   if (!order) notFound();
@@ -45,12 +47,17 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
   ]);
 
   const status = order.status;
-  const canMovePackages = !["shipped", "delivered", "cancelled"].includes(status);
+  const canMovePackages = !["shipped", "delivered", "cancelled"].includes(
+    status,
+  );
   const canCancel = !["shipped", "delivered", "cancelled"].includes(status);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/admin/pedidos" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
+      <Link
+        href="/admin/pedidos"
+        className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm"
+      >
         <ArrowLeftIcon className="size-4" aria-hidden />
         Pedidos
       </Link>
@@ -61,7 +68,10 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
           <OrderStatusBadge status={status} />
         </div>
         <p>
-          <Link href={`/admin/clientas/${order.customer_code}`} className="font-medium underline-offset-4 hover:underline">
+          <Link
+            href={`/admin/clientas/${order.customer_code}`}
+            className="font-medium underline-offset-4 hover:underline"
+          >
             {order.customer_name}
           </Link>{" "}
           · <span className="font-mono">{order.customer_code}</span> ·{" "}
@@ -69,7 +79,8 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
           {order.customer_has_account ? null : " · sin cuenta"}
         </p>
         <p className="text-lg font-medium">
-          {order.received_packages} de {order.expected_packages} paquetes recibidos
+          {order.received_packages} de {order.expected_packages} paquetes
+          recibidos
         </p>
       </header>
 
@@ -90,7 +101,9 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
           </div>
           {order.cancelled_reason ? (
             <div>
-              <dt className="text-muted-foreground text-sm">Motivo de cancelación</dt>
+              <dt className="text-muted-foreground text-sm">
+                Motivo de cancelación
+              </dt>
               <dd>{order.cancelled_reason}</dd>
             </div>
           ) : null}
@@ -145,16 +158,27 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
                   />
                 </li>
               ) : (
-                <li key={payment.id} className="space-y-2 rounded-xl border p-4">
+                <li
+                  key={payment.id}
+                  className="space-y-2 rounded-xl border p-4"
+                >
                   <p className="flex justify-between gap-2">
                     <span>{formatMoney(payment.amount_cents)}</span>
-                    <span className="font-medium">{PAYMENT_STATUS_LABELS[payment.status]}</span>
+                    <span className="font-medium">
+                      {PAYMENT_STATUS_LABELS[payment.status]}
+                    </span>
                   </p>
-                  <p className="text-muted-foreground text-sm">{formatDateTime(payment.created_at)}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {formatDateTime(payment.created_at)}
+                  </p>
                   {payment.rejection_reason ? (
-                    <p className="text-sm">Motivo: {payment.rejection_reason}</p>
+                    <p className="text-sm">
+                      Motivo: {payment.rejection_reason}
+                    </p>
                   ) : null}
-                  {payment.proof_path ? <ViewProofButton paymentId={payment.id} /> : null}
+                  {payment.proof_path ? (
+                    <ViewProofButton paymentId={payment.id} />
+                  ) : null}
                 </li>
               ),
             )}

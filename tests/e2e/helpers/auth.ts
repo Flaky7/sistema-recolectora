@@ -15,7 +15,11 @@ export const SEED_USERS = {
   suspendedBazaar: "bazar.suspendido@test.local",
 } as const;
 
-const HOME = { collector: "/admin", customer: "/mi-cuenta", bazaar: "/bazar" } as const;
+const HOME = {
+  collector: "/admin",
+  customer: "/mi-cuenta",
+  bazaar: "/bazar",
+} as const;
 
 export async function signIn(
   page: Page,
@@ -39,15 +43,22 @@ const MAILPIT = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
 type MailpitList = { messages: { ID: string; To: { Address: string }[] }[] };
 
 /** Waits for the confirmation email sent to `email` and returns the link inside it. */
-export async function getEmailLink(email: string, timeoutMs = 20_000): Promise<string> {
+export async function getEmailLink(
+  email: string,
+  timeoutMs = 20_000,
+): Promise<string> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     const list = (await (
-      await fetch(`${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`)
+      await fetch(
+        `${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`,
+      )
     ).json()) as MailpitList;
     const message = list.messages?.[0];
     if (message) {
-      const detail = (await (await fetch(`${MAILPIT}/api/v1/message/${message.ID}`)).json()) as {
+      const detail = (await (
+        await fetch(`${MAILPIT}/api/v1/message/${message.ID}`)
+      ).json()) as {
         HTML: string;
       };
       const match = detail.HTML.match(/href="([^"]*\/auth\/callback[^"]*)"/);

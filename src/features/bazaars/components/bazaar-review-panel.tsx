@@ -32,7 +32,8 @@ export function BazaarReviewPanel({ data }: { data: BazaarForReview }) {
       {bazaar.status === "pending_review" ? (
         <section className="space-y-2">
           <p className="text-muted-foreground text-sm">
-            Enviado el {formatDateTime(bazaar.submitted_at ?? bazaar.created_at)}
+            Enviado el{" "}
+            {formatDateTime(bazaar.submitted_at ?? bazaar.created_at)}
           </p>
           <BazaarRegistrationButtons bazaarId={bazaar.id} />
         </section>
@@ -53,9 +54,15 @@ export function DocumentList({
       <h2 className="text-lg font-semibold">Documentos</h2>
       <ul className="divide-y rounded-xl border">
         {documents.map((slot) => {
-          const id = slot.latest?.status === "pending" ? slot.latest.id : slot.current?.id;
+          const id =
+            slot.latest?.status === "pending"
+              ? slot.latest.id
+              : slot.current?.id;
           return (
-            <li key={slot.type} className="flex flex-wrap items-center justify-between gap-2 p-3">
+            <li
+              key={slot.type}
+              className="flex flex-wrap items-center justify-between gap-2 p-3"
+            >
               <div>
                 <p className="font-medium">{DOCUMENT_TYPE_LABELS[slot.type]}</p>
                 <p className="text-muted-foreground text-sm">
@@ -66,7 +73,9 @@ export function DocumentList({
                       : "Falta"}
                 </p>
               </div>
-              {id ? <ViewDocumentButton bazaarId={bazaarId} documentId={id} /> : null}
+              {id ? (
+                <ViewDocumentButton bazaarId={bazaarId} documentId={id} />
+              ) : null}
             </li>
           );
         })}
@@ -75,8 +84,15 @@ export function DocumentList({
   );
 }
 
-export function ReferenceList({ references }: { references: BazaarForReview["references"] }) {
-  const lastUpdate = references.map((r) => r.updated_at).sort().at(-1);
+export function ReferenceList({
+  references,
+}: {
+  references: BazaarForReview["references"];
+}) {
+  const lastUpdate = references
+    .map((r) => r.updated_at)
+    .sort()
+    .at(-1);
   return (
     <section className="space-y-2">
       <h2 className="text-lg font-semibold">Referencias</h2>
@@ -85,9 +101,15 @@ export function ReferenceList({ references }: { references: BazaarForReview["ref
       ) : (
         <ul className="divide-y rounded-xl border">
           {references.map((ref) => (
-            <li key={ref.position} className="flex items-center justify-between gap-2 p-3">
+            <li
+              key={ref.position}
+              className="flex items-center justify-between gap-2 p-3"
+            >
               <span>{ref.full_name}</span>
-              <a href={`tel:${ref.phone}`} className="text-primary flex min-h-11 items-center gap-1 underline-offset-4 hover:underline">
+              <a
+                href={`tel:${ref.phone}`}
+                className="text-primary flex min-h-11 items-center gap-1 underline-offset-4 hover:underline"
+              >
                 <PhoneIcon className="size-4" aria-hidden />
                 {ref.phone}
               </a>
@@ -96,7 +118,9 @@ export function ReferenceList({ references }: { references: BazaarForReview["ref
         </ul>
       )}
       {lastUpdate ? (
-        <p className="text-muted-foreground text-sm">Actualizadas el {formatDateTime(lastUpdate)}</p>
+        <p className="text-muted-foreground text-sm">
+          Actualizadas el {formatDateTime(lastUpdate)}
+        </p>
       ) : null}
     </section>
   );

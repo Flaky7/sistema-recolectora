@@ -6,7 +6,10 @@ import { FileUpload } from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import { BazaarPicker, type PickedBazaar } from "@/features/orders/components/bazaar-picker";
+import {
+  BazaarPicker,
+  type PickedBazaar,
+} from "@/features/orders/components/bazaar-picker";
 import { BUCKETS, UNIDENTIFIED_FOLDER } from "@/lib/uploads/paths";
 
 import { registerPackage } from "../actions";
@@ -91,7 +94,10 @@ export function PackageForm({
         />
       </Field>
       {error ? (
-        <p role="alert" className="bg-destructive/10 text-destructive rounded-lg p-3 text-sm">
+        <p
+          role="alert"
+          className="bg-destructive/10 text-destructive rounded-lg p-3 text-sm"
+        >
           {error}
         </p>
       ) : null}

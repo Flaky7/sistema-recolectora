@@ -9,7 +9,10 @@ import { OpenWhatsApp } from "@/components/open-whatsapp";
 import { Button } from "@/components/ui/button";
 import { resendNotification } from "@/features/notifications/actions";
 import { formatDateTime } from "@/lib/format";
-import type { DeliveryResult, NotificationKind } from "@/lib/notifications/types";
+import type {
+  DeliveryResult,
+  NotificationKind,
+} from "@/lib/notifications/types";
 
 import { assignPackage } from "../actions";
 import { PackageGallery, type GalleryPackage } from "./package-gallery";
@@ -74,7 +77,8 @@ export function OrderPackagesAdmin({
                     className="border-input h-11 w-full rounded-lg border bg-transparent px-2"
                     defaultValue=""
                     onChange={(event) => {
-                      if (event.target.value) void move(pkg.id, event.target.value);
+                      if (event.target.value)
+                        void move(pkg.id, event.target.value);
                     }}
                   >
                     <option value="">Mover a…</option>
@@ -97,12 +101,22 @@ export function OrderPackagesAdmin({
           </summary>
           <ul className="mt-2 divide-y">
             {notifications.map((n) => (
-              <li key={n.id} className="flex items-center justify-between gap-2 py-2">
+              <li
+                key={n.id}
+                className="flex items-center justify-between gap-2 py-2"
+              >
                 <span>
                   <span className="block">{KIND_LABELS[n.kind]}</span>
-                  <span className="text-muted-foreground text-sm">{formatDateTime(n.created_at)}</span>
+                  <span className="text-muted-foreground text-sm">
+                    {formatDateTime(n.created_at)}
+                  </span>
                 </span>
-                <Button type="button" variant="outline" size="lg" onClick={() => resend(n.id)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => resend(n.id)}
+                >
                   <RotateCcwIcon aria-hidden />
                   Reenviar
                 </Button>

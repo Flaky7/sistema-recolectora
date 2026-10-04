@@ -28,7 +28,9 @@ const TABS: { value: string; label: string; status?: BazaarStatus }[] = [
   { value: "todos", label: "Todos" },
 ];
 
-export default async function BazaarsPage({ searchParams }: PageProps<"/admin/bazares">) {
+export default async function BazaarsPage({
+  searchParams,
+}: PageProps<"/admin/bazares">) {
   const params = await searchParams;
   const tab = TABS.find((t) => t.value === params.estado) ?? TABS[0]!;
   const q = typeof params.q === "string" ? params.q : "";
@@ -53,7 +55,8 @@ export default async function BazaarsPage({ searchParams }: PageProps<"/admin/ba
                 aria-current={t === tab ? "page" : undefined}
                 className={cn(
                   "flex min-h-11 items-center rounded-full border px-4 text-sm whitespace-nowrap",
-                  t === tab && "bg-primary text-primary-foreground border-primary",
+                  t === tab &&
+                    "bg-primary text-primary-foreground border-primary",
                 )}
               >
                 {t.label}
@@ -68,15 +71,24 @@ export default async function BazaarsPage({ searchParams }: PageProps<"/admin/ba
           <section className="space-y-2">
             <h2 className="font-semibold">Fichas ({proposals.length})</h2>
             {proposals.length === 0 ? (
-              <p className="text-muted-foreground">No hay cambios de ficha por autorizar.</p>
+              <p className="text-muted-foreground">
+                No hay cambios de ficha por autorizar.
+              </p>
             ) : (
               <ul className="divide-y rounded-xl border">
                 {proposals.map((p) => (
                   <li key={p.id}>
-                    <Link href={`/admin/bazares/${p.bazaar.id}`} className="hover:bg-muted/50 flex min-h-14 items-center justify-between gap-2 p-3">
+                    <Link
+                      href={`/admin/bazares/${p.bazaar.id}`}
+                      className="hover:bg-muted/50 flex min-h-14 items-center justify-between gap-2 p-3"
+                    >
                       <span>
-                        <span className="block font-medium">{p.bazaar.name}</span>
-                        <span className="text-muted-foreground text-sm">Propone: {p.name}</span>
+                        <span className="block font-medium">
+                          {p.bazaar.name}
+                        </span>
+                        <span className="text-muted-foreground text-sm">
+                          Propone: {p.name}
+                        </span>
                       </span>
                       <span className="text-muted-foreground text-sm">
                         {p.submitted_at ? formatDate(p.submitted_at) : ""}
@@ -90,17 +102,28 @@ export default async function BazaarsPage({ searchParams }: PageProps<"/admin/ba
           <section className="space-y-2">
             <h2 className="font-semibold">Documentos ({documents.length})</h2>
             {documents.length === 0 ? (
-              <p className="text-muted-foreground">No hay documentos por autorizar.</p>
+              <p className="text-muted-foreground">
+                No hay documentos por autorizar.
+              </p>
             ) : (
               <ul className="divide-y rounded-xl border">
                 {documents.map((d) => (
                   <li key={d.id}>
-                    <Link href={`/admin/bazares/${d.bazaar.id}`} className="hover:bg-muted/50 flex min-h-14 items-center justify-between gap-2 p-3">
+                    <Link
+                      href={`/admin/bazares/${d.bazaar.id}`}
+                      className="hover:bg-muted/50 flex min-h-14 items-center justify-between gap-2 p-3"
+                    >
                       <span>
-                        <span className="block font-medium">{d.bazaar.name}</span>
-                        <span className="text-muted-foreground text-sm">{DOCUMENT_TYPE_LABELS[d.type]}</span>
+                        <span className="block font-medium">
+                          {d.bazaar.name}
+                        </span>
+                        <span className="text-muted-foreground text-sm">
+                          {DOCUMENT_TYPE_LABELS[d.type]}
+                        </span>
                       </span>
-                      <span className="text-muted-foreground text-sm">{formatDate(d.created_at)}</span>
+                      <span className="text-muted-foreground text-sm">
+                        {formatDate(d.created_at)}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -134,14 +157,19 @@ export default async function BazaarsPage({ searchParams }: PageProps<"/admin/ba
             <ul className="divide-y rounded-xl border">
               {bazaars.map((b) => (
                 <li key={b.id}>
-                  <Link href={`/admin/bazares/${b.id}`} className="hover:bg-muted/50 flex min-h-14 flex-wrap items-center justify-between gap-2 p-3">
+                  <Link
+                    href={`/admin/bazares/${b.id}`}
+                    className="hover:bg-muted/50 flex min-h-14 flex-wrap items-center justify-between gap-2 p-3"
+                  >
                     <span>
                       <span className="block font-medium">{b.displayName}</span>
                       <span className="text-muted-foreground text-sm">
                         {(b.brands ?? []).join(", ")}
                       </span>
                     </span>
-                    <Badge variant="secondary">{BAZAAR_STATUS_LABELS[b.status]}</Badge>
+                    <Badge variant="secondary">
+                      {BAZAAR_STATUS_LABELS[b.status]}
+                    </Badge>
                   </Link>
                 </li>
               ))}
