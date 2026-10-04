@@ -1,0 +1,12 @@
+<h2>Recupera tu contraseña</h2>
+<p>
+  Recibimos una solicitud para cambiar la contraseña de tu cuenta en Sistema
+  Recolectora.
+</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery&next=/recuperar/nueva"
+    >Elegir una nueva contraseña</a
+  >
+</p>
+<p>Si tú no lo solicitaste, ignora este mensaje; tu contraseña no cambiará.</p>
