@@ -73,3 +73,16 @@ export async function registerCompleteBazaar(
   await expect(page.getByText("Pendiente de revisión").first()).toBeVisible();
   return email;
 }
+
+/** As the collector: opens the bazaar from "Por revisar" and approves it. */
+export async function approveBazaar(page: Page, name: string) {
+  await page.goto("/admin/bazares?estado=pending_review");
+  await page.getByRole("link", { name: new RegExp(name) }).click();
+  await expect(page.getByRole("heading", { name: "Documentos" })).toBeVisible();
+  await page.getByRole("button", { name: "Aprobar" }).click();
+  await expect(page.getByText("Aprobado", { exact: true })).toBeVisible();
+}
+
+export function uniqueBazaarName(prefix: string) {
+  return `${prefix} ${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+}

@@ -194,7 +194,7 @@ export async function getBazaarForReview(id: string) {
   const supabase = await createClient();
   const { data: bazaar } = await supabase
     .from("bazaars")
-    .select("*, profile:profiles(email)")
+    .select("*, profile:profiles!profile_id(email)")
     .eq("id", id)
     .maybeSingle();
   if (!bazaar) return null;
