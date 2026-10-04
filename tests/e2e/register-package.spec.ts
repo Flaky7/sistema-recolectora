@@ -1,19 +1,27 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 import { fixture, SEED_USERS, signIn, signOut } from "./helpers/auth";
 import { createOrderAsCustomer, registerCustomer } from "./helpers/customer";
 import { captureWhatsApp } from "./helpers/whatsapp";
 
-// Critical flow "registro de paquete recibido" (constitution V; US2), on a phone.
+// Critical flow "registro de paquete recibido" (constitution V; US2), on a phone and on a
+// computer: the collector can do the whole job from either.
+
+/** Phones open the camera; with a mouse the same button opens the file picker. */
+async function expectPhotoButton(page: Page, project: string) {
+  await expect(
+    page.getByRole("button", {
+      name:
+        project === "mobile"
+          ? "Tomar foto del paquete"
+          : "Subir foto del paquete",
+    }),
+  ).toBeVisible();
+}
 
 test("código → pedido preseleccionado → foto → WhatsApp → la clienta ve la foto", async ({
   page,
 }, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile",
-    "Flujo pensado para el celular de la recolectora",
-  );
-
   const customer = await registerCustomer(page, { name: "Paula Paquetes" });
   const folio = await createOrderAsCustomer(page, { expected: 2 });
 
@@ -36,6 +44,7 @@ test("código → pedido preseleccionado → foto → WhatsApp → la clienta ve
     page.getByRole("radio", { name: new RegExp(`Pedido #${folio}`) }),
   ).toBeChecked();
   await expect(page.getByText("Este será el paquete 1 de 2")).toBeVisible();
+  await expectPhotoButton(page, testInfo.project.name);
 
   await page
     .locator('input[type="file"]')
@@ -74,17 +83,13 @@ test("código → pedido preseleccionado → foto → WhatsApp → la clienta ve
 test("código desconocido → aviso y paquete sin identificar sin mensaje", async ({
   page,
 }, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "mobile",
-    "Flujo pensado para el celular de la recolectora",
-  );
-
   await signIn(page, SEED_USERS.collector, "collector");
   await page.goto("/admin/paquetes/nuevo");
   await page.getByLabel("Código de la etiqueta").fill("ZZZZZ");
   await expect(page.getByText(/No existe una clienta con/)).toBeVisible();
 
   await page.getByRole("button", { name: /sin identificar/ }).click();
+  await expectPhotoButton(page, testInfo.project.name);
   await page
     .locator('input[type="file"]')
     .setInputFiles(fixture("package.jpg"));

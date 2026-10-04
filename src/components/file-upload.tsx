@@ -1,6 +1,12 @@
 "use client";
 
-import { CameraIcon, FileTextIcon, Loader2Icon, XIcon } from "lucide-react";
+import {
+  CameraIcon,
+  FileTextIcon,
+  Loader2Icon,
+  UploadIcon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +24,11 @@ type Props = {
   capture?: boolean;
   /** Text of the button, e.g. "Tomar foto del paquete". */
   label: string;
+  /**
+   * Text shown instead of `label` on devices with a mouse, where `capture` is ignored and the
+   * button opens the file picker, e.g. "Subir foto del paquete".
+   */
+  desktopLabel?: string;
   /** Uploaded path, or null when there is no file yet. */
   value: string | null;
   onChange: (path: string | null) => void;
@@ -41,6 +52,7 @@ export function FileUpload({
   prefix,
   capture = false,
   label,
+  desktopLabel,
   value,
   onChange,
   error,
@@ -147,11 +159,33 @@ export function FileUpload({
         onClick={() => inputRef.current?.click()}
       >
         {uploading ? (
-          <Loader2Icon className="animate-spin" aria-hidden />
+          <>
+            <Loader2Icon className="animate-spin" aria-hidden />
+            Subiendo…
+          </>
+        ) : value ? (
+          <>
+            <CameraIcon aria-hidden />
+            Cambiar archivo
+          </>
+        ) : desktopLabel ? (
+          // Decided in CSS (primary pointer), not in JS, so server and client render the same.
+          <>
+            <span className="contents pointer-fine:hidden">
+              <CameraIcon aria-hidden />
+              {label}
+            </span>
+            <span className="hidden pointer-fine:contents">
+              <UploadIcon aria-hidden />
+              {desktopLabel}
+            </span>
+          </>
         ) : (
-          <CameraIcon aria-hidden />
+          <>
+            <CameraIcon aria-hidden />
+            {label}
+          </>
         )}
-        {uploading ? "Subiendo…" : value ? "Cambiar archivo" : label}
       </Button>
 
       {value && !preview ? (
