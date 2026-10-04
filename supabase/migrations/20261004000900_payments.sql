@@ -1,12 +1,23 @@
 -- Payments: proofs uploaded by customers or payments recorded by the collector (FR-010, FR-015,
 -- FR-043, FR-051). The order status follows the payment through sync_order_from_payment().
 
+-- The configured deposit; customers cannot read the settings table (research R19).
+create function public.initial_deposit_cents()
+returns integer
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select s.initial_deposit_cents from public.settings s where s.id = 1;
+$$;
+
 create table public.payments (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null references public.orders (id) on delete restrict,
   concept public.payment_concept not null default 'initial_deposit',
   method public.payment_method not null default 'manual_transfer',
-  amount_cents integer not null check (amount_cents > 0),
+  amount_cents integer not null default public.initial_deposit_cents() check (amount_cents > 0),
   proof_path text,
   recorded_by uuid references public.profiles (id) on delete set null default auth.uid(),
   status public.payment_status not null default 'pending',
@@ -31,17 +42,6 @@ create unique index payments_one_open
 create trigger payments_set_updated_at
   before update on public.payments
   for each row execute function public.set_updated_at();
-
--- The configured deposit; customers cannot read the settings table (research R19).
-create function public.initial_deposit_cents()
-returns integer
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select s.initial_deposit_cents from public.settings s where s.id = 1;
-$$;
 
 -- Runs with the caller's role on purpose: the customer branch depends on current_user.
 create function public.prepare_payment()
@@ -71,9 +71,6 @@ begin
       raise exception 'Este pedido ya tiene un pago en revisión o confirmado.' using errcode = 'P0001';
     end if;
   else
-    if new.amount_cents is null then
-      new.amount_cents := public.initial_deposit_cents();
-    end if;
     if new.status = 'confirmed' then
       new.reviewed_at := now();
       new.reviewed_by := auth.uid();

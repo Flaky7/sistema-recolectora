@@ -290,6 +290,20 @@ shadcn/ui con estilo `radix-nova`.
   `/auth/callback?token_hash=…&type=…`, que verifica con `verifyOtp`; así funcionan aunque la
   clienta abra el correo en otro dispositivo o navegador.
 
+## R22. Límite de intentos al reclamar una clienta sin cuenta (implementación, 2026-10-04)
+
+- **Decision**: `customers.claim_failed_attempts` cuenta los códigos incorrectos que se prueban con
+  el WhatsApp de una clienta sin cuenta (en `check_customer_claim`). Después de 10 intentos, ese
+  número queda bloqueado (`locked`) y el registro pide ayuda a la recolectora, que puede
+  desbloquearlo desde el detalle de la clienta. Un registro exitoso reinicia el contador.
+- **Rationale**: el código tiene ~33 millones de combinaciones, pero sin límite alguien que conozca
+  el WhatsApp podría probar códigos sin fin; el límite cierra ese riesgo sin cargar trabajo extra a
+  la recolectora en el caso normal (FR-044, principio II).
+- **Alternatives considered**: captcha (otra dependencia y servicio); límite por IP (Supabase no
+  expone la IP en funciones SQL).
+- **Nota (Next.js 16)**: T027 se implementó como `src/proxy.ts` y `src/lib/supabase/proxy.ts`
+  (ver R21) en lugar de `middleware.ts`.
+
 ## R15. Monitoreo, entornos y costos
 
 - **Decision**: Sentry (`@sentry/nextjs`) plan gratuito, sin envío de datos personales
