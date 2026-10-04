@@ -319,17 +319,17 @@ estado, por código de clienta y por bazar; una clienta que intenta abrir `/admi
 
 ### Tests for User Story 7 ⚠️
 
-- [ ] T129 [P] [US7] Prueba de integración `tests/integration/settings.test.ts`: solo la recolectora actualiza `settings`; una clienta obtiene monto e instrucciones con `get_payment_info()` pero no puede leer la tabla `settings` ni las plantillas; un bazar no puede llamar `get_payment_info()` ni leer `settings`; `initial_deposit_cents` ≤ 0 falla
-- [ ] T130 [P] [US7] Prueba E2E `tests/e2e/admin-panel.spec.ts`: contadores (incluido "cambios de ficha por autorizar"), filtros de pedidos (estado, clienta por código, bazar), plantilla con variable desconocida es rechazada al guardar, y redirección de clienta y bazar fuera de `/admin`
+- [X] T129 [P] [US7] Prueba de integración `tests/integration/settings.test.ts`: solo la recolectora actualiza `settings`; una clienta obtiene monto e instrucciones con `get_payment_info()` pero no puede leer la tabla `settings` ni las plantillas; un bazar no puede llamar `get_payment_info()` ni leer `settings`; `initial_deposit_cents` ≤ 0 falla
+- [X] T130 [P] [US7] Prueba E2E `tests/e2e/admin-panel.spec.ts`: contadores (incluido "cambios de ficha por autorizar"), filtros de pedidos (estado, clienta por código, bazar), plantilla con variable desconocida es rechazada al guardar, y redirección de clienta y bazar fuera de `/admin`
 
 ### Implementation for User Story 7
 
-- [ ] T131 [P] [US7] Crear `src/features/settings/schemas.ts` (`initialDepositCents` > 0; plantillas validadas con `validateTemplate` y las variables de data-model.md) y `src/features/settings/queries.ts` (`getSettings()` para la recolectora y `getPaymentInfo()` que llama `get_payment_info()` para clientas)
-- [ ] T132 [US7] Implementar `src/features/settings/actions.ts` con `updateSettings` y crear `src/app/admin/configuracion/page.tsx` (monto en pesos, instrucciones de pago, 5 plantillas con lista de variables y vista previa con datos de ejemplo)
+- [X] T131 [P] [US7] Crear `src/features/settings/schemas.ts` (`initialDepositCents` > 0; plantillas validadas con `validateTemplate` y las variables de data-model.md) y `src/features/settings/queries.ts` (`getSettings()` para la recolectora y `getPaymentInfo()` que llama `get_payment_info()` para clientas)
+- [X] T132 [US7] Implementar `src/features/settings/actions.ts` con `updateSettings` y crear `src/app/admin/configuracion/page.tsx` (monto en pesos, instrucciones de pago, 5 plantillas con lista de variables y vista previa con datos de ejemplo)
 - [X] T133 [US7] Implementar `src/features/admin/queries.ts` con `getDashboardCounts()` (bazares por revisar, cambios de ficha por autorizar, documentos por autorizar, pagos por confirmar, paquetes sin asignar, pedidos completos por enviar) y crear `src/app/admin/page.tsx` con tarjetas que enlazan a cada lista y botón principal "Registrar paquete"
-- [ ] T134 [P] [US7] Crear `src/components/list-filters.tsx` (búsqueda y filtros sincronizados con la URL, pensados para celular)
-- [ ] T135 [US7] Crear `src/app/admin/pedidos/page.tsx` con `listOrders` filtrando por estado, clienta (nombre o código) y bazar
-- [ ] T136 [US7] Crear `src/app/admin/clientas/page.tsx` (búsqueda por nombre, código o WhatsApp; filtros con/sin cuenta y estado) y `src/app/admin/clientas/[code]/page.tsx` (datos editables con `updateCustomer` excepto el código, pedidos y paquetes de la clienta)
+- [X] T134 [P] [US7] Crear `src/components/list-filters.tsx` (búsqueda y filtros sincronizados con la URL, pensados para celular)
+- [X] T135 [US7] Crear `src/app/admin/pedidos/page.tsx` con `listOrders` filtrando por estado, clienta (nombre o código) y bazar
+- [X] T136 [US7] Crear `src/app/admin/clientas/page.tsx` (búsqueda por nombre, código o WhatsApp; filtros con/sin cuenta y estado) y `src/app/admin/clientas/[code]/page.tsx` (datos editables con `updateCustomer` excepto el código, pedidos y paquetes de la clienta)
 
 **Checkpoint**: todas las historias de usuario funcionan de forma independiente.
 
