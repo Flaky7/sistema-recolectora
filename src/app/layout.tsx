@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   formatDetection: { telephone: false },
+  // Every user reads Spanish; on phones set to another language Chrome would otherwise offer to
+  // translate the installed app on every launch.
+  other: { google: "notranslate" },
 };
 
 export const viewport: Viewport = {
@@ -41,6 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-MX"
+      translate="no"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="bg-background text-foreground flex min-h-full flex-col">
