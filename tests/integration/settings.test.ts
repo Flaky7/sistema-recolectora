@@ -38,6 +38,9 @@ describe("settings (FR-040, research R19)", () => {
     expect(must(await bazaar.client.from("settings").select())).toEqual([]);
     expect((await bazaar.client.rpc("get_payment_info")).error).not.toBeNull();
     expect((await anonClient().rpc("get_payment_info")).error).not.toBeNull();
+    // The helper used as the payments default does not leak the amount either.
+    expect(must(await bazaar.client.rpc("initial_deposit_cents"))).toBeNull();
+    expect((await anonClient().rpc("initial_deposit_cents")).error).not.toBeNull();
   });
 
   it("rejects a deposit of zero or less", async () => {

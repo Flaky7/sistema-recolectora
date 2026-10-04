@@ -35,7 +35,7 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/admin/clientas" className="text-muted-foreground inline-flex items-center gap-1 text-sm">
+      <Link href="/admin/clientas" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
         <ArrowLeftIcon className="size-4" aria-hidden />
         Clientas
       </Link>

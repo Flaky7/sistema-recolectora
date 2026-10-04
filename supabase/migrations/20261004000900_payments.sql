@@ -1,7 +1,9 @@
 -- Payments: proofs uploaded by customers or payments recorded by the collector (FR-010, FR-015,
 -- FR-043, FR-051). The order status follows the payment through sync_order_from_payment().
 
--- The configured deposit; customers cannot read the settings table (research R19).
+-- The configured deposit; customers cannot read the settings table (research R19). Used as the
+-- column default and by prepare_payment(); returns null to anyone but customers, the collector
+-- and trusted roles, so visitors and bazaars cannot learn it (FR-040).
 create function public.initial_deposit_cents()
 returns integer
 language sql
@@ -9,8 +11,19 @@ stable
 security definer
 set search_path = ''
 as $$
-  select s.initial_deposit_cents from public.settings s where s.id = 1;
+  select s.initial_deposit_cents
+  from public.settings s
+  where s.id = 1
+    and (
+      -- Trusted callers (SQL scripts, seed, service role) have no app-user JWT role.
+      coalesce(auth.jwt() ->> 'role', '') not in ('anon', 'authenticated')
+      or public.is_collector()
+      or public.current_customer_id() is not null
+    );
 $$;
+
+revoke all on function public.initial_deposit_cents() from public, anon;
+grant execute on function public.initial_deposit_cents() to authenticated;
 
 create table public.payments (
   id uuid primary key default gen_random_uuid(),

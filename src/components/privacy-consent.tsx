@@ -33,7 +33,7 @@ export function PrivacyConsent<T extends FieldValues>({
             className="mt-0.5"
           />
           <div className="space-y-1">
-            <FieldLabel htmlFor={`field-${name}`} className="font-normal">
+            <FieldLabel htmlFor={`field-${name}`} className="min-h-11 font-normal">
               <span>
                 Leí y acepto el{" "}
                 <Link

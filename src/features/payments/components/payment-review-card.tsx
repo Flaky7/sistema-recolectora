@@ -57,7 +57,7 @@ export function PaymentReviewCard({ payment }: { payment: PaymentReviewItem }) {
     <article className="space-y-3 rounded-xl border p-4">
       <header className="flex items-start justify-between gap-3">
         <div>
-          <Link href={`/admin/pedidos/${payment.folio}`} className="font-semibold underline-offset-4 hover:underline">
+          <Link href={`/admin/pedidos/${payment.folio}`} className="inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline">
             Pedido #{payment.folio}
           </Link>
           <p className="text-sm">

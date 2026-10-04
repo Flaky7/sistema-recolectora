@@ -109,7 +109,7 @@ function DocumentRow({
         ref={input}
         type="file"
         accept="image/jpeg,image/png,image/webp,application/pdf"
-        className="sr-only"
+        className="sr-only top-0 left-0"
         aria-label={`Archivo: ${label}`}
         disabled={disabled || busy}
         onChange={(e) => upload(e.target.files?.[0], slot.type)}

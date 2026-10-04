@@ -130,12 +130,13 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
           <ul className="flex flex-wrap gap-2" aria-label="Marcas agregadas">
             {brands.map((brand) => (
               <li key={brand}>
-                <Badge variant="secondary" className="h-9 gap-1 pr-1 text-sm">
+                <Badge variant="secondary" className="h-11 gap-1 pr-0 text-sm">
                   {brand}
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon-sm"
+                    size="icon-lg"
+                  className="size-11"
                     onClick={() => setBrands(brands.filter((b) => b !== brand))}
                     aria-label={`Quitar ${brand}`}
                   >
@@ -217,7 +218,7 @@ export function BazaarProposalForm({ bazaarId, defaults, mode, onDone }: Props) 
           ref={fileInput}
           type="file"
           accept="image/jpeg,image/png,image/webp"
-          className="sr-only"
+          className="sr-only top-0 left-0"
           aria-label="Elegir foto del bazar"
           onChange={(e) => addPhoto(e.target.files?.[0])}
         />

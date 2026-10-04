@@ -66,7 +66,7 @@ export function SignInForm({ next }: { next?: string }) {
         </Button>
         <Link
           href="/recuperar"
-          className="text-primary text-center text-sm underline-offset-4 hover:underline"
+          className="text-primary inline-flex min-h-11 items-center justify-center text-sm underline-offset-4 hover:underline"
         >
           Olvidé mi contraseña
         </Link>

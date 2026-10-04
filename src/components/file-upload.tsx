@@ -101,7 +101,7 @@ export function FileUpload({
         type="file"
         accept={accept}
         capture={capture ? "environment" : undefined}
-        className="sr-only"
+        className="sr-only top-0 left-0"
         disabled={disabled || uploading}
         onChange={(event) => handleFile(event.target.files?.[0])}
       />

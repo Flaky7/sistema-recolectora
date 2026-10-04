@@ -50,7 +50,7 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/admin/pedidos" className="text-muted-foreground inline-flex items-center gap-1 text-sm">
+      <Link href="/admin/pedidos" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
         <ArrowLeftIcon className="size-4" aria-hidden />
         Pedidos
       </Link>

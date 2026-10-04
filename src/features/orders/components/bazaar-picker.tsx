@@ -82,14 +82,15 @@ export function BazaarPicker({
         <ul className="flex flex-wrap gap-2">
           {value.map((bazaar, index) => (
             <li key={`${bazaar.bazaarId ?? "free"}-${bazaar.bazaarName}`}>
-              <Badge variant="secondary" className="h-9 gap-1 pr-1 text-sm">
+              <Badge variant="secondary" className="h-11 gap-1 pr-0 text-sm">
                 <StoreIcon aria-hidden />
                 {bazaar.bazaarName}
                 {!bazaar.bazaarId ? <span className="text-muted-foreground">(no registrado)</span> : null}
                 <Button
                   type="button"
                   variant="ghost"
-                  size="icon-sm"
+                  size="icon-lg"
+                  className="size-11"
                   onClick={() => remove(index)}
                   aria-label={`Quitar ${bazaar.bazaarName}`}
                 >

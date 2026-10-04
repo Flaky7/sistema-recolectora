@@ -15,7 +15,7 @@ export function CustomerNav() {
           <Button asChild size="lg">
             <Link href="/mi-cuenta/pedidos/nuevo">
               <PlusIcon aria-hidden />
-              Nuevo pedido
+              <span className="sr-only sm:not-sr-only">Nuevo pedido</span>
             </Link>
           </Button>
           <SignOutButton />

@@ -88,7 +88,7 @@ export default async function PackagesPage({ searchParams }: PageProps<"/admin/p
                 </p>
               </div>
               {pkg.order ? (
-                <Link href={`/admin/pedidos/${pkg.order.folio}`} className="flex items-center gap-2">
+                <Link href={`/admin/pedidos/${pkg.order.folio}`} className="flex min-h-11 items-center gap-2">
                   <span className="underline-offset-4 hover:underline">Pedido #{pkg.order.folio}</span>
                   <OrderStatusBadge status={pkg.order.status} />
                 </Link>

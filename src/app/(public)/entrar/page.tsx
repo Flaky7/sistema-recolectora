@@ -19,10 +19,10 @@ export default async function SignInPage({ searchParams }: PageProps<"/entrar">)
       <div className="text-muted-foreground space-y-2 border-t pt-4 text-center text-sm">
         <p>¿Aún no tienes cuenta?</p>
         <p className="flex flex-col gap-1">
-          <Link href="/registro/clienta" className="text-primary underline-offset-4 hover:underline">
+          <Link href="/registro/clienta" className="text-primary inline-flex min-h-11 items-center justify-center underline-offset-4 hover:underline">
             Registrarme como clienta
           </Link>
-          <Link href="/registro/bazar" className="text-primary underline-offset-4 hover:underline">
+          <Link href="/registro/bazar" className="text-primary inline-flex min-h-11 items-center justify-center underline-offset-4 hover:underline">
             Registrar mi bazar
           </Link>
         </p>

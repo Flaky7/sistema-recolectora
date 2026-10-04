@@ -49,7 +49,7 @@ export default async function CustomerOrderPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/mi-cuenta" className="text-muted-foreground inline-flex items-center gap-1 text-sm">
+      <Link href="/mi-cuenta" className="text-muted-foreground inline-flex min-h-11 items-center gap-1 text-sm">
         <ArrowLeftIcon className="size-4" aria-hidden />
         Mis pedidos
       </Link>
