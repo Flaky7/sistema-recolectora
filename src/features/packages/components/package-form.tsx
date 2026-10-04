@@ -71,6 +71,7 @@ export function PackageForm({
         kind="image"
         capture
         label="Tomar foto del paquete"
+        desktopLabel="Subir foto del paquete"
         value={photoPath}
         onChange={setPhotoPath}
         error={fieldErrors.photoPath?.[0]}
