@@ -11,6 +11,7 @@ import { OrderTimeline } from "@/features/orders/components/order-timeline";
 import { SubmitProofForm } from "@/features/orders/components/submit-proof-form";
 import { ORDER_STATUS_HINTS } from "@/features/orders/labels";
 import { getOrderByFolio } from "@/features/orders/queries";
+import { PackageGallery } from "@/features/packages/components/package-gallery";
 import { isEditableOrder } from "@/features/orders/status";
 import { PAYMENT_STATUS_LABELS } from "@/features/payments/labels";
 import { formatDateTime, formatMoney } from "@/lib/format";
@@ -77,6 +78,13 @@ export default async function CustomerOrderPage({
           <SubmitProofForm folio={order.folio} customerId={customer.id} />
         </section>
       ) : null}
+
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">
+          Paquetes recibidos ({order.received_packages} de {order.expected_packages})
+        </h2>
+        <PackageGallery packages={order.packages} />
+      </section>
 
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">Detalle</h2>

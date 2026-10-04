@@ -494,6 +494,11 @@ isOneToOne: false
 "customer_claim_max_attempts":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
+"find_customer":
+{ Args: { "q": string }; Returns: {
+              "active_orders": Json,"code": string,"exact_code": boolean,"full_name": string,"has_account": boolean,"id": string,"status": Database["public"]['Enums']["customer_status"],"type": Database["public"]['Enums']["customer_type"],"whatsapp": string
+            }[]
+                           },
 "generate_customer_code":
 { Args: Record<PropertyKey, never>; Returns: string
                            },

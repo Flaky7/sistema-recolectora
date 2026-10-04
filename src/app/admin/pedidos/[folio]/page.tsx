@@ -9,11 +9,14 @@ import { EditOrderSection } from "@/features/orders/components/edit-order-sectio
 import { OrderStatusBadge } from "@/features/orders/components/order-status-badge";
 import { OrderTimeline } from "@/features/orders/components/order-timeline";
 import { getOrderByFolio } from "@/features/orders/queries";
+import { OrderPackagesAdmin } from "@/features/packages/components/order-packages-admin";
+import { listOrderNotifications } from "@/features/packages/queries";
 import { isEditableOrder } from "@/features/orders/status";
 import { PaymentReviewCard } from "@/features/payments/components/payment-review-card";
 import { ViewProofButton } from "@/features/payments/components/view-proof-button";
 import { PAYMENT_STATUS_LABELS } from "@/features/payments/labels";
 import { formatDateTime, formatMoney } from "@/lib/format";
+import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata({
   params,
@@ -27,7 +30,20 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
   const order = await getOrderByFolio(Number(folioParam));
   if (!order) notFound();
 
+  const supabase = await createClient();
+  const [notifications, { data: otherOrders }] = await Promise.all([
+    listOrderNotifications(order.id),
+    supabase
+      .from("orders")
+      .select("id, folio")
+      .eq("customer_id", order.customer_id!)
+      .neq("id", order.id)
+      .not("status", "in", "(shipped,delivered,cancelled)")
+      .order("folio"),
+  ]);
+
   const status = order.status;
+  const canMovePackages = !["shipped", "delivered", "cancelled"].includes(status);
   const canCancel = !["shipped", "delivered", "cancelled"].includes(status);
 
   return (
@@ -77,6 +93,19 @@ export default async function AdminOrderPage({ params }: PageProps<"/admin/pedid
             </div>
           ) : null}
         </dl>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">
+          Paquetes ({order.received_packages} de {order.expected_packages})
+        </h2>
+        <OrderPackagesAdmin
+          customerId={order.customer_id!}
+          packages={order.packages}
+          otherOrders={otherOrders ?? []}
+          canMove={canMovePackages}
+          notifications={notifications}
+        />
       </section>
 
       <section className="space-y-2">

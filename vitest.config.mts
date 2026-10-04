@@ -1,7 +1,11 @@
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 
-const alias = { "@": path.resolve(import.meta.dirname, "src") };
+const alias = {
+  "@": path.resolve(import.meta.dirname, "src"),
+  // Lets integration tests import server modules (services) that are marked server-only.
+  "server-only": path.resolve(import.meta.dirname, "tests/helpers/server-only.ts"),
+};
 
 export default defineConfig({
   test: {
