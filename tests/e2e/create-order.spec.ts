@@ -8,7 +8,7 @@ import { captureWhatsApp } from "./helpers/whatsapp";
 test.describe("crear pedido y revisar el pago", () => {
   test("registro → código → pedido con comprobante → pago confirmado", async ({ page }) => {
     const customer = await registerCustomer(page);
-    await expect(page.getByText(customer.code)).toBeVisible();
+    await expect(page.getByText(customer.code, { exact: true })).toBeVisible();
 
     const folio = await createOrderAsCustomer(page);
     await expect(page.getByText("Pago inicial pendiente").first()).toBeVisible();

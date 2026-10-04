@@ -23,8 +23,16 @@ export async function captureWhatsApp(
       return href;
     });
 
+  // The one not awaited below may time out; mark both as handled right away.
+  navigated.catch(() => undefined);
+  linked.catch(() => undefined);
+
+  const touch = await page.evaluate(() => window.matchMedia("(pointer: coarse)").matches);
   await action();
-  const url = await Promise.any([navigated, linked]);
+  // Phones open WhatsApp by themselves: wait for that navigation so it cannot interrupt the
+  // next step. Desktop only shows the link.
+  const url = touch ? await navigated : await linked;
+  if (touch) await page.waitForURL(/^https:\/\/wa\.me\//);
   expect(url).toMatch(/^https:\/\/wa\.me\/52\d{10}\?text=/);
   const parsed = new URL(url);
   return {
