@@ -5,12 +5,12 @@ export const metadata: Metadata = {
   description: "Cómo tratamos tus datos personales en Sistema Recolectora.",
 };
 
-// Final legal text and the controller's real data are reviewed in task T150 (pending from the
-// client). Keep the structure: it covers FR-005 and FR-050.
+// FICTITIOUS controller data (T150): replace with the client's real name, address and contact
+// before going to production. Keep the structure: it covers FR-005 and FR-050.
 const CONTROLLER = {
-  name: "[Pendiente: nombre completo de la responsable]",
-  address: "[Pendiente: domicilio para oír y recibir notificaciones]",
-  contact: "[Pendiente: correo o WhatsApp para solicitudes de privacidad]",
+  name: "María Ejemplo Ficticia",
+  address: "Calle Ejemplo 123, Col. Centro, Tijuana, B.C., C.P. 22000",
+  contact: "privacidad@ejemplo.com",
 };
 
 export default function PrivacyNoticePage() {

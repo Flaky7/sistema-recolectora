@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Default app icon (T151): a parcel on the brand's dark background. Source for the PNGs in
+       this folder; replace it with the client logo and run `pnpm icons`. -->
+  <rect width="512" height="512" rx="112" fill="#171717"/>
+  <g transform="translate(106 106)">
+    <rect x="30" y="100" width="240" height="170" rx="16" fill="#F5A524"/>
+    <rect x="30" y="100" width="240" height="18" fill="#C47A06"/>
+    <rect x="10" y="40" width="280" height="70" rx="16" fill="#F7B23B"/>
+    <rect x="125" y="40" width="50" height="230" fill="#FFF4DC"/>
+    <rect x="125" y="110" width="50" height="8" fill="#E6D3AE"/>
+  </g>
+</svg>
