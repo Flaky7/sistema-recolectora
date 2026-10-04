@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DeleteAccountDialog } from "@/features/account-deletion/components/delete-account-dialog";
 import { CustomerForm } from "@/features/customers/components/customer-form";
 import { CustomerStatusActions } from "@/features/customers/components/customer-status-actions";
 import { CUSTOMER_STATUS_LABELS } from "@/features/customers/labels";
@@ -127,6 +128,13 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
             customerId={customer.id}
             status={customer.status as "active" | "deactivated"}
             claimLocked={!customer.profile_id && customer.claim_failed_attempts >= 10}
+          />
+          <DeleteAccountDialog
+            target={{ kind: "customer", customerId: customer.id, redirectTo: "/admin/clientas" }}
+            triggerLabel="Eliminar datos personales"
+            title={`¿Eliminar los datos de ${customer.full_name}?`}
+            deleted={<p>Nombre, WhatsApp, dirección, cuenta de acceso, comprobantes y fotos de paquetes. Sus pedidos en curso se cancelan con el motivo “Datos eliminados”.</p>}
+            kept={<p>Pedidos, pagos, paquetes y envíos, como “Clienta eliminada”, y su código (no se reutiliza).</p>}
           />
         </section>
       ) : null}

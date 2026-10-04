@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { BazaarCard } from "@/components/bazaar-card";
+import { DeleteAccountDialog } from "@/features/account-deletion/components/delete-account-dialog";
 import { Badge } from "@/components/ui/badge";
 import { BazaarDocumentsForm } from "@/features/bazaars/components/bazaar-documents-form";
 import { BazaarProposalForm } from "@/features/bazaars/components/bazaar-proposal-form";
@@ -173,6 +174,19 @@ export default async function BazaarHomePage() {
         </h2>
         <BazaarReferencesForm
           defaults={data.references.map((r) => ({ fullName: r.full_name, phone: r.phone }))}
+        />
+      </section>
+
+      <section aria-labelledby="delete-title" className="space-y-3 border-t pt-6">
+        <h2 id="delete-title" className="text-xl font-semibold">
+          Eliminar mi cuenta
+        </h2>
+        <DeleteAccountDialog
+          target={{ kind: "self" }}
+          triggerLabel="Eliminar mi cuenta"
+          title="¿Eliminar la cuenta de tu bazar?"
+          deleted={<p>Tu cuenta, marcas, link, fotos, propuestas, documentos y referencias. Dejas de aparecer en el directorio.</p>}
+          kept={<p>El nombre del bazar en los pedidos anteriores de las clientas.</p>}
         />
       </section>
     </div>

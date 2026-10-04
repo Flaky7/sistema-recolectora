@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BazaarCard } from "@/components/bazaar-card";
+import { DeleteAccountDialog } from "@/features/account-deletion/components/delete-account-dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   BazaarReviewPanel,
@@ -72,6 +73,18 @@ export default async function AdminBazaarPage({ params }: PageProps<"/admin/baza
           <ReferenceList references={data.references} />
           <SuspendButtons bazaarId={bazaar.id} status={bazaar.status as "approved" | "suspended"} />
         </>
+      ) : null}
+
+      {bazaar.status !== "deleted" ? (
+        <section className="space-y-2 border-t pt-6">
+          <DeleteAccountDialog
+            target={{ kind: "bazaar", bazaarId: bazaar.id, redirectTo: "/admin/bazares" }}
+            triggerLabel="Eliminar datos personales"
+            title="¿Eliminar los datos de este bazar?"
+            deleted={<p>Cuenta de acceso, marcas, link, fotos, propuestas, documentos y referencias. Sale del directorio.</p>}
+            kept={<p>El nombre del bazar en el historial de pedidos.</p>}
+          />
+        </section>
       ) : null}
     </div>
   );

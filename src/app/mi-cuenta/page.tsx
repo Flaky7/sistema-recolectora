@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { DeleteAccountDialog } from "@/features/account-deletion/components/delete-account-dialog";
 import { CustomerCodeCard } from "@/features/customers/components/customer-code-card";
 import { CustomerProfileForm } from "@/features/customers/components/customer-profile-form";
 import { getMyCustomer } from "@/features/customers/queries";
@@ -100,6 +101,22 @@ export default async function CustomerHomePage({ searchParams }: PageProps<"/mi-
             shippingAddress: customer.shipping_address ?? "",
             type: customer.type,
           }}
+        />
+      </section>
+
+      <section aria-labelledby="delete-title" className="space-y-3 border-t pt-6">
+        <h2 id="delete-title" className="text-xl font-semibold">
+          Eliminar mi cuenta
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          Solo es posible si no tienes pedidos en curso (todos entregados o cancelados).
+        </p>
+        <DeleteAccountDialog
+          target={{ kind: "self" }}
+          triggerLabel="Eliminar mi cuenta"
+          title="¿Eliminar tu cuenta?"
+          deleted={<p>Tu cuenta de acceso, nombre, WhatsApp, dirección, correo, comprobantes de pago y fotos de tus paquetes.</p>}
+          kept={<p>El historial de pedidos de la recolectora, como “Clienta eliminada”.</p>}
         />
       </section>
     </div>

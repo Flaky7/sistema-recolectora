@@ -103,9 +103,11 @@ as $$
 begin
   if new.order_id is distinct from old.order_id
     or new.amount_cents is distinct from old.amount_cents
-    or new.proof_path is distinct from old.proof_path
     or new.concept is distinct from old.concept
-    or new.method is distinct from old.method then
+    or new.method is distinct from old.method
+    -- Only anonymize_customer() (a trusted role) may clear the proof when deleting data (FR-048).
+    or (new.proof_path is distinct from old.proof_path
+        and (current_user in ('anon', 'authenticated') or new.proof_path is not null)) then
     raise exception 'Un pago registrado no se puede modificar.' using errcode = 'P0001';
   end if;
   if new.status is distinct from old.status then

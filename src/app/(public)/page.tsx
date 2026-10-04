@@ -8,12 +8,17 @@ import { DirectorySearch } from "@/features/directory/components/directory-searc
 import { searchDirectory } from "@/features/directory/queries";
 
 export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
-  const { q } = await searchParams;
+  const { q, cuenta } = await searchParams;
   const term = typeof q === "string" ? q : "";
   const bazaars = await searchDirectory(term);
 
   return (
     <div className="space-y-6">
+      {cuenta === "eliminada" ? (
+        <p role="status" className="bg-muted rounded-lg p-3">
+          Tu cuenta y tus datos personales fueron eliminados.
+        </p>
+      ) : null}
       <section className="space-y-3">
         <h1 className="text-2xl font-semibold sm:text-3xl">Directorio de bazares</h1>
         <p className="text-muted-foreground">

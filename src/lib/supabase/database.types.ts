@@ -473,7 +473,17 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "apply_bazaar_proposal":
+            "anonymize_bazaar":
+{ Args: { "bazaar_id": string }; Returns: {
+              "bucket": string,"path": string
+            }[]
+                           },
+"anonymize_customer":
+{ Args: { "customer_id": string }; Returns: {
+              "bucket": string,"path": string
+            }[]
+                           },
+"apply_bazaar_proposal":
 { Args: { "proposal_id": string,"public_paths": (string)[] }; Returns: (string)[]
                            },
 "approve_bazaar_document":

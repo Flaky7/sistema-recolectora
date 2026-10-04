@@ -42,6 +42,14 @@ export function supabaseEnv(): Env {
   return cachedEnv;
 }
 
+/** Server modules (src/lib/supabase/admin.ts) read these variables when called. */
+export function ensureServerEnv() {
+  const { url, anonKey, serviceKey } = supabaseEnv();
+  process.env.NEXT_PUBLIC_SUPABASE_URL ??= url;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??= anonKey;
+  process.env.SUPABASE_SERVICE_ROLE_KEY ??= serviceKey;
+}
+
 const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
 
 /** Service role: bypasses RLS. Only to arrange data and to inspect results. */
